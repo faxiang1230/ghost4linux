@@ -1,0 +1,13 @@
+[ -f "/out" ] && rm /out
+[ -f "/out2" ] && rm /out2
+[ -f "/out3" ] && rm /out3
+ls -l | grep rwx | grep -v lrw | grep -v drw | grep -v total | awk {'print "echo " $9 ">>/out2 \n" "ldd " $9   ">>/out2"'} >> /out
+chmod 755 /out
+/out
+cat /out2 | grep -i found >/out3
+if [ -s "/out3" ] ; then
+        nano /out3
+	nano /out2
+else
+        echo "Nothing seems to be missing in this directory"
+fi

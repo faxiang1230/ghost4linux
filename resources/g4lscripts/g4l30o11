@@ -1,0 +1,2558 @@
+#!/bin/bash
+#
+#
+## Michael Setzer II - Program Modifications
+projectname="G4L"
+projectlongname="Disk Imaging with Linux"
+: ${DIALOG=dialog}
+: ${DIALOG_OK=0}
+: ${DIALOG_CANCEL=1}
+: ${DIALOG_ESC=255}
+# global vars
+author="Frank Stephen"
+version="v0.49a"
+year="2015"
+website="http://sourceforge.net/projects/g4l/\nhttp://freecode.com/projects/$projectname"
+ncftpopt="-o \"useHELP_SITE=0\""
+ncftpstat="/tmp/ncftpstatus.out"
+progout="/tmp/progress.out"
+AESPIPE=""
+AESPIPEd=""
+#AESPIPE=" aespipe -K /mykey1.gpg -P /passphrase -G / | "
+#AESPIPEd="| aespipe -K /mykey1.gpg -P /passphrase -G / -d "
+## changed some default values, and allow passing of values at startup
+## Set Tab setting to 2 spaces for best editing
+## Date: 6/02/2007
+## Optional Startup Parameters
+## $1 - IP address or hostname of FTP Server
+## $2 - IMAGE NAME WITH EXTENSION
+## $3 - USERID and PASSWORD
+##      either of two formats
+##      USERID:PASSWORD
+##      '-u USERID -p PASSWORD'
+## $4 - dhcp  (default to get ipaddress from dhcpd) or fixed ipaddress
+## $5 - change default directory from img to this
+## $6 - change default device from eth0
+## $7 - if not blank, set reboot to Yes unless $7 is poweroff
+export PATH=$PATH:`pwd`
+setterm -blank 60
+pcnt=0
+xreboot="No"
+xpower="No"
+if [ -n "$7" ]; then
+  if [ "$7" = "poweroff" ]; then
+    xpower="Yes"
+  else
+    xreboot="Yes"
+  fi
+fi
+#device=eth0
+#Added ifcheck.sh by dan.s@hostdime.com
+#to handle systems with multiple nics and eth0 not default
+device=`cat /tmp/device`
+if [ -n "$6" ]; then
+  device=$6
+fi
+if [ -n "$device" ]; then
+  device=eth0
+fi
+netzip=Lzop
+localzip=Lzop
+server="$1"
+netimagename="$2"
+useridpass="$3"
+ipaddress=`ifconfig $device | grep inet\  | grep -v 127.0.0.1 | cut -f 2 -d: | cut -f 1 -d\  |tr -d "\n"`
+#Make sure /mnt/local exists
+if [ ! -d /mnt/local ] ; then
+  mkdir /mnt ;
+  mkdir /mnt/local ;
+  dialog --timeout 10 --msgbox "Needs /mnt/local directory\n(10 second timeout)" 0 0
+fi
+
+cleandrive8.dialog()
+{
+  f_radiolist "PICK DRIVE" "Choose drive to write to/read from.\n(Use Space Bar)\
+\nThe drive that contains or will contain the image\
+\nSupported FS are:\
+\next2. ext3, ext4, reiserfs - Linux\
+\nfat32 - Windows95/98/NT/2k/XP\
+\nntfs - Windows NT/2k/XP\
+\n\nSelect partition (example: /dev/hda1):" "$partonly"  2> /tmp/filelocaldrive
+  retvallocaldrive=$?
+  choicelocaldrive=$(cat /tmp/filelocaldrive)
+  if [ -n "$choicelocaldrive" ]; then
+    case $retvallocaldrive in
+      $DIALOG_OK)
+      localdrive=$choicelocaldrive
+###
+      umount /mnt/local 2>/dev/null
+      chkswap=`blkid /dev/$localdrive | grep swap`
+      mount /dev/$localdrive /mnt/local >/tmp/mount 2>&1
+      retvalmount=$?
+      if [ $retvalmount != 0 ] ; then
+        if [ -z chkswap ]; then
+          f_textbox "ERROR" /tmp/mount
+        fi
+        umount /mnt/local 2>/dev/null
+        if [ -n chkswap ]; then
+          echo "Clearing SWAP partition"
+          BLKID2=`blkid /dev/$localdrive | cut -f 2 -d\:`
+          LABEL=""
+          UUID=""
+          for a in $BLKID2
+          do
+            export $a 
+          done
+          LABEL=`echo $LABEL | tr -d \"`
+          UUID=`echo $UUID | tr -d \"`
+          dd if=/dev/zero bs=20M of=/dev/$localdrive
+          mkswap /dev/$localdrive -U $UUID -L "$LABEL"
+          echo "Done"
+          sleep 10
+        fi
+        localdrive=""
+        umount /mnt/local 2>/dev/null
+      else
+        cd /mnt/local
+        chkvfat=`blkid /dev/$localdrive | grep vfat`
+        if [ -z "$chkvfat" ]; then
+          {
+            msg="Clearing Free Space on /dev/$localdrive"
+            value="100"
+            freesize=`df . | grep % | grep / | awk '{print $1 - $2}'`
+            original=`df . | grep % | grep / | awk '{print $4}'`
+            testx=`df . | grep % | grep / | cut -b1-1`
+            if [ " " = "$testx" ]; then
+              freesize=`df . | grep % | grep / | awk '{print $1 - $2}'`
+              original=`df . | grep % | grep / | awk '{print $4}'`
+            else
+              freesize=`df . | grep % | grep / | awk '{print $2 - $3}'`
+              original=`df . | grep % | grep / | awk '{print $5}'`
+            fi
+            printf "%s\n" "$freesize $original"
+            
+            dd if=/dev/zero bs=2M 2>/dev/null | jetcat-mod -f 5000 -p $freesize 2>/tmp/progress.out >0bits &
+            progress
+            cat /tmp/progress.out
+#          value=$original
+#          msg="Removing 0bits file"
+#      	    $DIALOG --sleep 10 --infobox "PAUSE FOR 10 SECONDS" 5 25
+            $DIALOG --sleep 10 --infobox "REMOVING 0bits FILE" 5 25
+            rm 0bits #&
+#          progress
+          }
+        else
+          lblank7
+        fi
+        
+        $DIALOG --sleep 10 --infobox "Drive Should now have all free space cleared" 5 50
+      fi;;
+    esac
+    cd /
+    umount /mnt/local 2>/dev/null
+  fi
+}
+#uuid change functions
+uuidChange()        # start of masavini modification
+{
+  part_info
+  f_radiolist "SELECT DISK" "Choose Disk to Change UUID drive.\n\Z1\Zr\Zb(Use Space Bar)\Zn\n\
+  Select from:" "$disklist" 2> /tmp/uuidtarget
+  retvaluuidtarget=$?
+  choiceuuidtarget=$(cat /tmp/uuidtarget)
+  case $retvaluuidtarget in
+    $DIALOG_OK)
+    uuidtarget=/dev/$choiceuuidtarget
+    f_partdiskinfo "$uuidtarget" "UUID TARGET DISK INFO"
+    partitions=$(fdisk -l $uuidtarget | grep "^$uuidtarget" | awk '{print $1}')
+    for partition in $partitions;
+    do
+      oldUUID=$(blkid | grep "^$partition" | sed -e "s/.*UUID=\"//" -e "s/\".*//")
+      newUUID=$oldUUID
+      
+      while [ $newUUID = $oldUUID ];
+      do
+        filesystem=$(blkid $partition | sed -e "s/.*TYPE=\"//" -e "s/\".*//")
+        case $filesystem in
+          ext2|ext3|ext4)
+          tune2fs -U $(uuidgen) $partition > /dev/null
+          newUUID=$(blkid | grep "^$partition" | sed -e "s/.*UUID=\"//" -e "s/\".*//")
+          ;;
+          swap)
+          mkswap -U $(uuidgen) $partition > /dev/null
+          newUUID=$(blkid | grep "^$partition" | sed -e "s/.*UUID=\"//" -e "s/\".*//")
+          ;;
+          *)
+          echo "bubu"
+          newUUID="bubu"  # will surely exit the while loop
+          ;;
+        esac
+      done
+    done
+  esac
+}        # end of masavini modification
+
+## Function to remove hiberfil.sys and pagefile.sys
+## From Windows partitions before ntfsclone backup.
+hibpage()
+{
+  backtitle="Program to Remove Pagefile.sys and Hiberfil.sys"
+  f_radiolist "PICK DRIVE" "Pick Partition to erase PAGE/HIBERNATION FILE\n(Use Space Bar)\
+\nSupported FS are:\
+\nfat32 - Windows95/98/NT/2k/XP\
+\nntfs - Windows NT/2k/XP\
+\n\nSelect partition (example: /dev/hda1):" "$partonly"  2> /tmp/filelocaldrive
+  retvallocaldrive=$?
+  choicelocaldrive=$(cat /tmp/filelocaldrive)
+  if [ -n "$choicelocaldrive" ]; then
+    case $retvallocaldrive in
+      $DIALOG_OK)
+      localdrive=$choicelocaldrive
+      umount /mnt/local 2>/dev/null
+      mount /dev/$localdrive /mnt/local >/tmp/mount 2>&1
+      retvalmount=$?
+      if [ $retvalmount != 0 ] ; then
+        f_textbox "ERROR" /tmp/mount
+        localdrive=""
+        umount /mnt/local
+      fi;;
+    esac
+    cd /mnt/local
+    clear
+    resultout=""
+    if [ -e hiberfil.sys ] ; then
+      result="Found Hiberfil.sys and removed\n"
+      rm hiberfil.sys
+    else
+      result="No Hiberfil.sys found\n"
+    fi
+    if [ -e pagefile.sys ] ; then
+      result=$result"Found Pagefile.sys and removed"
+      rm pagefile.sys
+    else
+      result=$result"No Pagefile.sys found"
+      
+    fi
+    $DIALOG --sleep 10 --infobox "$result" 5 50
+    cd /
+    umount /mnt/local
+  fi
+}
+
+
+
+#function to display disk information to make sure correct disk
+#         or partition is selected.
+f_partdiskinfo()
+{
+  echo "Additional hdparm info on disk to confirm it as source" >/tmp/diskinfo
+  if [ "$1" != "/dev/" ] ; then
+    hdparm -i $1 >>/tmp/diskinfo
+    printf "\nblkid info:\n" >> /tmp/diskinfo
+    blkid $1* >> /tmp/diskinfo
+    sed -e 's/  //g' /tmp/diskinfo | fold -w 72 -s >/tmp/diskinfo2
+    f_textbox "$2" /tmp/diskinfo2
+  else
+    dialog --timeout 10 --msgbox "No Selection Made?\nUse SPACEBAR to Select\n(10 second timeout)" 0 0
+  fi
+}
+
+f_userpass()
+{
+## Added to support user:password format conversion to ncftp format
+  if [ -n "$useridpass" ]; then
+    if [ `echo $useridpass | awk '{print $1;}' -` != "-u" ] ; then
+      useridpass=`echo $useridpass | awk -F: '{print "-u " $1 " -p " $2;}' -`
+    fi
+  fi
+}
+f_userpass
+## automatically change default if filename if ext is .lzo
+## ext=`echo $2 | cut -d. -f2`
+ext=`echo ${2##*.}`
+if [ "$ext" = "lzo" ]; then
+  netzip="Lzop"
+fi
+## automatically change default if filename if ext is .bz
+if [ "$ext" = "bz" ]; then
+  netzip="BZip2"
+fi
+if [ "$ext" = "gz" ]; then
+  netzip="GZip"
+fi
+if [ "$4" = "dhcp" ]; then
+## 06/23/2007 new busybox changed ip from field 4 to field 3
+  ipaddress=`udhcpc -n -i $device -s./udhcpc.sh | grep Lease | cut -d\  -f3 | tr -d "\n"`
+  /sbin/ifconfig $device $ipaddress up
+## 11/25/2012 added to let $4 set fixed ip
+else
+  if [ -n "$4" ]; then
+    /sbin/ifconfig $device $4 up
+    ipaddress="$4"
+  fi
+fi
+## Created a function for the Progress Screen instead of multiple
+## copies using multiply files. Just setup 1 function with a msg variable
+## to set the minor differences between earlier versions.
+progress()
+{
+## Added a redirection of stderr from ncftp commands.
+## Would get an error message rarely about a register 82 problem with duplex
+## mismatch. This error would message the contents of the screen, but the updates
+## of the progress would go on. Redirects output to file, and then displays last
+## two lines of the file.
+## This just sets the starting value as being OK
+  echo "OK" >$ncftpstat
+  echo "0.00% Starting" > $progout
+## Added the Start time of the process to the progress screen
+## Removed - Replaced with modification to jetcat-mod to
+## Display MBs of data transferred of total, and Elapsed time.
+## starttime=`date +%T`
+  (
+  while test "$pcnt" != "100"
+  do
+## changed to a common progress.out file for all progress
+    pcnt=`tail -n1 $progout`
+    echo "XXX"
+## Modified Jetcat-mod to display two decimal positions
+## have to cut off the decimals for the gauge to work.
+    echo $pcnt | cut -d. -f 1
+    printf "\n"
+## msg variable set before calling the progress function to
+## make minor variation between different screens.
+    printf "%s\n" "$msg"
+    printf "%s\n" "The progress bar shows the ratio of written source data"
+    printf "%s\n" "and size of destination (harddrive/image). It will not be"
+    printf "%s\n\n" "accurate if you restore 50G to a 100G drive for example."
+    printf "%s\n\n" "Please stand by, this will take some time!"
+    printf "%s\n\n" "Device $device Speed $speed Duplex $duplex"
+## Percentage displays with 2 decimal places, plus start time and current time.
+## This lets one check time status of process in addition to percentage
+    printf "%s\n" "Progress"
+    printf "%s\n" "$pcnt"
+## Removed Current time and Start time for modified jetcat-mod
+##echo "Current Time:  `date +%T`"
+##echo "Start Time:    $starttime"
+## add display of last four lines of ncftp stderr if any.
+    echo -n "ncftpstatus: "
+    ncftpstatus=`tail -n4 $ncftpstat`
+    printf "%s\n" "$ncftpstatus"
+    printf "%s\n" "XXX"
+    sleep 5
+  done
+  ) |
+  $DIALOG --backtitle "$backtitle" --title "Working..." --clear --gauge "One moment..." 22 75
+## Outputs start time and current time, so it can be checked if one isn't around at end
+## of process. Also, note one can use Ctrl-Alt F2 to switch to another screen to review
+## the file contents or use the special command option.
+#  printf "%s\n\n" "Last 5 lines of time log" >/tmp/time
+#  tail -n5 $progout >>/tmp/time
+  printf "\n\n%s\n\n" "Last 5 lines of time log with no tabs" >/tmp/time
+  tail -n5 $progout | sed -e 's/\t/ /g' -e 's/%    /%/' >>/tmp/time
+## removed date process since jetcat-mod does a better job
+## echo "$starttime `date +%T`">/tmp/time
+  rm $progout
+  touch $progout
+## Added a pause to let the user see final results before it returns.
+}
+# path to images on ftp server
+ftppath=img
+if [ -n "$5" ]; then
+  ftppath=$5
+fi
+# window title
+backtitle="$projectname $version, $author $year modifications by Michael D. Setzer II"
+part_info()
+{
+# parse info about devices to tempfiles
+## original netdevices=`cat /proc/net/dev |grep eth |sed -e 's/://g' |awk '{print $1}'`
+## Change1  netdevices=`cat /proc/net/dev |grep eth |sed -e 's/:/ /g' |awk '{print $1}'`
+## Changed to terminate at the colon since after some options, a number was getting added
+## to the eth0:
+  netdevices=`grep eth </proc/net/dev |cut -d: -f 1`
+  partitions=`grep .d  </proc/partitions |awk '{print $4}'`
+# write systeminfo file
+  printf "========================================\n" > /tmp/sysinfo
+  printf "Drive/Partition sizes:\n" >> /tmp/sysinfo
+  grep .d </proc/partitions | awk '{print $4,$3}' |sort >>/tmp/sysinfo
+  
+  printf "\nDrive models:\n" >> /tmp/sysinfo
+  for h in $partitions
+  do
+    length=`echo $h |wc -c`
+    if [ $length -lt 5 ]; then
+      echo $h >> /tmp/sysinfo
+      cat /proc/ide/$h/model >> /tmp/sysinfo 2>/dev/null
+    fi
+  done
+### 2008/5/27 New partlist to have size and partition type.
+  partlist="";
+  partonly="";
+### 2009/3/15 New disklist to have just disks without partitions
+  disklist="";
+  fdisk -l 2>/dev/null | grep /dev | grep -v Disk | sed s/*/\ / | awk '{print $1,$6$7$8}' | cut -b6-30 >/tmp/partout
+  grep .d </proc/partitions | awk '{print $4,$3}' >/tmp/sysinfo2
+  while read LINE
+  do
+    xxdev=`echo $LINE | cut -f1 -d\  `;
+    xxsize=`echo $LINE | cut -f2 -d\  `;
+    xxsize2=`echo ${#xxsize}`;
+    pad="";
+    a=$xxsize2;
+    while [ $a -le 12 ]
+#   for (a=xxsize2;a<=12;a++) Doesn't work on new bash?
+    do
+      pad=$pad\_;
+      a=$(($a + 1));
+    done
+    xxtype="";
+    xxtype=`grep $xxdev\   </tmp/partout 2>/dev/null |  cut -f2 -d\  `;
+    if [ -z $xxtype ]; then
+      xxtype="DISK";
+### 2009/3/15 New disklist to have just disks without partitions
+      disklist="$disklist `printf "%s %s%s--%s off" $xxdev  $pad $xxsize $xxtype `";
+    fi
+    partlist="$partlist `printf "%s %s%s--%s off" $xxdev  $pad $xxsize $xxtype `";
+    if [ "$xxtype" != "DISK" ] ; then
+      partonly="$partonly `printf "%s %s%s--%s off" $xxdev  $pad $xxsize $xxtype `";
+    fi
+  done </tmp/sysinfo2
+  printf "\nblkid info:\n" >> /tmp/sysinfo
+  blkid >> /tmp/sysinfo
+  printf "\nfsarchiver probe info:\n\n" >> /tmp/sysinfo
+  fsarchiver probe -v 2>> /tmp/sysinfo
+  cat /tmp/sysinfo | sed -e 's/\] \[/\|/g' >/tmp/sysinfo3
+  mv /tmp/sysinfo3 /tmp/sysinfo
+### End of addition
+  FSARCH=`which fsarchiver `
+  if [ $? = "0" ] ; then
+### Added since part_info2 doesn't seem to support /dev/cciss partitions.
+#   testcciss=`echo $disklist | grep "/dev/cciss"`
+#   if [ -z "$testcciss" ] ; then
+    part_info2
+#   fi
+  fi
+}
+part_info2()
+{
+  partonly="";
+  partlist="";
+  disklist="";
+#LC_ALL=C added since regular sort was sorting sda after sda# options.
+#busybox sort works correctly, but if one uses script on anther version
+#it might sort incorrectly. dm stuff added to put lvm partition at end.
+## Added -e 's-!-/-g' to change cciss!c0d0p0 to cciss/c0d0p0 and others.
+  fsarchiver probe -v 2>&1 | grep -v = | grep \\[ | sed 's/dm/zz/g' | LC_ALL=C sort | sed -e 's/ /@/g' -e 's/zz/dm/g' -e 's-!-/-g' >/tmp/sysinfo2
+  while read LINE
+  do
+    xxdev=`echo $LINE | cut -b2-17 | sed 's/@//g' `;
+    xxdev2=`echo $LINE | cut -b2-3`;
+    xxsize=`echo $LINE | cut -b55-66 | sed 's/@//g'`;
+    xxtype=`echo $LINE | cut -b21-31 `;
+    xxtype2=`echo $LINE | cut -b32-32 `;
+    xxuuid=`echo $LINE | cut -b121-158 `;
+    if [ "$xxtype2" != "]" ] ; then
+      xxtype=`echo $LINE | cut -b21-51 `;
+      xxuuid=`hdparm -i /dev/$xxdev 2>/dev/null | grep SerialNo | sed -e 's/.*SerialNo=//' -e 's/ //g' `
+    fi
+    pad="";
+    a=`echo ${#xxsize}`;
+    while [ $a -le 10 ]
+    do
+      pad=$pad\_;
+      a=$(($a + 1));
+    done
+    if [ "$xxdev2" = "dm" ]; then
+      xxtype="LVM2_"$xxtype;
+    fi
+    if [ "$xxtype2" != "]" ]; then
+      disklist="$disklist `printf "%s %s%s--%s-%s off" $xxdev  $pad $xxsize $xxtype $xxuuid`";
+    fi
+    partlist="$partlist `printf "%s %s%s--%s-%s off" $xxdev  $pad $xxsize $xxtype $xxuuid`";
+    if [ "$xxtype2" = "]" ] ; then
+      partonly="$partonly `printf "%s %s%s--%s-%s off" $xxdev  $pad $xxsize $xxtype $xxuuid`";
+    fi
+  done </tmp/sysinfo2
+  partonly=`echo $partonly | sed 's/@//g'`
+  partlist=`echo $partlist | sed 's/@//g'`
+  disklist=`echo $disklist | sed 's/@//g'`
+  if [ -z "$partonly" ] ; then
+    partonly="none no_partitions off";
+  fi
+  if [ -z "$partlist" ] ; then
+    partlist="none no_partitions off";
+  fi
+  if [ -z "$disklist" ] ; then
+    disklist="none no_disks off";
+  fi
+}
+
+
+
+
+#Function to Update Partition info.
+part_info
+for j in $netdevices
+do
+  netlist="$netlist `echo $j detected...OK off`"
+done
+f_textbox()
+{
+  $DIALOG --clear --backtitle "$backtitle" --title "$1" --textbox $2 0 0
+}
+f_msgbox()
+{
+  $DIALOG --backtitle "$backtitle" --colors --title "$1" --clear --msgbox "$2" 0 0
+}
+f_compress()
+{
+  $DIALOG --backtitle "$backtitle" --title "COMPRESSION" --colors \
+  --radiolist "Choose whether to use compression or not.\n\Z1\Zr\Zb(Use Space Bar)\Zn\
+\nBe careful, compression requires more CPU power!" 0 0 0 \
+  "None" "No compression." off \
+  "GZip" "GZip compression." off \
+  "Lzop" "Lzop compression." ON \
+  "BZip2" "BZip2 compression." off
+}
+f_mbr()
+{
+#                "M: MBR")
+  if [ "$1" = "NET" ] ; then
+    mbrimagename=$netimagename
+  else
+    mbrimagename=$localimagename
+  fi
+  $DIALOG --colors --pause "\Z1Note: \Z4The MBRBACK and MBRRESTORE only copy \
+\nthe 512 byte boot sector and the Physical Partition Table.\
+\nIt doesn't include the logical Partitions.\
+\nThose are stored in EBR.\
+\nThe MBRBACK2 and MBRRESTORE2 attempt to copy the EBRs as well,\
+\nBUT it assumes standard track aligned partitions, and my not work\
+\nIf you have Logical Partitions, Please do a Disk Backup."  15 70 10
+  $DIALOG --colors --radiolist "MBR BACKUP OR RESTORE\n\nThis copies the mbr and\
+\nphysical partition table\
+\n\Z1\Zr\ZbUse Space Bar to select Option\Zn"  0 0 0 \
+  "MBRBACK" "Backup the MBR" off \
+  "MBRRESTORE" "Restore the MBR" off \
+  "MBRBACK2" "Backup the MBR and EBRs" off \
+  "MBRRESTORE2" "Restore the MBR and EBRs" off \
+  "GPTBACK" "Backup the GPT " off \
+  "GPTRESTORE" "Restore the GPT" off 2> /tmp/mbr
+  specialcommand=$(cat /tmp/mbr)
+  if [ "$specialcommand" = "MBRBACK" ] ; then
+    f_radiolist "BACKUP" "Choose Disk ONLY to backup MBR\n\Z1\Zr\Zb(Use Space Bar)\Zn\nSelect from:" "$disklist" 2> $tempfilenetback
+    retvalnetback=$?
+    choicenetback=$(cat $tempfilenetback)
+    case $retvalnetback in
+      $DIALOG_OK)
+      disk=/dev/$choicenetback
+      if [ "$1" = "NET" ] ; then
+        xcmd="(dd bs=512 count=1 if=$disk 2>/dev/null | ncftpput $ncftpopt -m $useridpass -c -d /tmp/out $server "$ftppath/$mbrimagename" 2>>$ncftpstat) "
+      else
+        xcmd="(dd bs=512 count=1 if=$disk  of=/mnt/local/$mbrimagename 2>/dev/null )"
+      fi
+      sh -c "$xcmd"
+    esac
+  fi
+## GPTBACK
+  if [ "$specialcommand" = "GPTBACK" ] ; then
+    f_radiolist "BACKUP" "Choose Disk ONLY to backup GPT\n\Z1\Zr\Zb(Use Space Bar)\Zn\nSelect from:" "$disklist" 2> $tempfilenetback
+    retvalnetback=$?
+    choicenetback=$(cat $tempfilenetback)
+    case $retvalnetback in
+      $DIALOG_OK)
+      disk=/dev/$choicenetback
+      if [ "$1" = "NET" ] ; then
+        sgdisk -b $mbrimagename $disk
+        ncftpput $ncftpopt -m $useridpass -d /tmp/out $server "$ftppath" $mbrimagename 2>>$ncftpstat
+      else
+        sgdisk -b /mnt/local/$mbrimagename $disk 2>/dev/null
+      fi
+    esac
+  fi
+## GPTBACK
+  if [ "$specialcommand" = "MBRBACK2" ] ; then
+    f_radiolist "BACKUP" "Choose Disk ONLY to backup MBR\n\Z1\Zr\Zb(Use Space Bar)\Zn\nSelect from:" "$disklist" 2> $tempfilenetback
+    retvalnetback=$?
+    choicenetback=$(cat $tempfilenetback)
+    
+    case $retvalnetback in
+      $DIALOG_OK)
+      disk=/dev/$choicenetback
+      sectors=`fdisk -lu $disk | grep sectors/track | cut -f 3 -d\  `
+## Added code to copy mbr and all space before first partition.
+      disk1="$disk"1
+      mbrsectors=`fdisk -lu $disk | grep $disk1 | cut -b14-25 | sed 's/ //g' `
+      X=`echo "$mbrsectors" | awk '$0 ~/[^0-9]/ { print "NOT_NUMBER" }'`
+      if [ "$mbrsectors" != "" ] && [ "$X" != "NOT_NUMBER" ]; then
+        echo "$mbrsectors"
+      else
+        mbrsectors=$sectors
+      fi
+## Added code to copy mbr and all space before first partition.
+      part5=`fdisk -lu $disk | grep "$choicenetback"5 | cut -b 14-25 `
+      part6=`fdisk -lu $disk | grep "$choicenetback"6 | cut -b 14-25 `
+      part7=`fdisk -lu $disk | grep "$choicenetback"7 | cut -b 14-25 `
+      part8=`fdisk -lu $disk | grep "$choicenetback"8 | cut -b 14-25 `
+      fdisk -lu $disk >disk.info
+      echo \#Restore mbr >rest.mbr
+      sfdisk -x -d $disk >sfdisk.sav
+      echo "sfdisk -fx $disk <sfdisk.sav" >>rest.mbr
+## Added code to copy mbr and all space before first partition.
+##    dd if=$disk of=mbr bs=512 count=$sectors
+      dd if=$disk of=mbr bs=512 count=$mbrsectors
+## Added code to copy mbr and all space before first partition.
+      echo dd of=$disk if=mbr bs=512 >>rest.mbr
+      if [ -n "$part5" ] ; then
+        ebr5=`expr $part5 - $sectors`
+        echo $part5 $ebr5
+        dd if=$disk of=ebr5 bs=512 skip=$ebr5 count=$sectors
+        echo dd of=$disk if=ebr5 bs=512 seek=$ebr5 >>rest.mbr
+      fi
+      if [ -n "$part6" ] ; then
+        ebr6=`expr $part6 - $sectors`
+        echo $part6 $ebr6
+        dd if=$disk of=ebr6 bs=512 skip=$ebr6 count=$sectors
+        echo dd of=$disk if=ebr6 bs=512 seek=$ebr6 >>rest.mbr
+      fi
+      if [ -n "$part7" ] ; then
+        ebr7=`expr $part7 - $sectors`
+        echo $part7 $ebr7
+        dd if=$disk of=ebr7 bs=512 skip=$ebr7 count=$sectors
+        echo dd of=$disk if=ebr7 bs=512 seek=$ebr7 >>rest.mbr
+      fi
+      if [ -n "$part8" ] ; then
+        ebr8=`expr $part8 - $sectors`
+        echo $part8 $ebr8
+        dd if=$disk of=ebr8 bs=512 skip=$ebr8 count=$sectors
+        echo dd of=$disk if=ebr8 bs=512 seek=$ebr8 >>rest.mbr
+      fi
+      echo "hdparm -z $disk" >>rest.mbr
+      mbrimagename2=`echo $mbrimagename | sed -e 's/.tar//g' -e 's/.gz//g'`;
+      echo $mbrimagename2
+      sleep 10
+      tar -cvf $mbrimagename2.tar rest.mbr ?br* disk.info sfdisk.sav
+      if [ -f $mbrimagename2.tar.gz ] ; then
+        rm $mbrimagename2.tar.gz
+      fi
+      gzip $mbrimagename2.tar
+      if [ "$1" = "NET" ] ; then
+        xcmd="(cat $mbrimagename2.tar.gz | ncftpput $ncftpopt -m $useridpass -c -d /tmp/out $server "$ftppath/$mbrimagename2".tar.gz 2>>$ncftpstat) "
+      else
+        xcmd="(cp $mbrimagename2.tar.gz  /mnt/local/ ) "
+      fi
+      sh -c "$xcmd"
+      sleep 10
+    esac
+  fi
+  if [ "$specialcommand" = "MBRRESTORE" ] ; then
+    f_radiolist "RESTORE" "Choose Disk ONLY to restore MBR\n\Z1\Zr\Zb(Use Space Bar)\Zn\nSelect from:" "$disklist" 2> $tempfilenetback
+    retvalnetback=$?
+    choicenetback=$(cat $tempfilenetback)
+    case $retvalnetback in
+      $DIALOG_OK)
+      disk=/dev/$choicenetback
+      if [ "$1" = "NET" ] ; then
+        xcmd="(ncftpget $ncftpopt $useridpass -c -V -d /tmp/out $server "$ftppath/$mbrimagename" 2>>$ncftpstat | dd bs=512 count=1 of=$disk 2>/dev/null) "
+      else
+        xcmd="(dd if=/mnt/local/$mbrimagename bs=512 count=1 of=$disk 2>/dev/null) "
+      fi
+      sh -c "$xcmd"
+      sleep 2
+      hdparm -z $disk
+      sleep 2
+      part_info
+    esac
+  fi
+#GPTRESTORE
+  if [ "$specialcommand" = "GPTRESTORE" ] ; then
+    f_radiolist "RESTORE" "Choose Disk ONLY to restore MBR\n\Z1\Zr\Zb(Use Space Bar)\Zn\nSelect from:" "$disklist" 2> $tempfilenetback
+    retvalnetback=$?
+    choicenetback=$(cat $tempfilenetback)
+    case $retvalnetback in
+      $DIALOG_OK)
+      disk=/dev/$choicenetback
+      if [ "$1" = "NET" ] ; then
+        ncftpget $ncftpopt $useridpass -V -d /tmp/out $server "$ftppath/$mbrimagename" . 2>>$ncftpstat
+        sgdisk -l $mbrimagename $disk
+      else
+        sgdisk -l /mnt/local/$mbrimagename $disk
+      fi
+      part_info
+    esac
+  fi
+#GPTRESTORE
+  if [ "$specialcommand" = "MBRRESTORE2" ] ; then
+    $DIALOG --backtitle "$backtitle" \
+    --title "RESTORE2" \
+    --defaultno \
+    --yesno "This is a critical operation to the disk\
+\nit will overwrite the MBR and EBRs to the original\
+\ndisk device that was used to create backup of the MBR.\
+\nBe 100% sure before selecting YES or you will wipe out the disk\
+\nIf in doubt do a Disk Image of the device.\
+\nSelect Carefully:" 0 0
+    retvalnetback=$?
+    case $retvalnetback in
+      $DIALOG_OK)
+      if [ "$1" = "NET" ] ; then
+        xcmd="(ncftpget $ncftpopt $useridpass -V -d /tmp/out $server . "$ftppath/$mbrimagename" 2>>$ncftpstat ) "
+        sh -c "$xcmd"
+        gunzip $mbrimagename
+        tar -xvf `echo $mbrimagename | sed 's/.gz//g' `;
+      else
+        gunzip /mnt/local/$mbrimagename
+        tar -xvf `echo $mbrimagename | sed 's/.gz//g' `;
+      fi
+      $DIALOG --backtitle "$backtitle" \
+      --pause "MBRRESTORE2 uses a script created by MBRBACK2\
+\nThe script copies the tracks with the MBR and EBRs\
+\nThe script contains the original device\
+\nThe script will be opened with nano\
+\nand you can change it if necessary\
+\nin both rest.mbr and sfdisk.sav files\
+\nOr reboot if not 100% sure\
+\nOtherwise use Ctrl-X to save and run script" 15 60 20
+      nano rest.mbr
+      nano sfdisk.sav
+      chmod 755 rest.mbr
+      sh rest.mbr
+      sleep 10
+      part_info
+    esac
+  fi
+}
+f_yesno()
+{
+  $DIALOG --backtitle "$backtitle" --title "$1" --clear --yesno "$2" 0 0
+}
+f_inputbox()
+{
+  $DIALOG --colors --backtitle "$backtitle" --title "$1" --clear --inputbox "$2" 0 0
+}
+f_radiolist()
+{
+  $DIALOG --backtitle "$backtitle" --colors --title "$1" --radiolist "$2" 0 0 0 $3
+}
+getsize()
+{
+  grep $1 </proc/partitions | head -n 1 |awk '{print $3}'
+}
+f_rebootpoweroff()
+{
+  $DIALOG --backtitle "$backtitle" \
+  --title "BACKUP" --timeout 10 \
+  --menu "Choose Reboot or Poweroff\nand Press Enter\
+\n10 second timeout defaults to Reboot:" 0 0 0 \
+  "Reboot" "Reboot machine now" \
+  "Poweroff" "Power down machine now" 2> rebootpoweroff
+  retvalreboot=$?
+  rebootval=`cat rebootpoweroff`
+  if [ "$retvalreboot" = "255" ] ; then
+    rebootval="Reboot"
+  fi
+  if [ "$retvalreboot" != "1" ] ; then
+    case $rebootval in
+      "Reboot")   reboot;;
+      "Poweroff") poweroff;;
+    esac
+  fi
+}
+
+f_chk_value_local()
+{
+  if [ "$localdrive" = "" ] ; then
+    f_msgbox "ERROR" "No Mount Point Setup!\nUse Option A\nMust use SpaceBar to select Disk/Partition\n->Back to Main Menu."
+    continue
+  fi
+  if [ "$localimagename" = "" ] ; then
+    f_msgbox "WARNING" "No filename for image set, using default\nFilename: image.img.gz"
+    localimagename=image.img.gz
+  fi
+  if [ "$localsplit" = "" ] ; then
+    f_msgbox "WARNING" "Splitting not defined, using default\nSplitting: Off"
+    localsplit=Off
+  fi
+  if [ "$localzip" = "" ] ; then
+    f_msgbox "WARNING" "Compression not defined, using default\nCompression: None"
+    localzip=None
+  fi
+}
+f_chk_value_net()
+{
+  if [ "$ipaddress" = "" ] ; then
+    f_msgbox "ERROR" "No Network IP Address for $device set!\n->Back to Main Menu."
+    continue
+  fi
+  if [ "$server" = "" ] ; then
+    f_msgbox "ERROR" "No FTP IP Address set!\n->Back to Main Menu."
+    continue
+  fi
+  if [ "$netimagename" = "" ] ; then
+    f_msgbox "WARNING" "No filename for image set, using default\nFilename: image.img.gz"
+    netimagename=image.img.gz
+  fi
+  if [ "$netzip" = "" ] ; then
+    f_msgbox "WARNING" "Compression not defined, using default\nCompression: None"
+    netzip=None
+  fi
+}
+createTemp()
+{
+  export tempfile${1}="/tmp/test${1}$$"
+}
+#
+# create tempfiles for menu structure
+# (Add localmount)
+for a in main rawmenu netmenu device ip ftp netname netzip netback netrest localmenu localpath localdrive localname localsplit localzip localback localrest clonemenu clonesource clonetarget filemenu fileip filedevice filepart utilmenu hdparm utilzero ddres ddressource ddrestarget ddoptadd udpoption localmount ntpserver dmesg
+do
+  createTemp $a
+done
+## 11/25/2010 Added localpath
+localpath="/"
+## 11/25/2010
+#restart function
+restartcheck()
+{
+  if [ "$xreboot" = "Yes" ] ; then
+    $DIALOG --sleep 10 --infobox "Rebooting" 0 0
+    reboot
+  fi
+  if [ "$xpower" = "Yes" ] ; then
+    $DIALOG --sleep 10 --infobox "Powering Off" 0 0
+    poweroff
+  fi
+}
+# function to toggle reboot
+f_toggle_reboot()
+{
+  if [ "$xreboot" = "Yes" ] ; then
+    xreboot="No"
+  else
+    xpower="No"
+    xreboot="Yes"
+  fi
+}
+# function to toggle poweroff
+f_toggle_poweroff()
+{
+  if [ "$xpower" = "Yes" ] ; then
+    xpower="No"
+  else
+    xreboot="No"
+    xpower="Yes"
+  fi
+}
+# function to toggle disklist to disklist or partionlist
+f_toggle_disklist()
+{
+  if [ "$disklist" = "$partlist" ]; then
+    part_info
+  else
+    disklist=$partlist
+  fi
+}
+# function to verify source and target
+f_verify_source_target()
+{
+  if [ "$1" != "" -a "$2" != "" -a "$1" = "$2" ]; then
+    f_msgbox "WARNING" "Target and source are identical"
+  fi
+}
+#function for Special Options
+f_specialopt()
+{
+## added the ability to run other commands within the script
+## This includes all the functions that are included in the busybox
+## system. There were a number of symbolic links on the original $projectname
+## that actually where not included in the build of busybox.
+## I rebuilt the busybox to include all the commands that had symbolic
+## links that I could find in busybox. Running busybox will show the
+## list of commands. The only ones that I could not find in the current
+## busybox were dutmp, loadacm and update. Many of the commands probable
+## are not needed, but since the links where already included I built them
+## into the busybox.
+## There are also a number of other programs in addition to the busybox collection
+## bc, bzip2, jetcat-mod, ncftpget, ncftpls, ncftpput, partimage, partimaged
+## split, tr, wc, brep, bash, cat, dialog, busybox, hdparm, dd_rescue, dd_rhelp, parted
+## some of these are used in other options of the $projectname.
+## Change dd_rescue and dd_rhelp to ddrescue
+# "S: Special Commands")
+  f_inputbox "Run Special Commands" \
+  "Enter Commands to run. \
+\nExample:  route, ping -c 10 ipaddress, ifconfig \
+\n          busybox for list of supported commands \
+\nethtool - to set parameters if autoneg doesn't work\
+\nFour Special Options  All Case Sensitive that some might find useful\
+\n\Z4Buffy\Zn does directory of ftpserver\
+\n\Z4Reboot\Zn toggles reboot ($xreboot) after backup/restore\
+\n\Z4Poweroff\Zn toggles a poweroff ($xpower) after backup/restore\
+\n\Z4Xena\Zn does special route gateway\
+\n\Z4blkid\Zn Display blkid partition info\
+\n\Z4part_info\Zn Update partition info after changing usb device\
+\n  my college network is setup with 4 logical Class C\
+\n  networks, but 1 physical network. This command sets\
+\n  a direct route rather than going thru the 10M router\
+\n  not pretty, but it makes it work at 100M instead of 10\
+\n\nEnter Command with parameters (10 second pause):" 2> $tempfileip
+  retvalip=$?
+  case $retvalip in
+    $DIALOG_OK)
+    specialcommand=$(cat $tempfileip)
+    if [ "$specialcommand" = "Xena" ] ; then
+      specialcommand="route add $server gw $ipaddress"
+    fi
+    if [ "$specialcommand" = "Buffy" ] ; then
+      specialcommand="ncftpls $useridpass ftp://$server/$ftppath/"
+    fi
+    if [ "$specialcommand" = "Reboot" ] ; then
+      f_toggle_reboot
+      specialcommand="echo xreboot set to $xreboot"
+    fi
+    if [ "$specialcommand" = "Poweroff" ] ; then
+      f_toggle_poweroff
+      specialcommand="echo xpower set to $xpower"
+    fi
+    if [ "$specialcommand" = "part_info" ] ; then
+      part_info
+      specialcommand="echo Partition info updated"
+    fi
+## Some commands don't produce output
+## So I have it display the command being run
+## Before and After, so you can see
+## Exactly what you entered
+    echo Begin: $specialcommand
+    $specialcommand
+    echo Done:  $specialcommand
+    echo "10 Second Pause"
+    sleep 10;;
+  esac
+}
+#changed main menus to functions
+#draw: d_
+d_agreemenu()
+{
+  $DIALOG --backtitle "$backtitle" \
+  --title "INFORMATION" --clear \
+  --yesno "$projectname - $projectlongname \
+\n$author $year \
+\n\n$projectname comes with ABSOLUTELY NO WARRANTY ! \
+\n  This is free Software, and you are welcome \
+\n  to redistribute it freely. Read the online Help \
+\n  for more info on this delicate topic. \
+\n\n  USE AT OWN RISK! \
+\n\n  Please use sourceforge and freecode sites \
+\n  to present any issues. Generally checked daily \
+\n\n  http://sourceforge.net/projects/g4l/ \
+\n  http://freecode.com/projects/g4l \
+\n\n  Accept these conditions? \
+\n  YES to proceed, NO to quit. " 22 60
+}
+d_mainmenu()
+{
+  $DIALOG --backtitle "$backtitle" \
+  --title "MAIN MENU" \
+  --menu  "Choose your desired mode:"  0 0 0 \
+  "RAW Mode"  "ANY filesystem, every bit, local+ftp+cifs(smb)+sshfs+nfs" \
+  "File Mode"  "Some filesystems only, only files, local+special server" \
+  "Utilities"  "System info and tools" \
+  "ClearHP"  "Clear Hiberfil.sys and Pagefile.sys before NTFSCLONE" \
+  "Show Help"  "Show IMPORTANT help" 2> $tempfilemain
+}
+d_rawmenu()
+{
+  $DIALOG --backtitle "$backtitle" \
+  --title "RAW MODE" \
+  --menu  "Choose one of the following options:\n\n" 0 0 0 \
+  "Network use"  "Backup/Restore to/from network (FTP, UDPCAST)" \
+  "Local use"  "Backup/Restore to/from local drive + (CIFS, SSHFS, NFS)" \
+  "Click'n'Clone"  "Directly clone a drive" 2> $tempfilerawmenu
+}
+d_localmount()
+{
+  $DIALOG --clear --backtitle "$backtitle" \
+  --title "LOCAL MOUNT" \
+  --menu "Choose one of the following options:\n\n" 0 78 5 \
+  "A: Pick Local Mount"  "Local Partition for/with IMAGE file ($localdrive)" \
+  "B: cifs" "Mount remote directory via cifs (Windows Share)" \
+  "C: sshfs" "Mount remote directory via sshfs" \
+  "D: nfs" "Mount remote directory via nfs" 2> $tempfilelocalmount
+  retvallocalmount=$?
+  choicelocalmount=$(cat $tempfilelocalmount)
+  case $choicelocalmount in
+    "A: Pick Local Mount")
+# Added to update for USB devices plugged in.
+# Suggested by Rhoann Solangon, Justin Connor and Rogelio Sabangan Jr.
+    part_info
+    f_radiolist "PICK DRIVE" "Choose drive to write to/read from.\n\Z1\Zr\Zb(Use Space Bar)\Zn\
+\nThe drive that contains or will contain the image\
+\nSupported FS are:\
+\next2. ext3, ext4, reiserfs - Linux\
+\nfat32 - Windows95/98/NT/2k/XP\
+\nntfs - Windows NT/2k/XP\
+\n\nSelect partition (example: /dev/hda1):" "$partonly" 2> $tempfilelocaldrive
+    retvallocaldrive=$?
+    choicelocaldrive=$(cat $tempfilelocaldrive)
+    case $retvallocaldrive in
+      $DIALOG_OK)
+      localdrive=$choicelocaldrive
+      umount /mnt/local 2>/dev/null
+      mount /dev/$localdrive /mnt/local >/tmp/mount 2>&1
+      retvalmount=$?
+      if [ $retvalmount != 0 ] ; then
+        f_textbox "ERROR" /tmp/mount
+        localdrive=""
+        umount /mnt/local
+      fi;;
+    esac;;
+### sshfs Addition
+    "C: sshfs")
+# Set localdrive value
+    localdrive="sshfs"
+# Make sure /mnt/local is not mounted
+    umount /mnt/local
+    f_inputbox "Mount Remote directory via ssh to /mnt/local" \
+    "ssh must be setup on the remote system \
+\nsshfs format is as follows: \
+\n  sshfs user@remoteip:directory /mnt/local \
+\n  user would be the userid to connect with \
+\n  remoteip is the IP address or name of host followed by :\
+\n  directory can be left blank to use user directory \
+\n  local mount point must be /mnt/local\
+\nExample: sshfs g4l@192.168.0.1:img/ /mnt/local \
+\n\nNote: make sure that sshfs does work with you setup \
+\n /mnt/local will be listed to make sure it mounted. \
+\n\nEnter Command with parameters (10 second pause):" 2> $tempfileip
+    retvalip=$?
+    case $retvalip in
+      $DIALOG_OK)
+      specialcommand=$(cat $tempfileip)
+## Some commands don't produce output
+## So I have it display the command being run
+## Before and After, so you can see
+## Exactly what you entered
+      echo Begin: $specialcommand
+      $specialcommand
+      echo Done:  $specialcommand
+      ls /mnt/local
+      echo "Contents of local /mnt/local directory"
+      echo "10 Second Pause"
+      sleep 10;;
+    esac;;
+### sshfs End
+### nfs Addition
+    "D: nfs")
+# Set localdrive value
+    localdrive="nfs"
+# Make sure /mnt/local is not mounted
+    umount /mnt/local
+    f_inputbox "Mount Remote directory via nfs to /mnt/local" \
+    "nfs must be setup on the remote system \
+\nand Firewall settings must be configured \
+\nnfs format is as follows: \
+\n  mount -t nfs -o nolock remoteip:/nfs /mnt/local \
+\n  The -o nolock may or may not be required \
+\n  remoteip is the IP address or name of host followed by :\
+\n  directory can be left blank to use user directory \
+\n  local mount point must be /mnt/local\
+\nExample:  mount -t nfs -o nolock 192.168.0.1:/img /mnt/local \
+\n\nNote: make sure that nfs does work with you setup \
+\n /mnt/local will be listed to make sure it mounted. \
+\n\nEnter Command with parameters (10 second pause):" 0 0 2> $tempfileip
+    retvalip=$?
+    case $retvalip in
+      $DIALOG_OK)
+      specialcommand=$(cat $tempfileip)
+## Some commands don't produce output
+## So I have it display the command being run
+## Before and After, so you can see
+## Exactly what you entered
+      echo Begin: $specialcommand
+      $specialcommand
+      echo Done:  $specialcommand
+      ls /mnt/local
+      echo "Contents of local /mnt/local directory"
+      echo "10 Second Pause"
+      sleep 10;;
+    esac;;
+### nfs End
+### cifs Addition
+    "B: cifs")
+# Set localdrive value
+    localdrive="cifs"
+# Make sure /mnt/local is not mounted
+    umount /mnt/local
+    f_inputbox "Mount Remote directory via cifs to /mnt/local" \
+    "cifs (Windows Share) must be setup on the remote system \
+\ncifs format is as follows: \
+\n  mount -t cifs //remoteip/sharename /mnt/local -o user=user,pass=pass \
+\n  user would be the userid to connect with \
+\n  remoteip is the IP address or name of host followed by share name\
+\n  local mount point must be /mnt/local\
+\nExample:\n mount -t cifs //192.168.7.168/share1 /mnt/local -o user=user,pass=\"\" \
+\n\nNote: make sure that cifs does work with you setup \
+\n /mnt/local will be listed to make sure it mounted. \
+\n\nEnter Command with parameters (10 second pause):" 0 0 2> $tempfileip
+    retvalip=$?
+    case $retvalip in
+      $DIALOG_OK)
+      specialcommand=$(cat $tempfileip)
+## Some commands don't produce output
+## So I have it display the command being run
+## Before and After, so you can see
+## Exactly what you entered
+      echo Begin: $specialcommand
+      $specialcommand
+      echo Done:  $specialcommand
+      ls /mnt/local
+      echo "Contents of local /mnt/local directory"
+      echo "10 Second Pause"
+      sleep 10;;
+    esac;;
+### cifs End
+  esac
+}
+d_netmenu()
+{
+## Added leading letters to menu options
+## to allow for selection by using letters.
+## Added option C: to allow for DHCP option
+## Added option F: to allow for non-anonymous use
+## Added option S: for running extra commands during script
+## Added option X: to reboot after finished
+## Added the displaying of the current value of values
+# Options B: and C: combined into B:
+#          "C: Config with DHCP"  "Set IP address DHCP ($ipaddress)" \
+## 2011/03/09
+#add code to add nic speed and duplex
+  speed=""
+  duplex=""
+  if [ -n "$device" ] ; then
+    speed=`ethtool $device | grep Speed | cut -f2 -d:`
+    duplex=`ethtool $device | grep Duplex | cut -f2 -d:`
+  fi
+  $DIALOG --clear --backtitle "$backtitle" \
+  --title "NETWORK USE" \
+  --menu "" 24 78 18 \
+  "A: Pick device"  "ethernet device ($device $speed $duplex)" \
+  "B: Set IP Address"  "Manual or via DHCP ($ipaddress)" \
+  "D: Config FTP"  "FTP server IP or hostname ($server)" \
+  "E: Config useridpass"  "useridpass ($useridpass)" \
+  "F: Config filename"  "filename on FTP ($netimagename)" \
+  "G: Compression"  "compression types ($netzip)" \
+  "H: Backup"  "Backup drive/partition to FTP server" \
+  "I: Restore"  "Restore drive/partition from FTP server" \
+  "M: MBR" "MBR/GPT Backup and Physical Partition Table" \
+  "N: NTFSCLONE Backup"  "Backup NTFS partition to FTP server" \
+  "O: NTFSCLONE Restore" "Restore NTFS partition from FTP server" \
+  "P: Path to Image Directory" "Default directory ($ftppath)" \
+  "S: Special Commands" "example: route, ping, busybox, etc.." \
+  "T: Display Time"  "result after transfer.." \
+  "U: UDP-MULTICAST-CLIENT"  "UDP Multi-cast receive an image/drive" \
+  "W: UDP-MULTICAST-SERVER"  "UDP Multi-cast send an image/drive" \
+  "V: Encrypt" "($AESPIPE)" \
+  "X: Reboot/Poweroff"  "Reboot/Poweroff machine now"  2> $tempfilenetmenu
+}
+d_localmenu()
+{
+  $DIALOG --clear --backtitle "$backtitle" \
+  --title "LOCAL USE" \
+  --menu "Use following options starting with A: and B:\n\n" 0 78 15 \
+  "A: Pick Local Mount"  "Local, CIFS (Windows), SSHFS, NFS ($localdrive)" \
+  "B: Config filename"  "Set Image filename ($localimagename)" \
+  "C: Toggle split"  "Activate file splitting ($localsplit)" \
+  "D: Compression"  "Select compression types ($localzip)" \
+  "E: Backup"  "Backup drive/partition to local drive" \
+  "F: Restore"  "Restore drive/partition from local drive" \
+  "G: fsarchiver Backup"  "Backup fsarchiver partition to Local" \
+  "H: fsarchiver Restore" "Restore fsarchiver partition from Local" \
+  "M: MBR" "MBR Backup and Physical Partition Table" \
+  "N: NTFSCLONE Backup"  "Backup NTFS partition to Local" \
+  "O: NTFSCLONE Restore" "Restore NTFS partition from Local" \
+  "P: Set Local Path" "Set sub directory from path ($localpath)" \
+  "S: Special Commands" "example: route, ping, busybox, etc.." \
+  "T: Display Time"  "result after transfer.." \
+  "X: Reboot/Poweroff"  "Reboot/Poweroff machine now" 2> $tempfilelocalmenu
+}
+d_clicknclone()
+{
+  $DIALOG --clear --backtitle "$backtitle" \
+  --title "CLICK'n'CLONE" \
+  --menu "Choose one of the following options:\n\n" 0 0 0 \
+  "A: Select source"  "Select source drive ($clonesource)" \
+  "B: Select target"  "Select target drive ($clonetarget)" \
+  "C: Click'n'Clone"  "Clone the drive now!" \
+  "D: Toggle partitions"   "in Selections Options" \
+  "P: PowerOff"       "after Click'n'Clone ($xpower)" \
+  "R: Reboot"         "after Clink'n'Clone ($xreboot)" \
+  "S: Special Commands" "example: route, ping, busybox, etc.." \
+  "U: UUID RESET" "Create new UUID for partitions on disk" \
+  "X: Reboot/Poweroff"  "Reboot/Poweroff machine now" 2>$tempfileclonemenu
+}
+d_filemode()
+{
+  $DIALOG --clear --backtitle "$backtitle" \
+  --title "FILE MODE" \
+  --menu "Choose one of the following options:\n\n" 0 0 0 \
+  "A: Pick device"  "ethernet device ($device)" \
+  "B: Config device"  "IP address ($ipaddress)" \
+  "C: Select partition"  "partition to mount (server/local mode only) ($filepart)" \
+  "1: cifs" "Mount remote directory via cifs (Windows Share)" \
+  "2: sshfs" "Mount remote directory via sshfs" \
+  "3: nfs" "Mount remote directory via nfs" \
+  "D: Launch client"  "Launch 'partimage' in client/local mode" \
+  "E: Launch server"  "Launch 'partimaged' in server mode" 2> $tempfilefilemenu
+}
+d_utilities()
+{
+  $DIALOG --clear --backtitle "$backtitle" \
+  --title "UTILITIES" \
+  --menu "Choose one of the following options:\n\n" 0 78 16 \
+  "A: System info" "Show drives, partitions and models" \
+  "B: dmesg"       "Display dmesg Information" \
+  "C: ftp"         "Start ftp server using startftpd script" \
+  "D: hdparm"      "Set 32-bit I/O and UDMA66 (NEW hardware only!)" \
+  "E: keymap"      "Select the keymap to use Default is US" \
+  "F: ntpclient"   "Set the time to a ntp time server (GMT)" \
+  "G: telnetd"     "Start telnetd server to allow telnet" \
+  "H: Zero-Tool"   "Zero-out free space on a partition" \
+  "I: ddrescue"    "Rescue defective drive and clone to new one" \
+  "J: TestDisk-6.14"   "Scan and Repair Disk partitions 07/30/2013" \
+  "K: Parted"      "Launch 'parted' partition manager (EXPERT USE!)" \
+  "L: TestDisk-7.0" "Scan and Repair Disk partitions 04/10/2015" \
+  "M: Validate Partition" "Uses f3write and f3read to test partition" \
+  "S: Special Commands" "example: route, ping, busybox, etc.." \
+  "U: UUID RESET" "Create new UUID for partitions on disk" \
+  "X: Reboot/Poweroff"  "Reboot/Poweroff machine now" 2> $tempfileutilmenu
+}
+d_ddrescue()
+{
+  $DIALOG --clear --backtitle "$backtitle" \
+  --title "DDRESCUE" \
+  --menu "Choose one of the following options:\n\n" 0 0 0 \
+  "Source"  "Select (defective) source drive ($choiceddressource)" \
+  "Target"  "Select (new/clean) target drive ($choiceddrestarget)" \
+  "HELP"    "ddrescue help screen" \
+  "Options" "Additional Runtime Options ($ddoptadd)" \
+  "Rescue"  "Rescue the drive now!" 2> $tempfileddres
+}
+d_udpinfo()
+{
+  $DIALOG --clear --backtitle "$backtitle" \
+  --title "UDP MULTICAST INFORMATION" \
+  --msgbox "Be careful: Using UDP Multicast creates high traffic on\
+\nyour network devices (i.e. routers, switches, hubs, ...)\
+\nand - depending on compression - possibly high load on\
+\nboth client and server. Please visit\
+\nhttp://udpcast.linux.lu/\
+\nand read the manual if you would like to use additional\
+\noptions like '--async --max-bitrate 10m --fec 8x8'\
+\n(to use 1 peer, async transfer, limit transfer to 80M and use\
+\n8x8 matrix of interleave x redundancy error correction)\
+\nor others. Default is NO option set.\
+\n\nYou might encounter re-xmits which should(!) be no prob." 0 0
+}
+d_agreemenu
+case $? in
+  $DIALOG_OK)
+  while [ "$retvalmain" != "1" ]
+  do
+    retvalrawmenu=0
+    retvalfilemenu=0
+    retvalnetmenu=0
+    retvalclonemenu=0
+    retvallocalmenu=0
+    retval
+    utilmenu=0
+    d_mainmenu
+    retvalmain=$?
+    choicemain=$(cat $tempfilemain)
+    case $retvalmain in
+      $DIALOG_OK)
+      case $choicemain in
+        "ClearHP")
+        hibpage;;
+        "RAW Mode")
+        while [ "$retvalrawmenu" != "1" ]
+        do
+          d_rawmenu
+          retvalrawmenu=$?
+          choicerawmenu=$(cat $tempfilerawmenu)
+          case $retvalrawmenu in
+            $DIALOG_OK)
+            case $choicerawmenu in
+              "Network use")
+              retvalnetmenu=0
+              while [ "$retvalnetmenu" != "1" ]
+              do
+                d_netmenu
+                retvalnetmenu=$?
+                choicenetmenu=$(cat $tempfilenetmenu)
+                case $retvalnetmenu in
+                  $DIALOG_OK)
+                  case $choicenetmenu in
+                    "V: Encrypt")
+                    if [ -n "$AESPIPE" ]; then
+                      AESPIPE=""
+                      AESPIPEd=""
+                    else
+                      AESPIPE=" aespipe -K /mykey1.gpg -P /passphrase -G / | "
+                      AESPIPEd="| aespipe -K /mykey1.gpg -P /passphrase -G / -d "
+                    fi;;
+                    "A: Pick device")
+                    f_radiolist "PICK DEVICE" "Choose network device\n\Z1\Zr\Zb(Use Space Bar)\Zn\nSelect from:" "$netlist" 2> $tempfiledevice
+                    retvaldevice=$?
+                    choicedevice=$(cat $tempfiledevice)
+                    case $retvaldevice in
+                      $DIALOG_OK)
+                      device=$choicedevice;;
+                    esac;;
+                    "B: Set IP Address")
+                    f_inputbox "Set Network" "Set IP Address to match your subnet. \
+\nExample: 192.168.0.5\nLeave BLANK for DHCP\n\nEnter IP Address:" 2> $tempfileip
+                    retvalip=$?
+                    case $retvalip in
+                      $DIALOG_OK)
+                      ipaddress=$(cat $tempfileip)
+                      if test -z $ipaddress ; then
+                        ipaddress=`udhcpc -n -i $device -s./udhcpc.sh|grep Lease|cut -d\  -f3 | tr -d "\n"`
+                      fi
+                      /sbin/ifconfig $device $ipaddress up;;
+                      $DIALOG_ESC)
+                      if test -s $tempfileip ; then
+                        ipaddress=$(cat $tempfileip)
+                        /sbin/ifconfig $device $ipaddress up
+                      fi;;
+                    esac;;
+## Added option to get IP via dhcpd
+## Added the udhcpc to the busybox build and udhcpc.sh script
+                    "C: Config with DHCP")
+                    ipaddress=`udhcpc -n -i $device -s./udhcpc.sh|grep Lease|cut -d\  -f3 | tr -d "\n"`
+                    /sbin/ifconfig $device $ipaddress up;;
+                    "M: MBR")
+                    f_mbr "NET";;
+                    "D: Config FTP")
+                    f_inputbox "CONFIG FTP" "Enter IP Address or hostname of FTP Server.\nExample: 192.168.0.1\n\nFTP IP:" 2> $tempfileftp
+                    retvalftp=$?
+                    case $retvalftp in
+                      $DIALOG_OK)
+                      server=$(cat $tempfileftp);;
+                      $DIALOG_ESC)
+                      if test -s $tempfileftp ; then
+                        server=$(cat $tempfileftp)
+                      fi;;
+                    esac;;
+                    "F: Config filename")
+##@ Added 4/13/2013 Show message while waiting
+                    dialog --timeout 1 --ok-label "Please Wait"  --msgbox "Retrieving List of Files" 5 28 2>/dev/null
+### Added this since a user report error if Directory was empty.
+### This should add a dummy file that goes at end of list
+                    echo "END_OF_LIST" > {END_OF_LIST}
+                    ncftpput -m $useridpass $server $ftppath/ {END_OF_LIST} 2>/tmp/error
+##@ Added 6/14/2009 to Provide user feedback if Write Access doesn't work
+##@ or Userid or Password Fail
+                    status=$?
+                    if [ "$status" != "0" ] ; then
+                      $DIALOG --backtitle "$backtitle" \
+                      --pause "Upload Process Failed\n\nCheck FTP Write Access \
+\nCheck Userid / Password\
+\nIf Restoring Image Only - OK\
+\nncftpput Status - $status \
+\n0 Success. \
+\n1 Could not connect to remote host. \
+\n2 Could not connect to remote host - timed out. \
+\n3 Transfer failed. \
+\n4 Transfer failed - timed out. \
+\n5 Directory change failed. \
+\n6 Directory change failed - timed out. \
+\n7 Malformed URL. \
+\n8 Usage error." 23 60 10
+                    fi
+##@ Added 5/25/2009 Show Date and Size
+                    files=`ncftpls -l $useridpass ftp://$server/$ftppath/ | awk '{printf("%s/_(%s-%s-%s)_%.4fGB\n",$9,$6,$7,$8,$5/1024/1024/1024)}' | grep -v 'lost+found' | grep -v 'ncftpls:'`
+                    filelist="`echo Enter File_Date_Size on`"
+                    for i in $files
+                    do
+                      filelist="$filelist `echo $i off`"
+                    done
+                    filelist=`echo $filelist | sed -e 's/\// /g' -e 's/_(/(/g'`
+                    f_radiolist "BACKUP" "Choose Enter for New File Name\n\Z1\Zr\Zb(Use Space Bar)\Zn\n or Select from following files:" "$filelist" 2> $tempfilenetname
+                    retvalnetback=$?
+                    if [ "$retvalnetback" != "0" ] ; then
+                      echo "Enter" >$tempfilenetname
+                    fi
+                    netimagename=$(cat $tempfilenetname)
+                    if [ "$netimagename" = "Enter" ] ; then
+                      f_inputbox "CONFIG FILENAME" \
+                      "Enter filename of the stored image. \
+\nExample: hda_workstation2.lzo \
+\nMBR Example: hda_workstartion2.tar.gz \
+\n\nFilename:" 2> $tempfilenetname
+                      retvalnetname=$?
+                      case $retvalnetname in
+                        $DIALOG_OK)
+                        netimagename=$(cat $tempfilenetname);;
+                        $DIALOG_ESC)
+                        if test -s $tempfilenetname ; then
+                          netimagename=$(cat $tempfilenetname)
+                        fi;;
+                      esac
+                    fi;;
+                    "P: Path to Image Directory")
+                    f_inputbox "Image Directory" "Enter image directory of the stored image. \
+\nCurrent setting: $ftppath\n\nDirectory:" 2> $tempfilenetname
+                    retvalnetname=$?
+                    case $retvalnetname in
+                      $DIALOG_OK)
+                      ftppath=$(cat $tempfilenetname)
+                      if [ -z $ftppath]; then
+                        ftppath="."
+                      fi;;
+                      $DIALOG_ESC)
+                      ftppath=img;;
+                    esac;;
+## ncftp utility allows for userid and password to be set
+## with the -u userid -p password values.
+## Added a variable to contain these values.
+                    "E: Config useridpass")
+                    f_inputbox "CONFIG USERIDPASS" "Enter userid and password option. \
+\nExample: -u userx -p password\n          or userx:password\n\nOptions:" 2> $tempfilenetname
+                    retvalnetname=$?
+                    case $retvalnetname in
+                      $DIALOG_OK)
+                      useridpass=$(cat $tempfilenetname)
+## Added to support user:password format conversion to ncftp format
+                      f_userpass;;
+                      $DIALOG_ESC)
+                      if test -s $tempfilenetname ; then
+                        useridpass=$(cat $tempfilenetname)
+## Added to support user:password format conversion to ncftp format
+                        f_userpass
+                      fi;;
+                    esac;;
+## Changed default compress to Lzop
+                    "G: Compression")
+                    f_compress 2> $tempfilenetzip
+                    retvalnetzip=$?
+                    choicenetzip=$(cat $tempfilenetzip)
+                    case $retvalnetzip in
+                      $DIALOG_OK)
+                      netzip=$(cat $tempfilenetzip);;
+                      $DIALOG_ESC)
+                      if test -s $tempfilenetzip ; then
+                        netzip=$(cat $tempfilenetzip)
+                      fi;;
+                    esac;;
+                    "H: Backup")
+                    f_chk_value_net
+                    f_radiolist "BACKUP" "Choose Drive or Partition to backup\n\Z1\Zr\Zb(Use Space Bar)\Zn\nSelect from:" "$partlist" 2> $tempfilenetback
+                    retvalnetback=$?
+                    choicenetback=$(cat $tempfilenetback)
+                    if [ "$choicenetback" = "" ] ; then
+                      f_msgbox "ERROR" "No DISK or Partition Selected\nMust use SpaceBar to select Disk/Partition\n->Back to Main Menu."
+                      continue
+                    fi
+                    case $retvalnetback in
+                      $DIALOG_OK)
+                      disk=/dev/$choicenetback
+                      f_yesno "ABOUT TO BACKUP" "Collected information:\
+\nLocal IP Address: $ipaddress\
+\nFTP IP Address: $server\
+\nTarget imagename: $netimagename\
+\nFTP path: $ftppath\
+\nCompression: $netzip\
+\nSource Drive: $disk\
+\n\nAre you sure?"
+                      case $? in
+                        $DIALOG_OK)
+                        readsize=`getsize $choicenetback`
+                        pcnt=0
+##  msg set for backups.
+                        msg="$projectname is backing up your drive.\n"
+                        if [ "$netzip" = "None" ] ; then
+                          xcmd="(dd bs=1M if=$disk 2>/dev/null | jetcat-mod -f 5000 -p $readsize 2>$progout |$AESPIPE ncftpput $ncftpopt -m $useridpass -c -d /tmp/out $server "$ftppath/$netimagename" 2>>$ncftpstat) &"
+                        fi
+                        if [ "$netzip" = "GZip" ] ; then
+                          xcmd="(dd bs=1M if=$disk 2>/dev/null | jetcat-mod -f 5000 -p $readsize 2>$progout |gzip -c - | $AESPIPE ncftpput $ncftpopt -m $useridpass -c -d /tmp/out $server "$ftppath/$netimagename" 2>>$ncftpstat) &"
+                        fi
+                        if [ "$netzip" = "Lzop" ] ; then
+                          xcmd="(dd bs=1M if=$disk 2>/dev/null | jetcat-mod -f 5000 -p $readsize 2>$progout |lzop -c - | $AESPIPE ncftpput $ncftpopt -m $useridpass -c -d /tmp/out $server "$ftppath/$netimagename" 2>>$ncftpstat) &"
+                        fi
+                        if [ "$netzip" = "BZip2" ] ; then
+                          xcmd="(dd bs=1M if=$disk 2>/dev/null | jetcat-mod -f 5000 -p $readsize 2>$progout |bzip2 | $AESPIPE ncftpput $ncftpopt -m $useridpass -c -d /tmp/out $server "$ftppath/$netimagename" 2>>$ncftpstat) &"
+                        fi
+                        sh -c "$xcmd"
+                        progress
+                        restartcheck;;
+                      esac;;
+                    esac;;
+                    "N: NTFSCLONE Backup")
+                    f_chk_value_net
+                    f_radiolist "BACKUP" "Choose NTFS Partition ONLY to backup\n\Z1\Zr\Zb(Use Space Bar)\Zn\nSelect from:" "$partonly" 2> $tempfilenetback
+                    retvalnetback=$?
+                    choicenetback=$(cat $tempfilenetback)
+                    if [ "$choicenetback" = "" ] ; then
+                      f_msgbox "ERROR" "No DISK or Partition Selected\nMust use SpaceBar to select Disk/Partition\n->Back to Main Menu."
+                      continue
+                    fi
+                    date    ### Echo Start Time
+                    date >/tmp/time
+                    case $retvalnetback in
+                      $DIALOG_OK)
+                      disk=/dev/$choicenetback
+                      f_yesno "ABOUT TO BACKUP" "Collected information:\
+\nLocal IP Address: $ipaddress\
+\nFTP IP Address: $server\
+\nTarget imagename: $netimagename\
+\nFTP path: $ftppath\
+\nCompression: $netzip\
+\nSource Drive: $disk\
+\n\nAre you sure?"
+                      case $? in
+                        $DIALOG_OK)
+                        readsize=`getsize $choicenetback`
+                        pcnt=0
+##  msg set for backups.
+                        msg="$projectname is backing up your drive.\n"
+                        if [ "$netzip" = "None" ] ; then
+                          xcmd="(ntfsclone -s -o - $disk |$AESPIPE ncftpput $ncftpopt -m $useridpass -c -d /tmp/out $server "$ftppath/$netimagename" 2>>$ncftpstat) "
+                        fi
+                        if [ "$netzip" = "GZip" ] ; then
+                          xcmd="(ntfsclone -s -o - $disk|gzip -c - | $AESPIPE ncftpput $ncftpopt -m $useridpass -c -d /tmp/out $server "$ftppath/$netimagename" 2>>$ncftpstat) "
+                        fi
+                        if [ "$netzip" = "Lzop" ] ; then
+                          xcmd="(ntfsclone -s -o - $disk|lzop -c - | $AESPIPE ncftpput $ncftpopt -m $useridpass -c -d /tmp/out $server "$ftppath/$netimagename" 2>>$ncftpstat) "
+                        fi
+                        if [ "$netzip" = "BZip2" ] ; then
+                          xcmd="(ntfsclone -s -o - $disk |bzip2 | $AESPIPE ncftpput $ncftpopt -m $useridpass -c -d /tmp/out $server "$ftppath/$netimagename" 2>>$ncftpstat) "
+                        fi
+                        sh -c "$xcmd"
+                        restartcheck;;
+                      esac
+                      date      ### Echo End Time
+                      date >>/tmp/time
+                      sleep 10  ### Pause;;
+                    esac;;
+#### Adding option to multi-cast image to many machines at one time
+#### with multi-cast instead of uni-cast.
+                    "U: UDP-MULTICAST-CLIENT")
+                    if [ "$ipaddress" = "" ] ; then
+                      f_msgbox "ERROR" "No Network IP Address for $device set!\n->Back to Main Menu."
+                      continue
+                    fi
+### 2012/01/21
+                    d_udpinfo
+                    f_inputbox "Set UDP options" \
+                    "Enter additional options for udp-sender. \
+\nExample: --async --max-bitrate 80m --fec 8x8 \
+\nNote: Best to use no additional options first \
+\n\nEnter options:" 2> $tempfileudpoption
+                    retvaludpoption=$?
+                    case $retvaludpoption in
+                      $DIALOG_OK)
+                      udpoption=$(cat $tempfileudpoption);;
+                      $DIALOG_ESC)
+                      if test -s $tempfileudpoption ; then
+                        udpoption=$(cat $tempfileudpoption)
+                      fi;;
+                    esac
+### 2012/01/21
+                    f_radiolist "RESTORE" "Choose Drive or Partition to restore/receive\n\Z1\Zr\Zb(Use Space Bar)\Zn\nSelect from:" "$partlist" 2> $tempfilenetback
+                    retvalnetback=$?
+                    choicenetback=$(cat $tempfilenetback)
+                    case $retvalnetback in
+                      $DIALOG_OK)
+                      disk=/dev/$choicenetback
+                      f_yesno "ABOUT TO UDP-RECEIVE" "Collected information:\
+\nLocal IP Address: $ipaddress\
+\nCompression: $netzip\
+\nDestination Drive: $disk\
+\n\nThis uses UDPCAST - udp-receiver\
+\nFrom http://udpcast.linux.lu/\
+\n\nAre you sure?"
+                      case $? in
+                        $DIALOG_OK)
+                        readsize=`getsize $choicenetback`
+                        pcnt=0
+##  msg set for backups.
+                        msg="$projectname is using udp-receive restore/receive your drives.\n"
+                        if [ "$netzip" = "None" ] ; then
+                          (udp-receiver $udpoption --interface $device -f $disk)
+                        fi
+                        if [ "$netzip" = "Lzop" ] ; then
+                          (udp-receiver $udpoption --interface $device --pipe 'lzop -d -c -' -f $disk)
+                        fi
+                        if [ "$netzip" = "GZip" ] ; then
+                          (udp-receiver $udpoption --interface $device --pipe 'gunzip -c -' -f $disk)
+                        fi
+                        if [ "$netzip" = "BZip2" ] ; then
+                          (udp-receiver $udpoption --interface $device --pipe 'bzcat' -f $disk)
+                        fi
+                        echo "10 Second Pause"
+                        sleep 10;;
+                      esac;;
+                    esac;;
+                    "W: UDP-MULTICAST-SERVER")
+                    if [ "$ipaddress" = "" ] ; then
+                      f_msgbox "ERROR" "No Network IP Address for $device set!\n->Back to Main Menu."
+                      continue
+                    fi
+                    d_udpinfo
+                    f_inputbox "Set UDP options" \
+                    "Enter additional options for udp-sender. \
+\nExample: --async --max-bitrate 80m --fec 8x8 \
+\nNote: Best to use no additional options first \
+\n\nEnter options:" 2> $tempfileudpoption
+                    retvaludpoption=$?
+                    case $retvaludpoption in
+                      $DIALOG_OK)
+                      udpoption=$(cat $tempfileudpoption);;
+                      $DIALOG_ESC)
+                      if test -s $tempfileudpoption ; then
+                        udpoption=$(cat $tempfileudpoption)
+                      fi;;
+                    esac
+                    f_radiolist "BACKUP" "Choose Drive or Partition to backup/send\n\Z1\Zr\Zb(Use Space Bar)\Zn\nSelect from:" "$partlist" 2> $tempfilenetback
+                    retvalnetback=$?
+                    choicenetback=$(cat $tempfilenetback)
+                    case $retvalnetback in
+                      $DIALOG_OK)
+                      disk=/dev/$choicenetback
+                      f_yesno "ABOUT TO UDP-SEND" "Collected information:\
+\nLocal IP Address: $ipaddress\
+\nCompression: $netzip\
+\nSource Drive: $disk\
+\n\nThis uses UDPCAST - udp-sender\
+\nFrom http://udpcast.linux.lu/\
+\n\nAre you sure?"
+                      case $? in
+                        $DIALOG_OK)
+                        readsize=`getsize $choicenetback`
+                        pcnt=0
+##  msg set for backups.
+                        msg="$projectname is using udp-send to backup/send your drives.\n"
+                        if [ "$netzip" = "None" ] ; then
+                          (udp-sender $udpoption --interface $device -f $disk)
+                        fi
+                        if [ "$netzip" = "Lzop" ] ; then
+                          (lzop -c <$disk | udp-sender $udpoption --interface $device)
+                        fi
+                        if [ "$netzip" = "GZip" ] ; then
+                          (gzip -c <$disk | udp-sender $udpoption --interface $device)
+                        fi
+                        if [ "$netzip" = "BZip2" ] ; then
+                          (bzip2 -c <$disk | udp-sender $udpoption --interface $device)
+                        fi
+                        echo "10 Second Pause"
+                        sleep 10;;
+                      esac;;
+                    esac;;
+                    "S: Special Commands")
+                    f_specialopt;;
+                    "T: Display Time")
+                    f_textbox "TIME RESULTS" /tmp/time;;
+## Instead of having to exit all the way out of the script
+## or pressing the reset button, just added a reboot option.
+                    "X: Reboot/Poweroff")
+                    f_rebootpoweroff;;
+                    "O: NTFSCLONE Restore")
+                    f_chk_value_net
+                    f_radiolist "RESTORE" "Choose NTFS partition to restore the image to\n\Z1\Zr\Zb(Use Space Bar)\Zn\n\nSelect from:" "$partonly" 2> $tempfilenetrest
+                    retvalnetrest=$?
+                    choicenetrest=$(cat $tempfilenetrest)
+                    if [ "$choicenetrest" = "" ] ; then
+                      f_msgbox "ERROR" "No DISK or Partition Selected\nMust use SpaceBar to select Disk/Partition\n->Back to Main Menu."
+                      continue
+                    fi
+                    case $retvalnetrest in
+                      $DIALOG_OK)
+                      rest=/dev/$choicenetrest
+                      f_yesno "ABOUT TO RESTORE" "Collected information:\
+\nLocal IP Address: $ipaddress\
+\nFTP IP Address: $server\
+\nSource imagename: $netimagename\
+\nFTP path: $ftppath\
+\nCompression: $netzip\
+\nTarget disk: $rest\
+\n\nAre you sure?"
+                      case $? in
+                        $DIALOG_OK)
+                        writesize=`getsize $choicenetrest`
+                        pcnt=0
+## msg for the restore options
+                        msg="$projectname is restoring your drive.\n"
+                        date >/tmp/time
+                        if [ "$netzip" = "None" ] ; then
+                          xcmd="(ncftpget $ncftpopt $useridpass -c -V -d /tmp/out $server "$ftppath/$netimagename" 2>>$ncftpstat $AESPIPEd | ntfsclone -r --overwrite $rest - ) "
+                        fi
+                        if [ "$netzip" = "GZip" ] ; then
+                          xcmd="(ncftpget $ncftpopt $useridpass -c -V -d /tmp/out $server "$ftppath/$netimagename" 2>>$ncftpstat $AESPIPEd | gunzip -c -| ntfsclone -r --overwrite $rest - ) "
+                        fi
+                        if [ "$netzip" = "Lzop" ] ; then
+                          xcmd="(ncftpget $ncftpopt $useridpass -c -V -d /tmp/out $server "$ftppath/$netimagename" 2>>$ncftpstat $AESPIPEd | lzop -d  -c -| ntfsclone -r --overwrite $rest - ) "
+                        fi
+                        if [ "$netzip" = "BZip2" ] ; then
+                          xcmd="(ncftpget $ncftpopt $useridpass -c -V -d /tmp/out $server "$ftppath/$netimagename" 2>>$ncftpstat $AESPIPEd | bzcat | ntfsclone -r --overwrite $rest - ) "
+                        fi
+                        sh -c "$xcmd"
+                        date >>/tmp/time
+                        rm /tmp/out
+                        touch /tmp/out
+                        restartcheck;;
+                      esac;;
+                    esac;;
+                    "I: Restore")
+                    f_chk_value_net
+                    f_radiolist "RESTORE" "Choose drive or partition to restore the image to\n\Z1\Zr\Zb(Use Space Bar)\Zn\n\nSelect from:" "$partlist" 2> $tempfilenetrest
+                    retvalnetrest=$?
+                    choicenetrest=$(cat $tempfilenetrest)
+                    if [ "$choicenetrest" = "" ] ; then
+                      f_msgbox "ERROR" "No DISK or Partition Selected\nMust use SpaceBar to select Disk/Partition\n->Back to Main Menu."
+                      continue
+                    fi
+                    case $retvalnetrest in
+                      $DIALOG_OK)
+                      rest=/dev/$choicenetrest
+                      f_yesno "ABOUT TO RESTORE" "Collected information:\
+\nLocal IP Address: $ipaddress\
+\nFTP IP Address: $server\
+\nSource imagename: $netimagename\
+\nFTP path: $ftppath\
+\nCompression: $netzip\
+\nTarget disk: $rest\
+\n\nAre you sure?"
+                      case $? in
+                        $DIALOG_OK)
+                        writesize=`getsize $choicenetrest`
+                        pcnt=0
+## msg for the restore options
+                        msg="$projectname is restoring your drive.\n"
+                        if [ "$netzip" = "None" ] ; then
+                          xcmd="(ncftpget $ncftpopt $useridpass -c -V -d /tmp/out $server "$ftppath/$netimagename" 2>>$ncftpstat $AESPIPEd | jetcat-mod -f 5000 -p $writesize 2>$progout | dd bs=1M of=$rest 2>/dev/null) &"
+                        fi
+                        if [ "$netzip" = "GZip" ] ; then
+                          xcmd="(ncftpget $ncftpopt $useridpass -c -V -d /tmp/out $server "$ftppath/$netimagename" 2>>$ncftpstat $AESPIPEd | gunzip -c -| jetcat-mod -f 5000 -p $writesize 2>$progout |dd bs=1M of=$rest 2>/dev/null) &"
+                        fi
+                        if [ "$netzip" = "Lzop" ] ; then
+                          xcmd="(ncftpget $ncftpopt $useridpass -c -V -d /tmp/out $server "$ftppath/$netimagename" 2>>$ncftpstat $AESPIPEd | lzop -d  -c -| jetcat-mod -f 5000 -p $writesize 2>$progout |dd bs=1M of=$rest 2>/dev/null) &"
+                        fi
+                        if [ "$netzip" = "BZip2" ] ; then
+                          xcmd="(ncftpget $ncftpopt $useridpass -c -V -d /tmp/out $server "$ftppath/$netimagename" 2>>$ncftpstat $AESPIPEd | bzcat | jetcat-mod -f 5000 -p $writesize 2>$progout |dd bs=1M of=$rest 2>/dev/null) &"
+                        fi
+                        sh -c "$xcmd"
+                        progress
+                        rm /tmp/out
+                        touch /tmp/out
+                        restartcheck;;
+                      esac;;
+                    esac;;
+                  esac;;
+                esac
+              done;;
+              "Local use")
+              retvallocalmenu=0
+              localsplit="Off"
+              localzip="Lzop"
+              while [ "$retvallocalmenu" != "1" ]
+              do
+                d_localmenu
+                retvallocalmenu=$?
+                choicelocalmenu=$(cat $tempfilelocalmenu)
+                case $retvallocalmenu in
+                  $DIALOG_OK)
+                  case $choicelocalmenu in
+                    "A: Pick Local Mount")
+                    d_localmount;;
+                    "M: MBR")
+                    f_mbr "LOCAL";;
+                    "T: Display Time")
+                    f_textbox "TIME RESULTS" /tmp/time;;
+                    "X: Reboot/Poweroff")
+                    f_rebootpoweroff;;
+### Modified to give list of files on /mnt/local
+                    "B: Config filename")
+                    files=`ls -1 -p /mnt/local$localpath | grep -v /`
+                    filelist="`echo Enter Filename on`"
+                    for i in $files
+                    do
+                      extx=`echo ${i##*.}`
+                      if [ "$extx" = "00" ] ; then
+                        ii=${i%\.*}
+                        filelist="$filelist `echo $ii file off`"
+                      fi
+                      filelist="$filelist `echo $i file off`"
+                    done
+                    f_radiolist "BACKUP" "Choose Enter for New File Name\n\Z1\Zr\Zb(Use Space Bar)\Zn\n or Select from following files:" "$filelist" 2> $tempfilelocalname
+                    retvallocalname=$?
+                    localimagename=$(cat $tempfilelocalname)
+                    if [ "$localimagename" = "Enter" ] ; then
+                      f_inputbox "CONFIG FILENAME" "Enter filename of the stored image. \
+\nExample: hda_workstation2.img\n\nFilename:" 2> $tempfilelocalname
+                      retvallocalname=$?
+                      case $retvallocalname in
+                        $DIALOG_OK)
+                        localimagename=$(cat $tempfilelocalname);;
+                        $DIALOG_ESC)
+                        if test -s $tempfilelocalname ; then
+                          localimagename=$(cat $tempfilelocalname)
+                        fi;;
+                      esac
+                    fi;;
+## 11/25/2010 local path
+                    "P: Set Local Path")
+                    files=`ls -1 -p /mnt/local$localpath | grep  /`
+                    filelist="`echo / Path on`"
+                    for i in $files
+                    do
+                      filelist="$filelist `echo $i file off`"
+                    done
+                    f_radiolist "BACKUP" "Choose / for Current Path Name\Z1\Zr\Zb(Use Space Bar)\Zn\n or Select from following files:" "$filelist" 2> $tempfilelocalpath
+                    localpath=/$(cat $tempfilelocalpath)
+                    if [ "$localpath" = "//" ] ; then
+                      localpath="/"
+                    fi;;
+## 11/25/2010 local path
+                    "C: Toggle split")
+                    $DIALOG --backtitle "$backtitle" \
+                    --title "TOGGLE SPLIT" --colors \
+                    --radiolist "Choose if the imagefile should be split.\n\Z1\Zr\Zb(Use Space Bar)\Zn\
+\nIf the FS limits filesize to 2GB, enable splitting!" 0 0 0 \
+                    "Off" "Splitting off." ON \
+                    "On" "Splitting on." off  2> $tempfilelocalsplit
+                    retvallocalsplit=$?
+                    choicelocalsplit=$(cat $tempfilelocalsplit)
+                    case $retvallocalsplit in
+                      $DIALOG_OK)
+                      localsplit=$(cat $tempfilelocalsplit);;
+                      $DIALOG_ESC)
+                      if test -s $tempfilelocalsplit ; then
+                        localsplit=$(cat $tempfilelocalsplit)
+                      fi;;
+                    esac;;
+                    "D: Compression")
+                    f_compress 2> $tempfilelocalzip
+                    retvallocalzip=$?
+                    choicelocalzip=$(cat $tempfilelocalzip)
+                    case $retvallocalzip in
+                      $DIALOG_OK)
+                      localzip=$(cat $tempfilelocalzip);;
+                      $DIALOG_ESC)
+                      if test -s $tempfilelocalzip ; then
+                        localzip=$(cat $tempfilelocalzip)
+                      fi;;
+                    esac;;
+                    "E: Backup")
+                    f_chk_value_local
+                    f_radiolist "BACKUP" "Choose Drive or Partition to backup\n\Z1\Zr\Zb(Use Space Bar)\Zn\nSelect from:" "$partlist" 2> $tempfilelocalback
+                    retvallocalback=$?
+                    choicelocalback=$(cat $tempfilelocalback)
+                    case $retvallocalback in
+                      $DIALOG_OK)
+                      localback=/dev/$choicelocalback
+                      if [ "$choicelocalback" = "" ] ; then
+                        f_msgbox "ERROR" "No DISK or Partition Selected\nMust use SpaceBar to select Disk/Partition\n->Back to Main Menu."
+                        continue
+                      fi
+                      f_yesno "ABOUT TO BACKUP" "Collected information:\
+\nTarget drive in /mnt/local$localpath: $localdrive\
+\nFilename for image: $localimagename\
+\nSplitting: $localsplit\
+\nCompression: $localzip\
+\nSource drive: $localback\
+\n\nAre you sure?"
+                      case $? in
+                        $DIALOG_OK)
+                        readsize=`getsize $choicelocalback`
+                        pcnt=0
+## Message for local backup
+                        msg="$projectname is backing up your drive locally.\n"
+                        if [ "$localzip" = "None" ] ; then
+                          if [ "$localsplit" = "Off" ] ; then
+                            dd bs=1M if=$localback 2>/dev/null |jetcat-mod -f 5000 -p $readsize 2>$progout | dd bs=1M of=/mnt/local$localpath$localimagename 2>/dev/null &
+                          fi
+                          if [ "$localsplit" = "On" ] ; then
+                            (dd bs=1M if=$localback 2>/dev/null |jetcat-mod -f 5000 -p $readsize 2>$progout |split -d -b 1000m - /mnt/local$localpath$localimagename. ) &
+                          fi
+                        fi
+                        if [ "$localzip" = "GZip" ] ; then
+                          if [ "$localsplit" = "Off" ] ; then
+                            (dd bs=1M if=$localback 2>/dev/null |jetcat-mod -f 5000 -p $readsize 2>$progout |gzip -c - >/mnt/local$localpath$localimagename) &
+                          fi
+                          if [ "$localsplit" = "On" ] ; then
+                            (dd bs=1M if=$localback 2>/dev/null |jetcat-mod -f 5000 -p $readsize 2>$progout | gzip -c - | split -d -b 1000m - /mnt/local$localpath$localimagename. ) &
+                          fi
+                        fi
+                        if [ "$localzip" = "Lzop" ] ; then
+                          if [ "$localsplit" = "Off" ] ; then
+                            (dd bs=1M if=$localback 2>/dev/null |jetcat-mod -f 5000 -p $readsize 2>$progout |lzop -c - >/mnt/local$localpath$localimagename) &
+                          fi
+                          if [ "$localsplit" = "On" ] ; then
+                            (dd bs=1M if=$localback 2>/dev/null |jetcat-mod -f 5000 -p $readsize 2>$progout | lzop -c - | split -d -b 1000m - /mnt/local$localpath$localimagename. ) &
+                          fi
+                        fi
+                        if [ "$localzip" = "BZip2" ] ; then
+                          if [ "$localsplit" = "Off" ] ; then
+                            (dd bs=1M if=$localback 2>/dev/null |jetcat-mod -f 5000 -p $readsize 2>$progout | bzip2 >/mnt/local$localpath$localimagename) &
+                          fi
+                          if [ "$localsplit" = "On" ] ; then
+                            (dd bs=1M if=$localback 2>/dev/null |jetcat-mod -f 5000 -p $readsize 2>$progout | bzip2 | split -d -b 1000m - /mnt/local$localpath$localimagename. ) &
+                          fi
+                        fi
+                        progress
+###                  umount /mnt/local
+                        rm /tmp/out
+                        touch /tmp/out
+                        restartcheck;;
+                      esac;;
+                    esac;;
+                    "G: fsarchiver Backup")
+                    if [ "$localimagename" = "" ] ; then
+                      f_msgbox "WARNING" "No filename for image set, using default\nFilename: image.img.gz"
+                      localimagename=image.img.gz
+                    fi
+                    f_radiolist "BACKUP" "Choose Partition to backup\n\Z1\Zr\Zb(Use Space Bar)\Zn\nSelect from:" "$partlist" 2> $tempfilelocalback
+                    retvallocalback=$?
+                    choicelocalback=$(cat $tempfilelocalback)
+                    if [ "$choicelocalback" = "" ] ; then
+                      f_msgbox "ERROR" "No DISK or Partition Selected\nMust use SpaceBar to select Disk/Partition\n->Back to Main Menu."
+                      continue
+                    fi
+                    f_radiolist "Fsarchiver compression" "Choose Compression Option\nHigher Numbers give better compression\nBut take much more time\n(Use Space Bar to Select" \
+                    "1 lzo-3  on \
+                    2 gzip-3  off \
+                    3 gzip-6  off \
+                    4 gzip-9  off \
+                    5 bzip2-2  off \
+                    6 bzip2-5  off \
+                    7 lzma-1  off \
+                    8 lzma-6  off \
+                    9 lzma-9  off" 2> $tempfilelocalzip
+                    retvallocalzip=$?
+                    choicelocalzip=$(cat $tempfilelocalzip)
+                    date      ### Echo Start Time
+                    date >/tmp/time
+                    case $retvallocalback in
+                      $DIALOG_OK)
+                      disk=/dev/$choicelocalback
+                      f_yesno "ABOUT TO BACKUP" "Collected information:\
+\nTarget imagename: $localimagename\
+\nCompression: $localzip\
+\nSource Drive: $disk\
+\n\nAre you sure?"
+                      case $? in
+                        $DIALOG_OK)
+                        f_radiolist "fsarchiver" "Select Version of Fsarchiver to use\n\Z1\Zb(Use Space Bar)\Zn\
+\n" "fsarchiver released on fsarchiver7 beta off" 2> /tmp/fsarchiver
+                        fsarchiver=$(cat /tmp/fsarchiver)
+                        $fsarchiver savefs -v -o -z $choicelocalzip /mnt/local$localpath$localimagename  $disk
+                        restartcheck;;
+                      esac
+                      date      ### Echo End Time
+                      date >>/tmp/time
+                      sleep 10  ### Pause;;
+                    esac;;
+                    "H: fsarchiver Restore")
+                    if [ "$localimagename" = "" ] ; then
+                      f_msgbox "WARNING" "No filename for image set, using default\nFilename: image.img.gz"
+                      localimagename=image.img.gz
+                    fi
+                    if [ "$localzip" = "" ] ; then
+                      f_msgbox "WARNING" "Compression not defined, using default\nCompression: None"
+                      localzip=None
+                    fi
+                    f_radiolist "RESTORE" "Choose partition to restore the image to\n\Z1\Zr\Zb(Use Space Bar)\Zn\n\nSelect from:" "$partlist" 2> $tempfilelocalrest
+                    retvallocalrest=$?
+                    choicelocalrest=$(cat $tempfilelocalrest)
+                    if [ "choicelocalrest" = "" ] ; then
+                      f_msgbox "ERROR" "No DISK or Partition Selected\nMust use SpaceBar to select Disk/Partition\n->Back to Main Menu."
+                      continue
+                    fi
+                    case $retvallocalrest in
+                      $DIALOG_OK)
+                      rest=/dev/$choicelocalrest
+                      f_yesno "ABOUT TO RESTORE" "Collected information:\
+\nSource imagename: $localimagename\
+\nCompression: $localzip\
+\nTarget disk: $rest\
+\n\nAre you sure?"
+                      case $? in
+                        $DIALOG_OK)
+## msg for the restore options
+                        msg="$projectname is restoring your drive.\n"
+                        date >/tmp/time
+### 07/21/2007
+                        f_radiolist "fsarchiver" "Select Version of Fsarchiver to use\n\Z1\Zb(Use Space Bar)\Zn\
+\n" "fsarchiver released on fsarchiver7 beta off" 2> /tmp/fsarchiver
+                        fsarchiver=$(cat /tmp/fsarchiver)
+                        $fsarchiver restfs -v /mnt/local$localpath$localimagename  id=0,dest=$rest
+                        date >>/tmp/time
+                        sleep 10
+                        rm /tmp/out
+                        touch /tmp/out
+                        restartcheck;;
+                      esac;;
+                    esac;;
+                    "N: NTFSCLONE Backup")
+                    if [ "$localimagename" = "" ] ; then
+                      f_msgbox "WARNING" "No filename for image set, using default\nFilename: image.img.gz"
+                      localimagename=image.img.gz
+                    fi
+                    if [ "$localzip" = "" ] ; then
+                      f_msgbox "WARNING" "Compression not defined, using default\nCompression: None"
+                      localzip=None
+                    fi
+                    f_radiolist "BACKUP" "Choose NTFS Partition ONLY to backup\n\Z1\Zr\Zb(Use Space Bar)\Zn\nSelect from:" "$partonly" 2> $tempfilelocalback
+                    retvallocalback=$?
+                    choicelocalback=$(cat $tempfilelocalback)
+                    if [ "$choicelocalback" = "" ] ; then
+                      f_msgbox "ERROR" "No DISK or Partition Selected\nMust use SpaceBar to select Disk/Partition\n->Back to Main Menu."
+                      continue
+                    fi
+                    date      ### Echo Start Time
+                    date >/tmp/time
+                    case $retvallocalback in
+                      $DIALOG_OK)
+                      disk=/dev/$choicelocalback
+                      f_yesno "ABOUT TO BACKUP" "Collected information:\
+\nTarget imagename: $localimagename\
+\nCompression: $localzip\
+\nSource Drive: $disk\
+\n\nAre you sure?"
+                      case $? in
+                        $DIALOG_OK)
+                        readsize=`getsize $choicelocalback`
+                        pcnt=0
+##  msg set for backups.
+## 07/21/2007
+                        msg="$projectname is backing up your drive.\n"
+                        if [ "$localzip" = "None" ] ; then
+                          if [ "$localsplit" = "Off" ] ; then
+                            (ntfsclone -s -o - $disk >/mnt/local$localpath$localimagename )
+                          fi
+                          if [ "$localsplit" = "On" ] ; then
+                            (ntfsclone -s -o - $disk |split -d -b 1000m - /mnt/local$localpath$localimagename. )
+                          fi
+                        fi
+                        if [ "$localzip" = "GZip" ] ; then
+                          if [ "$localsplit" = "Off" ] ; then
+                            (ntfsclone -s -o - $disk |gzip -c - >/mnt/local$localpath$localimagename )
+                          fi
+                          if [ "$localsplit" = "On" ] ; then
+                            (ntfsclone -s -o - $disk |gzip -c - | split -d -b 1000m - /mnt/local$localpath$localimagename. )
+                          fi
+                        fi
+                        if [ "$localzip" = "Lzop" ] ; then
+                          if [ "$localsplit" = "Off" ] ; then
+                            (ntfsclone -s -o - $disk |lzop -c - >/mnt/local$localpath$localimagename )
+                          fi
+                          if [ "$localsplit" = "On" ] ; then
+                            (ntfsclone -s -o - $disk |lzop -c - | split -d -b 1000m - /mnt/local$localpath$localimagename. )
+                          fi
+                        fi
+                        if [ "$netzip" = "BZip2" ] ; then
+                          if [ "$localsplit" = "Off" ] ; then
+                            (ntfsclone -s -o - $disk |bzip2 >/mnt/local$localpath$localimagename )
+                          fi
+                          if [ "$localsplit" = "On" ] ; then
+                            (ntfsclone -s -o - $disk |bzip2 | split -d -b 1000m - /mnt/local$localpath$localimagename. )
+                          fi
+                        fi
+                        restartcheck;;
+                      esac
+                      date      ### Echo End Time
+                      date >>/tmp/time
+                      sleep 10  ### Pause;;
+                    esac;;
+                    "O: NTFSCLONE Restore")
+                    if [ "$localimagename" = "" ] ; then
+                      f_msgbox "WARNING" "No filename for image set, using default\nFilename: image.img.gz"
+                      localimagename=image.img.gz
+                    fi
+                    if [ "$localzip" = "" ] ; then
+                      f_msgbox "WARNING" "Compression not defined, using default\nCompression: None"
+                      localzip=None
+                    fi
+                    f_radiolist "RESTORE" "Choose NTFS partition to restore the image to\n\Z1\Zr\Zb(Use Space Bar)\Zn\n\nSelect from:" "$partonly" 2> $tempfilelocalrest
+                    retvallocalrest=$?
+                    choicelocalrest=$(cat $tempfilelocalrest)
+                    if [ "choicelocalrest" = "" ] ; then
+                      f_msgbox "ERROR" "No DISK or Partition Selected\nMust use SpaceBar to select Disk/Partition\n->Back to Main Menu."
+                      continue
+                    fi
+                    case $retvallocalrest in
+                      $DIALOG_OK)
+                      rest=/dev/$choicelocalrest
+                      f_yesno "ABOUT TO RESTORE" "Collected information:\
+\nSource imagename: $localimagename\
+\nCompression: $localzip\
+\nTarget disk: $rest\
+\n\nAre you sure?"
+                      case $? in
+                        $DIALOG_OK)
+                        writesize=`getsize $choicelocalrest`
+                        pcnt=0
+## msg for the restore options
+                        msg="$projectname is restoring your drive.\n"
+                        date >/tmp/time
+### 07/21/2007
+                        multifiles="";
+                        if [ "$localsplit" = "On" ] ; then
+                          multifiles=".*";
+                        fi
+                        if [ "$localzip" = "None" ] ; then
+                          (cat /mnt/local$localpath$localimagename$mulifiles | ntfsclone -r --overwrite $rest - )
+                        fi
+                        if [ "$localzip" = "GZip" ] ; then
+                          (cat /mnt/local$localpath$localimagename$multifiles | gunzip -c -| ntfsclone -r --overwrite $rest - )
+                        fi
+                        if [ "$localzip" = "Lzop" ] ; then
+                          (cat /mnt/local$localpath$localimagename$multifiles | lzop -d  -c -| ntfsclone -r --overwrite $rest - )
+                        fi
+                        if [ "$localzip" = "BZip2" ] ; then
+                          (cat /mnt/local$localpath$localimagename$multifiles | bzcat | ntfsclone -r --overwrite $rest - )
+                        fi
+                        date >>/tmp/time
+                        sleep 10
+                        rm /tmp/out
+                        touch /tmp/out
+                        restartcheck;;
+                      esac;;
+                    esac;;
+                    "S: Special Commands")
+                    f_specialopt;;
+                    "F: Restore")
+                    f_chk_value_local
+                    f_radiolist "RESTORE" "Choose Drive or Partition to restore\n\Z1\Zr\Zb(Use Space Bar)\Zn\nSelect from:" "$partlist" 2> $tempfilelocalrest
+                    retvallocalrest=$?
+                    choicelocalrest=$(cat $tempfilelocalrest)
+                    if [ "$choicelocalrest" = "" ] ; then
+                      f_msgbox "ERROR" "No DISK or Partition Selected\nMust use SpaceBar to select Disk/Partition\n->Back to Main Menu."
+                      continue
+                    fi
+                    case $retvallocalrest in
+                      $DIALOG_OK)
+                      localrest=/dev/$choicelocalrest
+                      f_yesno "ABOUT TO RESTORE" "Collected information:\
+\nImage File drive in /mnt/local: $localdrive\
+\nFilename for image: $localimagename\
+\nSplitting: $localsplit\
+\nCompression: $localzip\
+\nTarget drive: $localrest\
+\n\nAre you sure?"
+                      case $? in
+                        $DIALOG_OK)
+                        writesize=`getsize $choicelocalrest`
+                        pcnt=0
+## msg for local restore
+                        msg="$projectname is locally restoring your drive.\n"
+                        if [ "$localzip" = "None" ] ; then
+                          if [ "$localsplit" = "Off" ] ; then
+                            (dd bs=1M if=/mnt/local$localpath$localimagename 2>/dev/null |jetcat-mod -f 5000 -p $writesize 2>$progout |dd bs=1M of=$localrest 2>/dev/null) &
+                          fi
+                          if [ "$localsplit" = "On" ] ; then
+                            (cat /mnt/local$localpath$localimagename.* |jetcat-mod -f 5000 -p $writesize 2>$progout |dd bs=1M of=$localrest 2>/dev/null) &
+                          fi
+                        fi
+                        if [ "$localzip" = "GZip" ] ; then
+                          if [ "$localsplit" = "Off" ] ; then
+                            (dd bs=1M if=/mnt/local$localpath$localimagename 2>/dev/null |gunzip -c - |jetcat-mod -f 5000 -p $writesize 2>$progout |dd bs=1M of=$localrest 2>/dev/null) &
+                          fi
+                          if [ "$localsplit" = "On" ] ; then
+                            (cat /mnt/local$localpath$localimagename.* |gunzip -c - |jetcat-mod -f 5000 -p $writesize 2>$progout |dd bs=1M of=$localrest 2>/dev/null) &
+                          fi
+                        fi
+                        if [ "$localzip" = "Lzop" ] ; then
+                          if [ "$localsplit" = "Off" ] ; then
+                            (dd bs=1M if=/mnt/local$localpath$localimagename 2>/dev/null |lzop -d -c - |jetcat-mod -f 5000 -p $writesize 2>$progout |dd bs=1M of=$localrest 2>/dev/null) &
+                          fi
+                          if [ "$localsplit" = "On" ] ; then
+                            (cat /mnt/local$localpath$localimagename.* |lzop -d  -c - |jetcat-mod -f 5000 -p $writesize 2>$progout |dd bs=1M of=$localrest 2>/dev/null) &
+                          fi
+                        fi
+                        if [ "$localzip" = "BZip2" ] ; then
+                          if [ "$localsplit" = "Off" ] ; then
+                            (dd bs=1M if=/mnt/local$localpath$localimagename 2>/dev/null |bzcat |jetcat-mod -f 5000 -p $writesize 2>$progout |dd bs=1M of=$localrest 2>/dev/null) &
+                          fi
+                          if [ "$localsplit" = "On" ] ; then
+                            (bzip2 -dc /mnt/local$localpath$localimagename.* | jetcat-mod -f 5000 -p $writesize 2>$progout | dd bs=1M of=$localrest 2>/dev/null) &
+## bzcat not using multiple files...
+##                        (bzcat /mnt/local$localpath$localimagename.* |jetcat-mod -f 5000 -p $writesize 2>$progout | dd bs=1M of=$localrest 2>/dev/null) &
+                          fi
+                        fi
+                        progress
+###                    umount /mnt/local
+                        rm /tmp/out
+                        touch /tmp/out
+                        restartcheck;;
+                      esac;;
+                    esac;;
+                  esac;;
+                esac
+              done;;
+              "Click'n'Clone")
+              retvalclonemenu=0
+              while [ "$retvalclonemenu" != "1" ]
+              do
+                d_clicknclone
+                retvalclonemenu=$?
+                choiceclonemenu=$(cat $tempfileclonemenu)
+                case $retvalclonemenu in
+                  $DIALOG_OK)
+                  case $choiceclonemenu in
+                    "D: Toggle partitions")
+                    f_toggle_disklist;;
+                    "U: UUID RESET")
+                    uuidChange;;
+                    "P: PowerOff")
+                    f_toggle_poweroff;;
+                    "R: Reboot")
+                    f_toggle_reboot;;
+                    "X: Reboot/Poweroff")
+                    f_rebootpoweroff;;
+                    "A: Select source")
+                    f_radiolist "SELECT SOURCE" "Choose source drive to clone.\n\Z1\Zr\Zb(Use Space Bar)\Zn\nSelect from:" "$disklist" 2> $tempfileclonesource
+                    retvalclonesource=$?
+                    choiceclonesource=$(cat $tempfileclonesource)
+                    case $retvalclonesource in
+                      $DIALOG_OK)
+                      clonesource=/dev/$choiceclonesource
+##echo "Additional hdparm info on disk to confirm it as source" >/tmp/diskinfo
+##hdparm -i $clonesource >>/tmp/diskinfo
+##printf "\nblkid info:\n" >> /tmp/diskinfo
+##blkid $clonesource* >> /tmp/diskinfo
+##sed -e 's/  //g' /tmp/diskinfo | fold -w 72 -s >/tmp/diskinfo2
+##f_textbox "CLONE SOURCE DISK INFO" /tmp/diskinfo2 ;;
+                      f_partdiskinfo "$clonesource" "CLONE SOURCE DISK INFO" ;;
+                    esac;;
+                    "S: Special Commands")
+                    f_specialopt;;
+                    "B: Select target")
+                    f_radiolist "SELECT TARGET" "Choose target drive to clone to.\n\Z1\Zr\Zb(Use Space Bar)\Zn\nAttention: Select a drive with at least\
+\nthe same capacity. Higher capacity is OK.\nSelect from:" "$disklist" 2> $tempfileclonetarget
+                    retvalclonetarget=$?
+                    choiceclonetarget=$(cat $tempfileclonetarget)
+                    case $retvalclonetarget in
+                      $DIALOG_OK)
+                      clonetarget=/dev/$choiceclonetarget
+##echo "Additional hdparm info on disk to confirm it as target" >/tmp/diskinfo
+##hdparm -i $clonetarget >>/tmp/diskinfo
+##printf "\nblkid info:\n" >> /tmp/diskinfo
+##blkid $clonetarget* >> /tmp/diskinfo
+##sed -e 's/  //g' /tmp/diskinfo | fold -w 72 -s >/tmp/diskinfo2
+##f_textbox "CLONE TARGET DISK INFO" /tmp/diskinfo2 ;;
+                      f_partdiskinfo "$clonetarget" "CLONE TARGET DISK INFO" ;;
+                    esac;;
+                    "C: Click'n'Clone")
+                    if [ "$clonesource" = "" ] || [ "$clonesource" = "/dev/" ] ; then
+                      f_msgbox "ERROR" "No source drive for cloning set!\nMust use SpaceBar to select Disk\n->Back to Main Menu."
+                      continue
+                    fi
+                    if [ "$clonetarget" = "" ] || [ "$clonetarget" = "/dev/" ] ; then
+                      f_msgbox "ERROR" "No target drive for cloning set!\nMust use SpaceBar to select Disk\n->Back to Main Menu."
+                      continue
+                    fi
+                    f_yesno "ABOUT TO CLONE" "Collected information:\nSource drive: $clonesource\nTarget drive: $clonetarget\n\nAre you sure?"
+                    case $? in
+                      $DIALOG_OK)
+                      clonesize=`getsize $choiceclonesource`
+                      pcnt=0
+## msg for cloning drive
+                      msg="$projectname is cloning drive\n"
+                      dd bs=1M if=$clonesource 2>/dev/null |jetcat-mod -f 5000 -p $clonesize 2>$progout |dd bs=1M of=$clonetarget 2>/dev/null &
+                      progress
+                      restartcheck;;
+                    esac;;
+                  esac;;
+                esac
+              done;;
+            esac;;
+          esac
+        done;;
+        "File Mode")
+        while [ "$retvalfilemenu" != "1" ]
+        do
+          d_filemode
+          retvalfilemenu=$?
+          choicefilemenu=$(cat $tempfilefilemenu)
+          case $retvalfilemenu in
+            $DIALOG_OK)
+            case $choicefilemenu in
+              "A: Pick Local Mount")
+              d_localmount;;
+              "B: Config device")
+              f_inputbox "CONFIG DEVICE" "Set IP Address to match your subnet.\nExample: 192.168.0.5\n\nEnter IP Address:" 2> $tempfilefileip
+              retvalfileip=$?
+              case $retvalfileip in
+                $DIALOG_OK)
+                ipaddress=$(cat $tempfilefileip)
+                /sbin/ifconfig $filedevice $fileipaddress up;;
+                $DIALOG_ESC)
+                if test -s $tempfilefileip ; then
+                  ipaddress=$(cat $tempfilefileip)
+                  /sbin/ifconfig $device $ipaddress up
+                fi;;
+              esac;;
+              "C: Select partition")
+              f_radiolist "SELECT PARTITION" \
+              "Choose drive to mount.\n\Z1\Zr\Zb(Use Space Bar)\Zn\
+\nThe selected drive will be mounted to /mnt/local
+\nand partimage may write to this directory.\
+\n\nSupported FS are:\
+\next2. ext3, ext4, reiserfs - Linux\
+\nfat32 - Windows95/98/NT/2k/XP\
+\nntfs - Windows NT/2k/XP\
+\nJFS and XFS\
+\n\nSelect partition(!) (example: /dev/hda1):" "$partonly" 2> $tempfilefilepart
+              retvalfilepart=$?
+              choicefilepart=$(cat $tempfilefilepart)
+              case $retvalfilepart in
+                $DIALOG_OK)
+                filepart=$choicefilepart
+                mount /dev/$filepart /mnt/local >/tmp/filemount 2>&1
+                retvalfilemount=$?
+                if [ $retvalfilemount != 0 ] ; then
+                  f_textbox "ERROR" /tmp/filemount
+                  filepart=""
+                  umount /mnt/local
+                else
+## July 18, 2008
+## NTFS RW partition support
+## Obsolete. Setup of mount.helpers.
+##                testntfs=`cat /etc/mtab | grep /dev/$filepart | cut -f 3 -d\  `
+##                if [ "$testntfs" = "ntfs" ]; then
+##                  umount /mnt/local 2>/dev/null
+##                  ntfs-3g /dev/$filepart /mnt/local >/tmp/mount 2>&1
+##                fi
+##
+                  f_msgbox "STATUS" "Partition mounted in /mnt/local.\
+\nYou can now launch partimage to create or restore an image.\
+\nAs target file enter a filename in /mnt/local/,\
+\nfor example: /mnt/local/backup_hda1.img.gz\
+\n\n\nYou can also launch partimage in network mode."
+                fi;;
+              esac;;
+              "D: Launch client")
+              clear
+              partimage -f3
+              echo "10 Second Pause"
+              sleep 10
+              umount /mnt/local;;
+              "E: Launch server")
+              f_msgbox "INFO" "partimage server will be launched now.\
+\nAfter it started, remove the CD and use it\
+\nto launch the partimage client on another machine."
+              clear
+              cd /mnt/local
+              partimaged
+              cd /
+              echo "10 Second Pause"
+              sleep 10
+              umount /mnt/local
+            esac;;
+          esac
+        done;;
+        "Utilities")
+        while [ "$retvalutilmenu" != "1" ]
+        do
+          d_utilities
+          retvalutilmenu=$?
+          choiceutilmenu=$(cat $tempfileutilmenu)
+          case $retvalutilmenu in
+            $DIALOG_OK)
+            case $choiceutilmenu in
+              "A: System info")
+              f_textbox "SYSTEM INFO" /tmp/sysinfo;;
+              "U: UUID RESET")
+              uuidChange;;
+              "D: hdparm")
+              f_yesno "WARNING" "This option tries to enable 32-bit I/O mode\
+\nand UDMA/66 mode on your IDE Controller and drive.\
+\n\nThe system might hang and require a reboot!\
+\nUse this option only on quite new computers! \
+\n\nContinue at own risk?"
+              case $? in
+                $DIALOG_OK)
+                f_radiolist "HDPARM" "Choose drive(!) to enable.\n\Z1\Zr\Zb(Use Space Bar)\Zn\n\nExample: /dev/hda" "$partlist" 2> $tempfilehdparm
+                retvalhdparm=$?
+                choicehdparm=$(cat $tempfilehdparm)
+                case $retvalhdparm in
+                  $DIALOG_OK)
+                  hdparmdrive=/dev/$choicehdparm
+                  hdparm -c3 -X66 $hdparmdrive >/tmp/hdparmout
+                  f_textbox "HDPARM OUTPUT" /tmp/hdparmout;;
+                esac;;
+              esac;;
+              "S: Special Commands")
+              f_specialopt;;
+              "X: Reboot/Poweroff")
+              f_rebootpoweroff;;
+              "F: ntpclient")
+              f_inputbox "Set Time using ntp server" "Enter ntp server ip or name" 2>$tempfilentpserver
+              ntpclient -s -h `cat $tempfilentpserver`
+              date
+              sleep 10;;
+              "E: keymap")
+              bkey
+              sleep 10;;
+              "C: ftp")
+              f_msgbox "start ftpd using busybox via tcpsvd" \
+              "Basic Anonymous FTP Server\nstartftpd script\nunloads if exit this script"
+              startftpd;;
+              "G: telnetd")
+              f_msgbox "Start telnetd server to allow telnet" \
+              "Telnet Server\n"
+              telnetd;;
+              "B: dmesg")
+              dmesg >$tempfiledmesg
+              f_textbox "Display dmesg output" $tempfiledmesg;;
+              "J: TestDisk-6.14")
+              testdisk-6.14;;
+              "L: TestDisk-7.0")
+              testdisk-7.0;;
+              "M: Validate Partition")
+              f_radiolist "VALIDATE" "Choose Partition to Validate\nUses f3write to fill partition then f3read to test\n\Z1\Zr\Zb(Use Space Bar)\Zn\nSelect from:" "$partlist" 2> /tmp/select
+              selection=`cat /tmp/select`
+              clear
+              mount /dev/$selection /mnt/local
+              f3write /mnt/local
+              f3read /mnt/local >/tmp/result
+              rm /mnt/local/*.fff
+              umount /mnt/local
+              f_textbox "Results of Validate Partition" /tmp/result;;
+              "H: Zero-Tool")
+              
+              cleandrive8.dialog;;
+##f_msgbox "ZERO-TOOL" "Removed this, since it was linked to the OS\
+##\nbetter to use the cleandrive script on Unix/Linux\
+##\nor the blank6.exe program for the FAT/NTFS\
+##\npartitions."
+## Delete Zeroing too, since it didn't always work at supporting various partitions
+## The FAT would create the zero file, but not delete them. Better to use the other
+## programs to do this job via the OS
+##                    --radiolist "Choose drive to zero-out.\
+##\nSupported FS are:\
+##\next2. ext3, ext4, reiserfs - Linux\
+##\nfat32 - Windows95/98/NT/2k/XP\
+##\nntfs - Windows NT/2k/XP\
+##\n\nSelect partition (example: /dev/hda1):" 0 0 0 \
+##                  $partlist 2> $tempfileutilzero
+##              retvalutilzero=$?
+##              choiceutilzero=$(cat $tempfileutilzero)
+##              case $retvalutilzero in
+##                $DIALOG_OK)
+##                zerodrive=$choiceutilzero
+##                mount /dev/$zerodrive /mnt/local >/tmp/zeromount 2>&1
+##                retvalzeromount=$?
+##                if [ $retvalzeromount != 0 ] ; then
+##                  $DIALOG --backtitle "$backtitle" \
+##                          --title "ERROR" \
+##                          --textbox /tmp/zeromount 0 0
+##                  zerodrive=""
+##                  umount /mnt/local
+##
+##                else
+##
+##                  freesize=`df |grep -w $zerodrive |awk '{print $4}'`
+##                  pcnt=0
+## msg for zeroing free space
+##                  msg="$projectname is zeroing out free space.\n"
+##                  (dd bs=1M if=/dev/zero 2>/dev/null |jetcat-mod -f 5000 -p $freesize 2>$progout |split -d -b 1000m - /mnt/local/zerofile. 2>/dev/null ) &
+##                  progress
+##              fi;;
+##            esac;;
+              "I: ddrescue")
+              retvalddres=0
+              while [ "$retvalddres" != "1" ]
+              do
+                d_ddrescue
+                retvalddres=$?
+                choiceddres=$(cat $tempfileddres)
+                case $retvalddres in
+                  $DIALOG_OK)
+                  case $choiceddres in
+                    "Source")
+                    f_radiolist "SELECT SOURCE" "Choose (defective) source drive to clone.\n\Z1\Zr\Zb(Use Space Bar)\Zn\nSelect from:" "$partlist" 2> $tempfileddressource
+                    retvalddressource=$?
+                    choiceddressource=$(cat $tempfileddressource)
+                    case $retvalddressource in
+                      $DIALOG_OK)
+                      ddressource=/dev/$choiceddressource
+                      f_partdiskinfo $ddressource "DDRESCUE SOURCE DISK INFO";;
+                    esac;;
+                    "Target")
+                    f_radiolist "SELECT TARGET" "Choose (new/clean) target drive to clone to.\n\Z1\Zr\Zb(Use Space Bar)\Zn\
+\nAttention: Select a drive with at least\
+\nthe same capacity. Higher capacity is OK.\
+\nSelect from:" "$partlist" 2> $tempfileddrestarget
+                    retvalddrestarget=$?
+                    choiceddrestarget=$(cat $tempfileddrestarget)
+                    case $retvalddrestarget in
+                      $DIALOG_OK)
+                      ddrestarget=/dev/$choiceddrestarget
+                      f_partdiskinfo $ddrestarget "DDRESCUE TARGET DISK INFO";;
+                    esac;;
+                    "HELP")
+                    f_msgbox "ddrescue Help Screen" "`ddrescue --help`";;
+                    "Options")
+                    f_inputbox "Options for ddrescue" "Options to add to ddrescue" 2>$tempfileddoptadd
+                    ddoptadd=$(cat $tempfileddoptadd);;
+                    "Rescue")
+                    if [ "$ddressource" = "" ] ; then
+                      f_msgbox "ERROR" "No source drive to rescue set!\nMust use SpaceBar to select Disk\n->Back to Main Menu."
+                      continue
+                    fi
+                    if [ "$ddrestarget" = "" ] ; then
+                      f_msgbox "ERROR" "No target drive for rescue set!\nMust use SpaceBar to select Disk\n->Back to Main Menu."
+                      continue
+                    fi
+                    f_yesno "ABOUT TO RESCUE" "Collected information:\
+\nDefective source drive: $ddressource\
+\nNew/Clean target drive: $ddrestarget\
+\n\nIt might take VERY long to rescue the drive,\
+\nbut as long as you do NOT reboot, you can press\
+\nCTRL-C at any time and dd_rhelp will continue\
+\nfrom the same position it stopped if you re-enter\
+\nthis menu. If dd_rhelp is almost done and is only\
+\ntrying to read the defective sectors, it is OK to CTRL-C.\
+\nNow using DDRESCUE, which has additional options\
+\n\nAre you sure?"
+                    case $? in
+                      $DIALOG_OK)
+                      clear
+#                     dd_rhelp $ddressource $ddrestarget
+                      script -c "ddrescue -f $ddoptadd $ddressource $ddrestarget" /tmp/ddrescue.out
+                      tr -cd '\n -z' </tmp/ddrescue.out | sed 's/\[A//g' | sed 's/Copying non-tried blocks...//g' >/tmp/ddrescue.out2
+                      f_textbox "DDRESCUE RESULTS" /tmp/ddrescue.out2;;
+                    esac;;
+                  esac;;
+                esac
+              done;;
+              "K: Parted")
+              clear
+              f_radiolist "Parted" "Choose Disk for Parted to Process\n\Z1\Zr\Zb(Use Space Bar)\Zn\nSelect from:" "$disklist" 2> /tmp/parted
+              parted /dev/$(cat /tmp/parted);;
+            esac;;
+          esac
+        done;;
+        "Show Help")
+        f_textbox "HELP" /help;;
+      esac;;
+      $DIALOG_CANCEL)
+      f_msgbox "CANCEL OPTION" "Thanks for using $projectname. visit $website"
+## Don't know about deleting all file from temp
+## on the CD boot doesn't make a difference, but when I test
+## the script on my regular Linux box, it is trying to delete
+## things not related to $projectname
+##rm /tmp/*
+      rm /tmp/test*
+      touch /tmp/out
+      touch /tmp/zeroout;;
+      $DIALOG_ESC)
+      echo "ESC pressed.";;
+    esac
+  done;;
+  $DIALOG_CANCEL)
+  exit 0;;
+  $DIALOG_ESC)
+  exit 0;;
+esac

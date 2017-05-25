@@ -1,0 +1,22 @@
+ver=$1-fc21
+if [ "$ver" = "-fc21" ]; then
+    alphaver=""
+    alphadev=""
+else
+    alphaver=alpha$ver
+    alphadev=a$ver
+fi
+cd /home/msetzerii/test49/g4l/bootcd/isolinux
+/home/msetzerii/failsafe
+#gedit failsafe.cfg
+cd /home/msetzerii/test49/g4l
+./makecdrm create "" $ver
+mv boot.iso /home/msetzerii/g4l-v0.49$alphaver.iso
+echo "Creating devel file"
+tar -Jcvf /home/msetzerii/g4l-v0.49$alphadev.devel.tar.xz *
+cd bootcd/rootfs
+/home/msetzerii/test2.sh >/home/msetzerii/latest49.$1
+cd /home/msetzerii
+./g4lup $1
+
+

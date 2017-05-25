@@ -1,0 +1,109 @@
+#!/bin/bash
+#
+#
+## Michael Setzer II - Program Modifications
+pcnt=0
+
+progress()
+{
+(
+while test "$pcnt" != "$value"
+do
+
+printf "%s\n" "XXX" 
+## Modified Jetcat-mod to display two decimal positions
+## have to cut off the decimals for the gauge to work.
+if test "$value" == "100"; then
+	pcnt=`tail -n1 /tmp/progress.out`
+        pcnt2=`tail -n1 /tmp/progress.out | cut -d. -f 1 `
+#	printf "%s\n" $pcnt2
+fi
+if test "$value" != "100"; then
+	if [ " " = "$testx" ]; then
+	    pcnt=`df . | grep % | grep / | awk '{print $4}'`
+	else
+	    pcnt=`df . | grep % | grep / | awk '{print $5}'`
+	fi
+#	echo $pcnt | cut -d% -f 1
+#        printf "%s\n" $pcnt
+fi
+printf "%s\n" "\n"
+## msg variable set before calling the progress function to 
+## make minor variation between different screens.
+printf "%s\n" "$msg"; printf "%s\n" "\n" 
+printf "%s\n" "\n" 
+printf "%s\n" "The progress bar shows the percentage of the amount written"; 
+if [ "$DIALOG" = "Xdialog" ]; then  
+   printf "%s\n" "\n"
+fi
+printf "%s\n" "to the size of the destination."; printf "%s\n" "\n"; 
+printf "%s\n" "Please stand by, this might take some time!"; printf "%s\n" "\n"; printf "%s\n" "\n"
+## Percentage displays with 2 decimal places, plus start time and current time.
+## This lets one check time status of process in addition to percentage
+printf "%s\n" "Progress"; printf "%s\n" "\n"
+printf "%s\n" "$pcnt"; printf "%s\n" "\n"
+printf "%s\n" "XXX";
+printf "%s\n" "$pcnt"
+sleep 5
+done
+) | 
+$DIALOG --backtitle "$backtitle" --title "Working..." --clear --gauge "One moment..." 30 100
+rm /tmp/progress.out
+touch /tmp/progress.out
+## Added a pause to let the user see final results before it returns.
+}
+
+xdyes=`which Xdialog`
+dyes=`which dialog`
+if [ -n "$DISPLAY" ] ; then
+     DIALOG="Xdialog"
+ else
+     DIALOG="dialog"
+fi
+if [ -z "$xdyes" ]; then
+    if [ "$DIALOG" = "Xdialog" ] ; then
+           DIALOG="dialog"
+    fi
+fi 
+if [ -z "$dyes" ]; then
+    if [ "$DIALOG" = "dialog" ] ; then
+           DIALOG=""
+    fi
+fi 
+: ${DIALOG_OK=0}
+: ${DIALOG_CANCEL=1}
+: ${DIALOG_ESC=255}
+
+backtitle="Program to clear free space"
+msg="Clearing Free Space on "`pwd`
+value="100"
+freesize=`df . | grep % | grep / | awk '{print $1 - $2}'`
+original=`df . | grep % | grep / | awk '{print $4}'`
+testx=`df . | grep % | grep / | cut -b1-1`
+if [ " " = "$testx" ]; then
+  freesize=`df . | grep % | grep / | awk '{print $1 - $2}'`
+  original=`df . | grep % | grep / | awk '{print $4}'`
+else 
+  freesize=`df . | grep % | grep / | awk '{print $2 - $3}'`
+  original=`df . | grep % | grep / | awk '{print $5}'`
+fi
+printf "%s\n" "$freesize $original"
+
+dd if=/dev/zero bs=2M 2>/dev/null | /jetcat-mod -f 5000 -p $freesize 2>/tmp/progress.out >0bits &
+progress
+value=$original
+msg="Removing 0bits file"
+if [ "$DIALOG" = "Xdialog" ]; then  
+	$DIALOG --infobox "PAUSE FOR 10 SECONDS" 5 35 10000
+else
+	$DIALOG --sleep 10 --infobox "PAUSE FOR 10 SECONDS" 5 25 
+fi
+
+rm 0bits &
+progress
+if [ "$DIALOG" = "Xdialog" ]; then  
+	$DIALOG --infobox "Drive Should now have all free space cleared" 5 60 10000
+else
+	$DIALOG --sleep 10 --infobox "Drive Should now have all free space cleared" 5 50 
+fi
+

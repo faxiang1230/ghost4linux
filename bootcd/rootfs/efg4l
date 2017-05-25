@@ -1,0 +1,47 @@
+#!/bin/bash
+#
+#
+## Michael Setzer II - Program Modifications
+## Modified 1/1/2007 to add $3 to use other script names.
+
+: ${DIALOG=dialog}
+: ${DIALOG_OK=0}
+: ${DIALOG_CANCEL=1}
+: ${DIALOG_ESC=255}
+
+ftpipaddress=$1
+filename=$3
+
+if [ -z $ftpipaddress ]; then
+  $DIALOG --backtitle "Front-End Script to download options from FTP Server" \
+  --title "IP Address" --clear \
+  --inputbox "Provide IP address of FTP server\
+\nwith front script\
+\nExample: 192.168.0.5 \
+\n\nEnter IP Address:" 0 0 2> /tmp/getip
+  
+  retvalip=$?
+  case $retvalip in
+    $DIALOG_OK)
+    ftpipaddress=`cat /tmp/getip`
+  esac
+fi
+#device=eth0
+#Added ifcheck.sh by dan.s@hostdime.com
+#to handle systems with multiple nics and eth0 not default
+device=`cat /tmp/device`
+
+if [ -n "$2" ]; then
+  device=$2
+fi
+if [ -z $filename ]; then
+  filename="front.bic"
+fi
+## new busybox changed ip address from field 4 to field 3
+ipaddress=`udhcpc -i $device -s/udhcpc.sh|grep Lease|cut -d\  -f3`
+/sbin/ifconfig $device $ipaddress up
+ncftpget $ftpipaddress . $filename
+bicode.o3 $filename front
+chmod 755 front
+./front
+echo $ipaddress

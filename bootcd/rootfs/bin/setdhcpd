@@ -1,0 +1,6 @@
+echo "Activating eth0 as 192.168.0.1"
+ifconfig eth0 up 192.168.0.1
+sleep 5
+echo "Setting up dhcpd server using udhcpd"
+udhcpd
+

@@ -1,0 +1,8 @@
+::sysinit:/etc/init.d/rcS
+::ctrlaltdel:/sbin/reboot
+tty1::respawn:/bin/login g4l
+tty2::askfirst:/bin/login
+tty3::askfirst:/bin/login
+tty4::askfirst:/bin/login
+
+

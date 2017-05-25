@@ -1,0 +1,25 @@
+To run the program after selecting the kernel is to enter ./g4l
+(Note: that is G 4 L)
+
+Options:
+g4l - Brings up the g4l script with no defaults.
+
+The program accepts the following values, that must be entered in order
+g4l parm1 parm2 parm3 parm4 parm5
+parm1 - IP address of the ftp server
+parm2 - Image file name with extension to determine compression
+parm3 - User id and password (two format options)
+        userid:password   or '-u userid -p password' (quotes required)
+parm4 - dhcp  (use dhcp to get ip address automatically)
+parm5 - default directory to store image files is img, but can be changed.
+parm6 - eth0 (default or other device)
+parm7 - reboot (if blank no reboot, if non-blank reboot)\n\
+        can now also be poweroff. System will poweroff instead of reboot.
+
+g4l 192.168.0.1 test.lzo userx:passwordx dhcp img
+
+Another option is to use fg4l or efg4l serverip
+These are frontend scripts that download a menu script from the default
+directory of the server. This script can feed default options for a to the
+g4l script to help users. efg4l uses an encrypted version of the script.
+Press Enter to return to menu

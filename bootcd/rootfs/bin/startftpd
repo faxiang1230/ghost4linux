@@ -1,0 +1,1 @@
+tcpsvd -vE 0.0.0.0 21 ftpd -w -v / 2>/var/log/tcpsvd.log &

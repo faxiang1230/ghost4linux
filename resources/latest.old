@@ -1,0 +1,1634 @@
+Released 0.48    2015/03/15
+kernel 3.12.32   2014/11/05 (bz3x12.32)
+Added check for no selection on Clone menu
+kernel 3.18-rc4  2014/11/09 (bz3x18.rc4)
+kernel 3.10.60   2014/11/14 (bz3x10.60)
+kernel 3.14.24   2014/11/14 (bz3x14.24)
+Updated firmware files
+kernel 3.17.3    2014/11/14 (bz3x17.3)
+kernel 3.17.3    now default kernel
+Update Grub4dos files
+kernel 3.18-rc5  2014/11/17 (bz3x18.rc5)
+updated f3read and f3write programs
+kernel 3.12.33   2014/11/20 (bz3x12.33)
+kernel 3.10.61   2014/11/21 (bz3x10.61)
+kernel 3.14.25   2014/11/21 (bz3x14.25)
+kernel 3.17.4    2014/11/21 (bz3x17.4)
+kernel 3.17.4    now default kernel
+kernel 3.18-rc6  2014/11/23 (bz3x18.rc6)
+kernel 3.18-rc7  2014/12/01 (bz3x18.rc7)
+kernel 3.12.34   2014/12/05 (bz3x12.34)
+kernel 3.10.62   2014/12/06 (bz3x10.62)
+kernel 3.14.26   2014/12/06 (bz3x14.26)
+kernel 3.17.5    2014/12/06 (bz3x17.5)
+kernel 3.17.5    now default kernel
+kernel 3.17.6    2014/12/07 (bz3x17.6)
+kernel 3.17.6    now default kernel
+kernel 3.18.0    2014/12/07 (bz3x18.0)
+Updated grub4dos 0.4.5c 11/27/2014
+kernel 3.12.35   2014/12/10 (bz3x12.35)
+Updated firmware files
+kernel 3.10.63   2014/12/16 (bz3x10.63)
+kernel 3.14.27   2014/12/16 (bz3x14.27)
+kernel 3.17.7    2014/12/16 (bz3x17.7)
+kernel 3.17.7    now default kernel
+kernel 3.18.1    2014/12/16 (bz3x18.1)
+Upgraded f3read and f3write to version 5
+Updated grub4dos files to 0.45c 2014/12/17
+kernel 3.15 removed since no longer updated
+kernel 3.19.rc1  2014/12/21 (bz3x19.rc1)
+kernel 3.18.1    now default kernel
+kernel 3.16 removed since no longer updated
+updated cleandrive8 and cleandrive8.dialog issue 
+with use with dash as shell on ubuntu 14.4
+Updated busybox from 1.22.1 to 1.23.0
+kernel 3.19.rc2  2014/12/29 (bz3x19.rc2)
+kernel 3.19.rc3  2015/01/06 (bz3x19.rc3)
+kernel 3.10.64   2015/01/08 (bz3x10.64)
+kernel 3.14.28   2015/01/08 (bz3x14.28)
+kernel 3.17.8    2015/01/08 (bz3x17.8)
+kernel 3.18.2    2015/01/08 (bz3x18.2)
+kernel 3.18.2    now default kernel
+kernel 3.19.rc4  2015/01/11 (bz3x19.rc4)
+kernel 3.12.36   2015/01/14 (bz3x12.36)
+kernel 3.10.65   2015/01/16 (bz3x10.65)
+kernel 3.14.29   2015/01/16 (bz3x14.29)
+kernel 3.18.3    2015/01/16 (bz3x18.3)
+kernel 3.18.3    now default kernel
+kernel 3.19.rc5  2015/01/18 (bz3x19.rc5)
+Fedora updates of support programs (bash and others)
+kernel 3.19.rc6  2015/01/26 (bz3x19.rc6)
+Updated grub4dos files to 0.45c 2015/01/20
+Updated busybox from 1.23.0 to 1.23.1
+kernel 3.10.66   2015/01/27 (bz3x10.66)
+kernel 3.14.30   2015/01/27 (bz3x14.30)
+kernel 3.18.4    2015/01/27 (bz3x18.4)
+kernel 3.18.4    now default kernel
+kernel 3.10.67   2015/01/30 (bz3x10.67)
+kernel 3.14.31   2015/01/30 (bz3x14.31)
+kernel 3.18.5    2015/01/30 (bz3x18.5)
+kernel 3.18.5    now default kernel
+kernel 3.12.37   2015/01/30 (bz3x12.37)
+kernel 3.19.rc7  2015/02/02 (bz3x19.rc7)
+kernel 3.10.68   2015/02/06 (bz3x10.68)
+kernel 3.14.32   2015/02/06 (bz3x14.32)
+kernel 3.18.6    2015/02/06 (bz3x18.6)
+kernel 3.18.6    now default kernel
+kernel 3.19.0    2015/02/09 (bz3x19.0)
+kernel 3.10.69   2015/02/11 (bz3x10.69)
+kernel 3.14.33   2015/02/11 (bz3x14.33)
+kernel 3.18.7    2015/02/11 (bz3x18.7)
+kernel 3.18.7    now default kernel
+Updated grub4dos 2015/02/09
+Applied patch to busybox
+kernel 3.12.38   2015/02/19 (bz3x12.38)
+kernel 3.19.0    now default kernel
+kernel 4.0-rc1   2015/02/23 (bz4x0.rc1)
+Number of support and library updates
+kernel 3.10.70   2015/02/27 (bz3x10.70)
+kernel 3.14.34   2015/02/27 (bz3x14.34)
+kernel 3.18.8    2015/02/27 (bz3x18.8)
+kernel 4.0-rc2   2015/03/03 (bz4x0.rc2)
+Updated grub4dos 2015/03/04
+kernel 3.10.71   2015/03/06 (bz3x10.71)
+kernel 3.14.35   2015/03/06 (bz3x14.35)
+kernel 3.18.9    2015/03/06 (bz3x18.9)
+kernel 3.19.1    2015/03/06 (bz3x19.1)
+kernel 3.19.1    now default kernel
+kernel 4.0-rc3   2015/03/08 (bz4x0.rc3)
+Some support file updates
+
+Released 0.47    2014/11/02
+kernel 3.15-rc2  2014/04/20 (bz3x15.rc2)
+kernel 3.13.11   2014/04/22 (bz3x13.11)
+kernel 3.12.18   2014/04/23 (bz3x12.18)
+kernel 3.4.88    2014/04/27 (bz3x4.88)
+kernel 3.10.38   2014/04/27 (bz3x10.38)
+kernel 3.14.2    2014/04/27 (bz3x14.2)
+kernel 3.14.2    now default kernel
+kernel 3.15-rc3  2014/04/28 (bz3x15.rc3)
+kernel 3.2.58    2014/04/30 (bz3x2.58)
+Updated firmware files 
+kernel 3.15-rc4  2014/05/05 (bz3x15.rc4)
+kernel 3.4.89    2014/05/06 (bz3x4.89)
+kernel 3.10.39   2014/05/06 (bz3x10.39)
+kernel 3.14.3    2014/05/06 (bz3x14.3)
+kernel 3.14.3    now default kernel
+kernel 3.0.101	 removed
+kernel 3.12.19   2014/05/09 (bz3x12.19)
+kernel 3.15-rc5  2014/05/09 (bz3x15.rc5)
+kernel 3.4.90    2014/05/13 (bz3x4.90)
+kernel 3.10.40   2014/05/13 (bz3x10.40)
+kernel 3.14.4    2014/05/13 (bz3x14.4)
+kernel 3.14.4    now default kernel
+kernel 3.12.20   2014/05/15 (bz3x12.20)
+kernel 3.2.59    2014/05/18 (bz3x2.59)
+kernel 3.4.91    2014/05/18 (bz3x4.91)
+kernel 3.15-rc6  2014/05/21 (bz3x15.rc6)
+kernel 3.15-rc7  2014/05/25 (bz3x15.rc7)
+Modified 3.14.4 and 3.15-rc7 kernels to add
+additional serial console option
+kernel 3.10.41   2014/05/31 (bz3x10.41)
+kernel 3.14.5    2014/05/31 (bz3x14.5)
+kernel 3.14.5    now default kernel
+kernel 3.15-rc8  2014/06/02 (bz3x15.rc8)
+kernel 3.12.21   2014/06/02 (bz3x12.21)
+kernel 3.4.92    2014/06/07 (bz3x4.92)
+kernel 3.10.42   2014/06/07 (bz3x10.42)
+kernel 3.14.6    2014/06/07 (bz3x14.6)
+kernel 3.14.6    now default kernel
+kernel 3.15.0    2014/06/08 (bz3x15.0)
+kernel 3.2.60    2014/06/11 (bz3x2.60)
+kernel 3.4.93    2014/06/11 (bz3x4.93)
+kernel 3.10.43   2014/06/11 (bz3x10.43)
+kernel 3.12.22   2014/06/11 (bz3x12.22)
+kernel 3.14.7    2014/06/11 (bz3x14.7)
+kernel 3.14.7    now default kernel
+kernel 3.16-rc1  2014/06/16 (bz3x16.rc1)
+kernel 3.4.94    2014/06/16 (bz3x4.94)
+kernel 3.10.44   2014/06/16 (bz3x10.44)
+kernel 3.14.8    2014/06/16 (bz3x14.8)
+kernel 3.14.8    now default kernel
+kernel 3.15.1    2014/06/16 (bz3x15.1)
+kernel 3.16-rc2  2014/06/22 (bz3x16.rc2)
+increased ramdisk size to 144M due to larger firmware
+and programs from Fedora 20 compared to Fedora 16
+kernel 3.12.23   2014/06/25 (bz3x12.23)
+kernel 3.15.1    now default kernel
+kernel 3.4.95    2014/06/26 (bz3x4.95)
+kernel 3.10.45   2014/06/26 (bz3x10.45)
+kernel 3.14.9    2014/06/26 (bz3x14.9)
+kernel 3.15.2    2014/06/26 (bz3x15.2)
+kernel 3.15.2    now default kernel
+Update LZO library to 2.08
+kernel 3.16-rc3  2014/06/29 (bz3x16.rc3)
+kernel 3.4.96    2014/07/01 (bz3x4.96)
+kernel 3.10.46   2014/07/01 (bz3x10.46)
+kernel 3.14.10   2014/07/01 (bz3x14.10)
+kernel 3.15.3    2014/07/01 (bz3x15.3)
+kernel 3.15.3    now default kernel
+kernel 3.12.24   2014/07/04 (bz3x12.24)
+kernel 3.16-rc4  2014/07/06 (bz3x16.rc4)
+kernel 3.4.97    2014/07/07 (bz3x4.97)
+kernel 3.10.47   2014/07/07 (bz3x10.47)
+kernel 3.14.11   2014/07/07 (bz3x14.11)
+kernel 3.15.4    2014/07/07 (bz3x15.4)
+kernel 3.15.4    now default kernel
+kernel 3.4.98    2014/07/09 (bz3x4.98)
+kernel 3.10.48   2014/07/09 (bz3x10.48)
+kernel 3.14.12   2014/07/09 (bz3x14.12)
+kernel 3.15.5    2014/07/09 (bz3x15.5)
+kernel 3.15.5    now default kernel
+kernel 3.2.61    2014/07/11 (bz3x2.61)
+kernel 3.16-rc5  2014/07/13 (bz3x16.rc5)
+kernel 3.4.99    2014/07/17 (bz3x4.99)
+kernel 3.10.49   2014/07/17 (bz3x10.49)
+kernel 3.14.13   2014/07/17 (bz3x14.13)
+kernel 3.15.6    2014/07/17 (bz3x15.6)
+kernel 3.15.6    now default kernel
+kernel 3.16-rc6  2014/07/21 (bz3x16.rc6)
+kernel 3.12.25   2014/07/22 (bz3x12.25)
+kernel 3.4.100   2014/07/28 (bz3x4.100)
+kernel 3.10.50   2014/07/28 (bz3x10.50)
+kernel 3.14.14   2014/07/28 (bz3x14.14)
+kernel 3.15.7    2014/07/28 (bz3x15.7)
+kernel 3.15.7    now default kernel
+kernel 3.16-rc7  2014/07/27 (bz3x16.rc7)
+kernel 3.12.26   2014/08/01 (bz3x12.26)
+kernel 3.4.101   2014/08/01 (bz3x4.101)
+kernel 3.10.51   2014/08/01 (bz3x10.51)
+kernel 3.14.15   2014/08/01 (bz3x14.15)
+kernel 3.15.8    2014/08/01 (bz3x15.8)
+kernel 3.15.8    now default kernel
+kernel 3.16.0    2014/08/03 (bz3x16.0)
+kernel 3.4.102   2014/08/07 (bz3x4.102)
+kernel 3.10.52   2014/08/07 (bz3x10.52)
+kernel 3.14.16   2014/08/07 (bz3x14.16)
+kernel 3.15.9    2014/08/07 (bz3x15.9)
+kernel 3.15.9    now default kernel
+kernel 3.4.103   2014/08/14 (bz3x4.103)
+kernel 3.10.53   2014/08/14 (bz3x10.53)
+kernel 3.14.17   2014/08/14 (bz3x14.17)
+kernel 3.15.10   2014/08/14 (bz3x15.10)
+kernel 3.15.10   now default kernel
+kernel 3.16.1    2014/08/03 (bz3x16.1)
+kernel 3.17-rc1  2014/08/16 (bz3x17.rc1)
+kernel 3.16.1    now default kernel
+Updated firmware files 
+kernel 3.17-rc2  2014/08/25 (bz3x17.rc2)
+kernel 3.12.27   2014/08/26 (bz3x12.27)
+kernel 3.17-rc3  2014/09/01 (bz3x17.rc3)
+kernel 3.10.54   2014/09/05 (bz3x10.54)
+kernel 3.14.18   2014/09/05 (bz3x14.18)
+kernel 3.16.2    2014/09/05 (bz3x16.2)
+kernel 3.16.2    now default kernel
+kernel 3.12.28   2014/09/07 (bz3x12.28)
+kernel 3.17-rc4  2014/09/07 (bz3x17.rc4)
+kernel 3.17-rc5  2014/09/15 (bz3x17.rc5)
+Updated firmware files 
+kernel 3.10.55   2014/09/17 (bz3x10.55)
+kernel 3.14.19   2014/09/17 (bz3x14.19)
+kernel 3.16.3    2014/09/17 (bz3x16.3)
+kernel 3.16.3    now default kernel
+kernel 3.17-rc6  2014/09/21 (bz3x17.rc6)
+kernel 3.4.104   2014/09/25 (bz3x4.104)
+#Compiled kernels to set ramdisk_size values
+#kernel option
+#CONFIG_BLK_DEV_RAM_COUNT=1
+#CONFIG_BLK_DEV_RAM_SIZE=147456
+kernel 3.17-rc7  2014/09/29 (bz3x17.rc7)
+Large update of the files with update and libraries
+kernel 3.12.29   2014/09/30 (bz3x12.29)
+kernel 3.14.20   2014/10/05 (bz3x14.20)
+kernel 3.16.4    2014/10/05 (bz3x16.4)
+kernel 3.16.4    now default kernel
+kernel 3.17.0    2014/10/05 (bz3x17.0)
+kernel 3.10.56   2014/10/05 (bz3x10.56)
+kernel 3.12.30   2014/10/08 (bz3x12.30)
+kernel 3.10.57   2014/10/09 (bz3x10.57)
+kernel 3.14.21   2014/10/09 (bz3x14.21)
+kernel 3.16.5    2014/10/09 (bz3x16.5)
+kernel 3.16.5    now default kernel
+kernel 3.10.58   2014/10/15 (bz3x10.58)
+kernel 3.14.22   2014/10/15 (bz3x14.22)
+kernel 3.16.6    2014/10/15 (bz3x16.6)
+kernel 3.16.6    now default kernel
+kernel 3.17.1    2014/10/15 (bz3x17.1)
+kernel 3.4.104   removed
+kernel 3.18-rc1  2014/10/20 (bz3x18.rc1)
+kernel 3.17.1    now default kernel
+kernel 3.12.31   2014/10/22 (bz3x12.31)
+Updated grub4dos files and program to 
+install with newer versions of windows
+Check makeusb.grub4dos
+kernel 3.18-rc2  2014/10/26 (bz3x18.rc2)
+kernel 3.10.59   2014/10/30 (bz3x10.59)
+kernel 3.14.23   2014/10/30 (bz3x14.23)
+kernel 3.16.7    2014/10/30 (bz3x16.7)
+kernel 3.17.2    2014/10/15 (bz3x17.2)
+kernel 3.17.2    now default kernel
+Upgraded syslinux to 6.03
+Made minor changes to mbrbackup2 and 
+mbrrestore2 process to allow for disk
+changes.
+kernel 3.18-rc3  2014/11/02 (bz3x18.rc3)
+
+Released 0.46    2014/04/14
+kernel 3.2.47    2013/06/19 (bz3x2.47)
+kernel 3.0.83    2013/06/20 (bz3x0.83)
+kernel 3.4.50    2013/06/20 (bz3x4.50)
+kernel 3.9.7     2013/06/20 (bz3x9.7)
+kernel 3.9.7     now default kernel
+kernel 3.10-rc7  2013/06/22 (bz3x10.rc7)
+kernel 3.0.84    2013/06/27 (bz3x0.84)
+kernel 3.4.51    2013/06/27 (bz3x4.51)
+kernel 3.9.8     2013/06/27 (bz3x9.8)
+kernel 3.9.8     now default kernel
+busybox updated 1.21.1 2013/06/30
+added uuidgen
+kernel 3.2.48    2013/06/29 (bz3x2.48)
+kernel 3.10.0    2013/06/30 (bz3x10.0)
+kernel 3.0.85    2013/07/03 (bz3x0.85)
+kernel 3.4.52    2013/07/03 (bz3x4.52)
+kernel 3.9.9     2013/07/03 (bz3x9.9)
+kernel 3.9.9     now default kernel
+updated testdisk-6.14-WIP as of 2013/07/11
+kernel 3.10.1    2013/07/13 (bz3x10.1)
+kernel 3.0.86    2013/07/13 (bz3x0.86)
+kernel 3.4.53    2013/07/13 (bz3x4.53)
+kernel 3.9.10    2013/07/13 (bz3x9.10)
+kernel 3.9.10    now default kernel
+kernel 3.11-rc1  2013/07/14 (bz3x11.rc1)
+kernel 3.10.1    now default kernel
+kernel 3.9.11    2013/07/21 (bz3x9.11)
+kernel 3.11-rc2  2013/07/21 (bz3x11.rc2)
+kernel 3.10.2    2013/07/22 (bz3x10.2)
+kernel 3.0.87    2013/07/22 (bz3x0.87)
+kernel 3.4.54    2013/07/22 (bz3x4.54)
+kernel 3.10.2    now default kernel
+updated linux-firmware files 2013/07/24
+kernel 3.10.3    2013/07/25 (bz3x10.3)
+kernel 3.10.3    now default kernel
+set g4l script to include uuid reset option
+kernel 3.2.49    2013/07/27 (bz3x2.49)
+kernel 3.0.88    2013/07/28 (bz3x0.88)
+kernel 3.4.55    2013/07/28 (bz3x4.55)
+kernel 3.10.4    2013/07/28 (bz3x10.4)
+kernel 3.10.4    now default kernel
+kernel 3.11-rc3  2013/07/29 (bz3x11.rc3)
+updated testdisk-6.14 as of 2013/07/30
+kernel 3.2.50    2013/08/02 (bz3x2.50)
+kernel 3.0.89    2013/08/04 (bz3x0.89)
+kernel 3.4.56    2013/08/04 (bz3x4.56)
+kernel 3.10.5    2013/08/04 (bz3x10.5)
+kernel 3.10.5    now default kernel
+kernel 3.11-rc4  2013/08/04 (bz3x11.rc4)
+Modified ifcheck2.sh to udhcpc -n -t 8 -T 5 
+to hopefully have the dhcpd ip be more robust.
+updated linux-firmware files 2013/08/12
+kernel 3.0.90    2013/08/12 (bz3x0.90)
+kernel 3.4.57    2013/08/12 (bz3x4.57)
+kernel 3.10.6    2013/08/12 (bz3x10.6)
+kernel 3.10.6    now default kernel
+kernel 3.11-rc5  2013/08/12 (bz3x11.rc5)
+kernel 3.0.91    2013/08/15 (bz3x0.91)
+kernel 3.4.58    2013/08/15 (bz3x4.58)
+kernel 3.10.7    2013/08/15 (bz3x10.7)
+kernel 3.10.7    now default kernel
+kernel 3.11-rc6  2013/08/18 (bz3x11.rc6)
+kernel 3.0.93    2013/08/20 (bz3x0.93)
+kernel 3.4.59    2013/08/20 (bz3x4.59)
+kernel 3.10.8    2013/08/20 (bz3x10.8)
+kernel 3.10.8    now default kernel
+kernel 3.10.9    2013/08/20 (bz3x10.9)
+kernel 3.10.9    now default kernel
+kernel 3.11-rc7  2013/08/26 (bz3x11.rc7)
+kernel 3.0.94    2013/08/29 (bz3x0.94)
+kernel 3.4.60    2013/08/29 (bz3x4.60)
+kernel 3.10.10   2013/08/29 (bz3x10.10)
+kernel 3.10.10   now default kernel
+kernel 3.11.0    2013/09/02 (bz3x11.0)
+kernel 3.0.95    2013/09/08 (bz3x0.95)
+kernel 3.4.61    2013/09/08 (bz3x4.61)
+kernel 3.10.11   2013/09/08 (bz3x10.11)
+kernel 3.10.11   now default kernel
+upgraded linux-firmware files 
+kernel 3.2.51    2013/09/10 (bz3x2.51)
+kernel 3.11.1    2013/09/14 (bz3x11.1)
+kernel 3.0.96    2013/09/14 (bz3x0.96)
+kernel 3.4.62    2013/09/14 (bz3x4.62)
+kernel 3.10.12   2013/09/14 (bz3x10.12)
+kernel 3.10.12   now default kernel
+kernel 3.12-rc1  2013/09/16 (bz3x12.rc1)
+kernel 3.11.1    now default kernel
+Added  Testdisk-7.0WIP 
+Remove Testdisk-6.13
+Updated fsarchiver7 git 2013/09/21
+kernel 3.12-rc2   2013/09/23 (bz3x12.rc2)
+kernel 3.0.97    2013/09/26 (bz3x0.97)
+kernel 3.4.63    2013/09/27 (bz3x4.63)
+kernel 3.11.2    2013/09/27 (bz3x11.2)
+kernel 3.10.13   2013/09/27 (bz3x10.13)
+kernel 3.10.13   now default kernel
+kernel 3.12-rc3   2013/09/29 (bz3x12.rc3)
+kernel 3.0.98    2013/10/01 (bz3x0.98)
+kernel 3.4.64    2013/10/01 (bz3x4.64)
+kernel 3.11.3    2013/10/01 (bz3x11.3)
+kernel 3.10.14   2013/10/01 (bz3x10.14)
+kernel 3.10.14   now default kernel
+Latest 3.11.3 seems to have fixed dhcpd issue, 
+which appears to have been an skge driver issue.
+kernel 3.11.3    now default kernel
+kernel 3.0.99    2013/10/05 (bz3x0.99)
+kernel 3.4.65    2013/10/05 (bz3x4.65)
+kernel 3.10.15   2013/10/05 (bz3x10.15)
+kernel 3.11.4    2013/10/05 (bz3x11.4)
+kernel 3.11.4    now default kernel
+Upgrade memtest86+ to 5.01
+Added memtest86+ 5.01 and memtest86 v4.3.4
+on g4l-lite files.
+kernel 3.12-rc4  2013/10/06 (bz3x12.rc4)
+kernel 3.0.100   2013/10/13 (bz3x0.100)
+kernel 3.4.66    2013/10/13 (bz3x4.66)
+kernel 3.10.16   2013/10/13 (bz3x10.16)
+kernel 3.12-rc5  2013/10/13 (bz3x12.rc5)
+kernel 3.11.5    2013/10/14 (bz3x11.5)
+kernel 3.11.5    now default kernel
+linux-firmware files updated (2013/10/15)
+kernel 3.10.17   2013/10/18 (bz3x10.17)
+kernel 3.11.6    2013/10/18 (bz3x11.6)
+kernel 3.11.6    now default kernel
+kernel 3.12-rc6  2013/10/19 (bz3x12.rc6)
+kernel 3.0.101   2013/10/22 (bz3x0.101)
+kernel 3.4.67    2013/10/22 (bz3x4.67)
+kernel 3.2.52    2013/10/26 (bz3x2.52)
+kernel 3.12-rc7  2013/10/27 (bz3x12.rc7)
+kernel 3.12.0    2013/11/03 (bz3x12.0)
+kernel 3.4.68    2013/11/04 (bz3x4.68)
+kernel 3.10.18   2013/11/04 (bz3x10.18)
+kernel 3.11.7    2013/11/04 (bz3x11.7)
+kernel 3.11.7    now default kernel
+kernel 3.4.69    2013/11/13 (bz3x4.69)
+kernel 3.10.19   2013/11/13 (bz3x10.19)
+kernel 3.11.8    2013/11/13 (bz3x11.8)
+kernel 3.11.8    now default kernel
+linux-firmware files updated (2013/11/13)
+kernel 3.4.70    2013/11/20 (bz3x4.70)
+kernel 3.10.20   2013/11/20 (bz3x10.20)
+kernel 3.11.9    2013/11/20 (bz3x11.9)
+kernel 3.12.1    2013/11/20 (bz3x12.1)
+kernel 3.12.1    now default kernel
+kernel 3.9.11    removed
+kernel 3.13-rc1  2013/11/22 (bz3x13.rc1)
+kernel 3.2.53    2013/11/28 (bz3x2.53)
+kernel 3.4.71    2013/11/29 (bz3x4.71)
+kernel 3.10.21   2013/11/29 (bz3x10.21)
+kernel 3.11.10   2013/11/29 (bz3x11.10)
+kernel 3.12.2    2013/11/29 (bz3x12.2)
+kernel 3.12.2    now default kernel
+kernel 3.13-rc2  2013/11/29 (bz3x13.rc2)
+kernel 3.7.10    2013/02/27 REMOVED
+Update f3read and f3write
+kernel 3.8.13    2013/05/11 REMOVED
+kernel 3.4.72    2013/12/04 (bz3x4.72)
+kernel 3.10.22   2013/12/04 (bz3x10.22)
+kernel 3.12.3    2013/12/04 (bz3x12.3)
+kernel 3.12.3    now default kernel
+kernel 3.13-rc3  2013/12/06 (bz3x13.rc3)
+kernel 3.4.73    2013/12/06 (bz3x4.73)
+kernel 3.10.23   2013/12/06 (bz3x10.23)
+kernel 3.12.4    2013/12/06 (bz3x12.4)
+kernel 3.12.4    now default kernel
+kernel 3.4.74    2013/12/12 (bz3x4.74)
+kernel 3.10.24   2013/12/12 (bz3x10.24)
+kernel 3.12.5    2013/12/12 (bz3x12.5)
+kernel 3.12.5    now default kernel
+kernel 3.13-rc4  2013/12/15 (bz3x13.rc4)
+kernel 3.4.75    2013/12/20 (bz3x4.75)
+kernel 3.10.25   2013/12/20 (bz3x10.25)
+kernel 3.12.6    2013/12/20 (bz3x12.6)
+kernel 3.12.6    now default kernel
+kernel 3.13-rc5  2013/12/22 (bz3x13.rc5)
+kernel 3.13-rc6  2013/12/30 (bz3x13.rc6)
+kernel 3.2.54    2014/01/03 (bz3x2.54)
+linux-firmware files updated (2014/01/04)
+kernel 3.13-rc7  2014/01/04 (bz3x13.rc7)
+kernel 3.4.76    2014/01/08 (bz3x4.76)
+rebuilt kernels to fix kernel message issue
+Config_default_message_loglevel=3
+kernel 3.10.26   2014/01/09 (bz3x10.26)
+kernel 3.12.7    2014/01/09 (bz3x12.7)
+kernel 3.12.7    now default kernel
+Applied patches to busybox
+kernel 3.13-rc8  2014/01/12 (bz3x13.rc8)
+Changed kernel loglevel to 4 in rcS
+to elimanate usb mouse info messages
+Modified g4lmenu to conver \x20 to spaces
+(Above happens in /proc/cmdline with Fedora 20?)
+kernel 3.4.77    2014/01/15 (bz3x4.77)
+kernel 3.10.27   2014/01/15 (bz3x10.27)
+kernel 3.12.8    2014/01/15 (bz3x12.8)
+kernel 3.12.8    now default kernel
+busybox updated 1.22.1 2014/01/20
+kernel 3.13.0    2014/01/20 (bz3x13.0)
+updated linux-firmware files 2014/01/24
+kernel 3.10.28   2014/01/25 (bz3x10.28)
+kernel 3.12.9    2014/01/25 (bz3x12.9)
+kernel 3.12.9    now default kernel
+kernel 3.4.78    2014/01/29 (bz3x4.78)
+kernel 3.13.1    2014/01/29 (bz3x13.1)
+kernel 3.13.1    now default kernel
+kernel 3.14-rc1  2014/02/03 (bz3x14.rc1)
+kernel 3.4.79    2014/02/06 (bz3x4.79)
+kernel 3.10.29   2014/02/06 (bz3x10.29)
+kernel 3.12.10   2014/02/06 (bz3x12.10)
+kernel 3.13.2    2014/02/06 (bz3x13.2)
+kernel 3.13.2    now default kernel
+kernel 3.14-rc2  2014/02/10 (bz3x14.rc2)
+kernel 3.4.80    2014/02/13 (bz3x4.80)
+kernel 3.10.30   2014/02/13 (bz3x10.30)
+kernel 3.12.11   2014/02/13 (bz3x12.11)
+kernel 3.13.3    2014/02/13 (bz3x13.3)
+kernel 3.13.3    now default kernel
+kernel 3.2.55    2014/02/15 (bz3x2.55)
+kernel 3.14-rc3  2014/02/16 (bz3x14.rc3)
+kernel 3.4.81    2014/02/20 (bz3x4.81)
+kernel 3.10.31   2014/02/20 (bz3x10.31)
+kernel 3.12.12   2014/02/20 (bz3x12.12)
+kernel 3.13.4    2014/02/20 (bz3x13.4)
+kernel 3.13.4    now default kernel
+fsarchiver 6.18 released and built 2014/02/13
+linux-firmware files updated (2014/02/22)
+kernel 3.4.82    2014/02/22 (bz3x4.82)
+kernel 3.10.32   2014/02/22 (bz3x10.32)
+kernel 3.12.13   2014/02/22 (bz3x12.13)
+kernel 3.13.5    2014/02/22 (bz3x13.5)
+kernel 3.13.5    now default kernel
+kernel 3.14-rc4  2014/02/24 (bz3x14.rc4)
+kernel 3.14-rc5  2014/03/03 (bz3x14.rc5)
+fsarchiver 6.19 released and built 2014/03/01
+Update ntfsprogs released Feb 23, 2014
+rebuild testdisk programs to use new ntfs-3g
+kernel 3.10.33   2014/03/07 (bz3x10.33)
+kernel 3.13.6    2014/03/07 (bz3x13.6)
+kernel 3.13.6    now default kernel
+kernel 3.14-rc6  2014/03/10 (bz3x14.rc6)
+kernel 3.4.83    2014/03/11 (bz3x4.83)
+kernel 3.12.14   2014/03/10 (bz3x12.14)
+kernel 3.14-rc7  2014/03/17 (bz3x14.rc7)
+kernel 3.4.84    2014/03/24 (bz3x4.84)
+kernel 3.10.34   2014/03/24 (bz3x10.34)
+kernel 3.13.7    2014/03/24 (bz3x13.7)
+kernel 3.13.7    now default kernel
+updated linux-firmware files 2014/03/24
+kernel 3.14-rc8  2014/03/25 (bz3x14.rc8)
+kernel 3.12.15   2014/03/26 (bz3x12.15)
+kernel 3.14.0    2014/03/31 (bz3x14.0)
+kernel 3.4.85    2014/03/31 (bz3x4.85)
+Added extra c32 modules for testing (SYSLINUX)
+pcitest, vesainfo, vpdtest, dmitest, cpuid, cpuidtest
+kernel 3.10.35   2014/03/31 (bz3x10.35)
+kernel 3.13.8    2014/03/31 (bz3x13.8)
+kernel 3.13.8    now default kernel
+kernel 3.2.56    2014/04/01 (bz3x2.56)
+kernel 3.12.16   2014/04/02 (bz3x12.16)
+kernel 3.4.86    2014/04/03 (bz3x4.86)
+kernel 3.10.36   2014/04/03 (bz3x10.36)
+kernel 3.13.9    2014/04/03 (bz3x13.9)
+kernel 3.13.9    now default kernel
+kernel 3.12.17   2014/04/07 (bz3x12.17)
+kernel 3.2.57    2014/04/09 (bz3x2.57)
+Removed Kernel 3.11.x as it was dropped from kernel.org
+g4l30o11 has an option added to the main menu that
+allows for the removal of hiberfil.sys and pagefile.sys
+from windows partitions. Note sure that is the best location
+but has option available, and manually removing them makes
+image files with ntfsclone smaller, but should only be done
+if the system has been fully shut down and not actually in 
+hiberation mode.
+kernel 3.15-rc1  2014/04/13 (bz3x15.rc1)
+kernel 3.4.87    2014/04/14 (bz3x4.87)
+kernel 3.10.37   2014/04/14 (bz3x10.37)
+kernel 3.13.10   2014/04/14 (bz3x13.10)
+kernel 3.14.1    2014/04/14 (bz3x14.1)
+kernel 3.14.1    now default kernel
+
+Released 0.45    2013/06/15
+kernel 3.9.0-rc4 2013/03/23 (bz3x9.rc4)
+kernel 3.2.42    2013/03/27 (bz3x2.42)
+kernel 3.0.71    2013/03/28 (bz3x0.71)
+kernel 3.4.38    2013/03/28 (bz3x4.38)
+kernel 3.8.5     2013/03/28 (bz3x8.5)
+kernel 3.8.5     now default kernel
+kernel 3.9.0-rc5 2013/03/31 (bz3x9.rc5)
+kernel 3.0.72    2013/04/05 (bz3x0.72)
+kernel 3.4.39    2013/04/05 (bz3x4.39)
+kernel 3.8.6     2013/04/05 (bz3x8.6)
+kernel 3.8.6     now default kernel
+kernel 3.9.0-rc6 2013/04/08 (bz3x9.rc6)
+kernel 3.2.43    2013/04/10 (bz3x2.43)
+kernel 3.0.73    2013/04/12 (bz3x0.73)
+kernel 3.4.40    2013/04/12 (bz3x4.40)
+kernel 3.8.7     2013/04/12 (bz3x8.7)
+kernel 3.8.7     now default kernel
+added delay message for getting filename list
+kernel 3.9.0-rc7 2013/04/15 (bz3x9.rc7)
+kernel 3.0.74    2013/04/17 (bz3x0.74)
+kernel 3.4.41    2013/04/17 (bz3x4.41)
+kernel 3.8.8     2013/04/17 (bz3x8.8)
+kernel 3.8.8     now default kernel
+Modified ddrescue process to save output file
+and display after completion.
+Added code to display disk info from clone option 
+to the ddrescue option
+kernel 3.9.0-rc8 2013/04/21 (bz3x9.rc8)
+kernel 3.0.75    2013/04/26 (bz3x0.75)
+kernel 3.2.44    2013/04/25 (bz3x2.44)
+kernel 3.4.42    2013/04/26 (bz3x4.42)
+kernel 3.8.9     2013/04/25 (bz3x8.9)
+kernel 3.8.9     now default kernel
+kernel 3.8.10    2013/04/26 (bz3x8.10)
+kernel 3.8.10    now default kernel
+kernel 3.9.0     2013/04/29 (bz3x9.0)
+kernel 3.0.76    2013/05/01 (bz3x0.76)
+kernel 3.4.43    2013/05/01 (bz3x4.43)
+kernel 3.8.11    2013/05/01 (bz3x8.11)
+kernel 3.8.11    now default kernel
+Working with 3 students to update documentation
+to the 0.44 released version.
+Marc Louis P. Santiago, James Salinas, and John Haggerty
+Change ramdisk_size to 96M from 64M
+correct some spelling errors in files
+Added 3 more firmwares for the bnx2x device as another user
+was having issues with kernel not having it. Only in bz3x8.11
+kernel for now.
+kernel 3.9.1     2013/05/08 (bz3x9.1)
+kernel 3.0.77    2013/05/08 (bz3x0.77)
+kernel 3.4.44    2013/05/08 (bz3x4.44)
+kernel 3.8.12    2013/05/08 (bz3x8.12)
+kernel 3.8.12    now default kernel
+The above kernels have the following firmware added to that
+which the kernel.org source includes do to users having hardware
+that needs the additions. The first 3 were just added the other 
+2 have been added for some time.
+./bnx2x/bnx2x-e1h-7.0.23.0.fw
+./bnx2x/bnx2x-e1h-7.0.29.0.fw
+./bnx2x/bnx2x-e1h-7.0.20.0.fw
+./bnx2x/bnx2x-e2-7.2.51.0.fw
+./bnx2/bnx2-mips-09-6.2.1b.fw
+kernel 3.9.2     2013/05/11 (bz3x9.2)
+kernel 3.0.78    2013/05/11 (bz3x0.78)
+kernel 3.4.45    2013/05/11 (bz3x4.45)
+kernel 3.8.13    2013/05/11 (bz3x8.13)
+kernel 3.8.13    now default kernel
+The bz3x8.13 kernel has the complete bnx2x firmware files
+that increase the kernel size by about 4M. Looking to make 
+firmware in filesystem once instead of building in each kernel.
+Added echo /sbin/mdev > /proc/sys/kernel/hotplug to rcS init script
+kernel 3.2.45    2013/05/15 (bz3x2.45)
+Have rebuilt the 3.0.x, 3.2.x, 3.4.x, 3.8.x and 3.9.x kernels to have
+the kernel.org firmware only, but have added all the bnx2x and bnx2 firmware
+that is in the linux-firmware download. In the tests that I have done by a 
+user with bnx2x firmware, the earlier changes work.
+If anyone knows of other firmware from the linux-git that should be added, 
+I can look into it. May have to increase the image size of the ramdisk.
+Increased ramdisk size to 128M and have added all the linux-firmware files.
+Cleanup kernels. Remove 3.1, 3.3, 3.5 and 3.6, which are not being updated.
+Change default to 3.9.2
+kernel 3.10-rc1  2013/05/12 (bz3x10.rc1)
+Test in changing development kit to be compressed with xz instead of gz
+updated testdisk-6.14-WIP as of 2013/05/08
+kernel 3.0.79    2013/05/19 (bz3x0.79)
+kernel 3.4.46    2013/05/19 (bz3x4.46)
+kernel 3.9.3     2013/05/19 (bz3x9.3)
+kernel 3.9.3     now default kernel
+Rebuilt all kernels without built-in firmware, using /lib/firmware
+kernel 3.0.80    2013/05/24 (bz3x0.80)
+kernel 3.4.47    2013/05/24 (bz3x4.47)
+kernel 3.9.4     2013/05/24 (bz3x9.4)
+kernel 3.9.4     now default kernel
+kernel 3.10-rc3  2013/05/26 (bz3x10.rc3)
+kernel 3.2.46    2013/05/30 (bz3x2.46)
+kernel 3.10-rc4  2013/06/02 (bz3x10.rc4)
+added ls.c32 and meminfo.c32
+syslinux 5.10 released 
+includes ls.c32, meminfo.c32 and poweroff.c32
+kernel 3.0.81    2013/06/07 (bz3x0.81)
+kernel 3.4.48    2013/06/07 (bz3x4.48)
+kernel 3.9.5     2013/06/07 (bz3x9.5)
+kernel 3.9.5     now default kernel
+Updated linux-firmware files asof 6/07/2013
+kernel 3.10-rc5  2013/06/09 (bz3x10.rc5)
+kernel 3.0.82    2013/06/13 (bz3x0.82)
+kernel 3.4.49    2013/06/13 (bz3x4.49)
+kernel 3.9.6     2013/06/13 (bz3x9.6)
+kernel 3.9.6     now default kernel
+kernel 3.10-rc6  2013/06/15 (bz3x10.rc6)
+busybox-1.22.0	 2014/01/01
+
+Released 0.44   2013/03/17
+Updated support programs and libs
+added nodhcp option to kernel line to skip dhcpd check
+modified g4l30o11 main script to left $4 set fixed ip 
+in addition to using dhcpd.
+Further modified rcS script to set fixed ip address via
+nodhcp=ipaddress
+/sbin/ifconfig eth0 `cat /proc/cmdline | sed -e 's/ /\n/g' | grep nodhcp | cut -f2 -d\= ` up
+Currently hard coded for eth0..
+kernel 3.7-rc7  2012/11/26 (bz3x7.rc7)
+kernel 3.0.53   2012/11/26 (bz3x0.53)
+kernel 3.4.20   2012/11/26 (bz3x4.20)
+kernel 3.6.8    2012/11/26 (bz3x6.8)
+kernel 3.6.8    now default kernel
+more library and support program updates
+update ntfsprogs programs to 2012.1.15
+updated testdisk programs to use new ntfs lib files
+kernel 3.7-rc8  2012/12/03 (bz3x7.rc8)
+kernel 3.0.54   2012/12/03 (bz3x0.54)
+kernel 3.4.21   2012/12/03 (bz3x4.21)
+kernel 3.6.9    2012/12/03 (bz3x6.9)
+kernel 3.6.9    now default kernel
+All of the 2012/12/03 kernels have the bnx2x firmware added
+for the firmware identified. Have a system to add it to each
+new kernel build. 
+Update cgdisk, gdisk, and sgdisk to version 0.8.5
+kernel 3.0.55   2012/12/06 (bz3x0.55)
+kernel 3.2.35   2012/12/06 (bz3x2.35)
+kernel 3.4.22   2012/12/06 (bz3x4.22)
+kernel 3.0.56   2012/12/10 (bz3x0.56)
+kernel 3.4.23   2012/12/10 (bz3x4.23)
+kernel 3.6.10   2012/12/10 (bz3x6.10)
+kernel 3.6.10   now default kernel
+updated sshfs
+kernel 3.7      2012/12/11 (bz3x7)
+recompiled udpcast programs
+updated pci.ids file
+nodhcp=ipaddress on kernel line with set ip address
+kernel 3.0.57   2012/12/17 (bz3x0.57)
+kernel 3.4.24   2012/12/17 (bz3x4.24)
+kernel 3.6.11   2012/12/17 (bz3x6.11)
+kernel 3.6.11   now default kernel
+kernel 3.7.1    2012/12/17 (bz3x7.1)
+updated aespipe 2.4c
+kernel 2.6.38.8 removed
+kernel 3.8-rc1  2012/12/22 (bz3x8.rc1)
+kernel 3.7.1    now default kernel
+removed isolinux.cfg since syslinux.cfg works for all
+updated testdisk-6.14-WIP as of 2012/12/28
+kernel 3.8-rc2  2013/01/03 (bz3x8.rc2)
+kernel 3.2.36   2013/01/03 (bz3x2.36)
+kernel 3.8-rc3  2013/01/10 (bz3x8.rc3)
+kernel 3.0.58   2013/01/11 (bz3x0.58)
+kernel 3.4.25   2013/01/11 (bz3x4.25)
+kernel 3.7.2    2013/01/11 (bz3x7.2)
+kernel 3.7.2    now default kernel
+added badblocks program
+kernel 3.2.37   2013/01/16 (bz3x2.37)
+kernel 3.0.59   2013/01/17 (bz3x0.59)
+kernel 3.4.26   2013/01/17 (bz3x4.26)
+kernel 3.7.3    2013/01/17 (bz3x7.3)
+kernel 3.7.3    now default kernel
+kernel 3.8-rc4  2013/01/17 (bz3x8.rc4)
+busybox 1.20.2 ntpd patch added
+kernel 3.0.60   2013/01/21 (bz3x0.60)
+kernel 3.4.27   2013/01/21 (bz3x4.27)
+kernel 3.7.4    2013/01/21 (bz3x7.4)
+kernel 3.7.4    now default kernel
+busybox updated 1.21.0 2013/01/21
+kernel 3.8-rc5  2013/01/25 (bz3x8.rc5)
+firmware additions at user requests
+bnx2x/bnx2x-e2-7.2.51.0.fw  (added for some time)
+bnx2/bnx2-mips-09-6.2.1b.fw (just added)
+The mips only in kernel 3.7.4 and 3.8-rc5 
+kernel 3.4.28   2013/01/28 (bz3x4.28)
+kernel 3.7.5    2013/01/28 (bz3x7.5)
+kernel 3.7.5    now default kernel
+kernel 3.0.61   2013/01/28 (bz3x0.61)
+kernel 3.8-rc6  2013/02/01 (bz3x8.rc6)
+kernel 3.0.62   2013/02/04 (bz3x0.62)
+kernel 3.4.29   2013/02/04 (bz3x4.29)
+kernel 3.7.6    2013/02/04 (bz3x7.6)
+kernel 3.7.6    now default kernel
+kernel 3.2.38   2013/02/06 (bz3x2.38)
+busybox updated with mdev patch
+added c source of jetcat-mod to isolinux dir
+change scripts to use /bin/bash since I found that
+cleandrive script didn't work with ubuntu
+Added XFS support to 3.7.6 kernel. 
+Updated all bz3x? kernels to add XFS, and firmware updates
+kernel 3.8-rc7  2013/02/08 (bz3x8.rc7)
+Download latest source for fsarchiver7 and 
+testdisk-6.14WIP and rebuilt 2013/02/10
+and fsarchiver 6.16 released and built.
+kernel 3.0.63   2013/02/11 (bz3x0.63)
+kernel 3.4.30   2013/02/11 (bz3x4.30)
+kernel 3.7.7    2013/02/11 (bz3x7.7)
+kernel 3.7.7    now default kernel
+kernel 3.0.64   2013/02/14 (bz3x0.64)
+kernel 3.4.31   2013/02/14 (bz3x4.31)
+kernel 3.7.8    2013/02/14 (bz3x7.8)
+kernel 3.7.8    now default kernel
+Update cgdisk, gdisk, and sgdisk to version 0.8.6
+update ntfsprogs programs to 2013.1.13
+kernel 3.0.65   2013/02/17 (bz3x0.65)
+kernel 3.4.32   2013/02/17 (bz3x4.32)
+kernel 3.7.9    2013/02/17 (bz3x7.9)
+kernel 3.7.9    now default kernel
+kernel 3.8.0    2013/02/08 (bz3x8.0)
+kernel 3.2.39   2013/02/20 (bz3x2.39)
+kernel 3.0.66   2013/02/21 (bz3x0.66)
+kernel 3.4.33   2013/02/21 (bz3x4.33)
+Update f3read and f3write to 2.2-0
+kernel 3.7.10   2013/02/27 (bz3x7.10)
+kernel 3.7.10   now default kernel
+busybox updated with xz and platfom patches
+kernel 3.8.1    2013/02/28 (bz3x8.1)
+kernel 3.0.67   2013/02/28 (bz3x0.67)
+kernel 3.4.34   2013/02/28 (bz3x4.34)
+fsarchiver 6.17
+kernel 3.8.2    2013/03/03 (bz3x8.2)
+kernel 3.0.68   2013/03/03 (bz3x0.68)
+kernel 3.4.35   2013/03/03 (bz3x4.35)
+kernel 3.8.2    now default kernel
+kernel 2.6 kernel 
+kernel 3.9.0-rc1
+busybox built with newer mdev patch
+kernel 3.2.40   2013/03/06 (bz3x2.40)
+kernel 3.9.0-rc2 2013/03/10 (bz3x9.rc2)
+kernel 3.8.3    2013/03/14 (bz3x8.3)
+kernel 3.0.69   2013/03/14 (bz3x0.69)
+kernel 3.4.36   2013/03/14 (bz3x4.36)
+kernel 3.8.3    now default kernel
+kernel 3.9.0-rc3 2013/03/17 (bz3x9.rc3)
+kernel 3.8.3    2013/03/14 (bz3x8.3)
+kernel 3.0.70   2013/03/20 (bz3x0.70)
+kernel 3.2.41   2013/03/20 (bz3x2.41)
+kernel 3.4.37   2013/03/20 (bz3x4.37)
+kernel 3.8.4    2013/03/20 (bz3x8.4)
+kernel 3.8.4    now default kernel
+
+Released 0.43   2012/11/20
+Updated kernels 3.4.6 and 3.5.0 to add EFI Partition option
+kernel 3.4.7           2012/07/29 (bz3x4.7)
+kernel 3.4.7 now default kernel
+removed kernel 2.6.36.4 
+kernel 3.0.39          2012/08/01 (bz3x0.39)
+kernel 3.2.25 released 2012/08/02 (bz3x2.25)
+kernel 3.6-rc1         2012/08/02 (bz3x6.rc1)
+kernel 3.2.26 released 2012/08/04 (bz3x2.26)
+Updated support programs and files
+kernel 3.4.8           2012/08/09 (bz3x4.8)
+kernel 3.0.40          2012/08/09 (bz3x0.40)
+kernel 3.5.1           2012/08/09 (bz3x5.1)
+kernel 3.5.1 now default kernel
+kernel 3.2.27 released 2012/08/09 (bz3x2.27)
+Updated libraries
+kernel 3.4.9           2012/08/15 (bz3x4.9)
+kernel 3.0.41          2012/08/15 (bz3x0.41)
+kernel 3.5.2           2012/08/15 (bz3x5.2)
+kernel 3.5.2 now default kernel
+kernel 3.6-rc2         2012/08/16 (bz3x6.rc2)
+kernel 3.2.28 released 2012/08/19 (bz3x2.28)
+busybox patch
+ddrescue update
+kernel 3.6-rc3         2012/08/22 (bz3x6.rc3)
+kernel 3.5.3           2012/08/26 (bz3x5.3)
+kernel 3.5.3 now default kernel
+kernel 3.4.10          2012/08/26 (bz3x4.10)
+kernel 3.0.42          2012/08/26 (bz3x0.42)
+kernel 3.6-rc4         2012/09/01 (bz3x6.rc4)
+new build of busybox to reduce size by 20%
+updated lib and support programs from Fedora 16
+kernel 3.6-rc5         2012/09/08 (bz3x6.rc5)
+hdt to 0.5.2 Released  2012/09/10
+kernel 3.2.29 released 2012/09/12 (bz3x2.29)
+updated testdisk-6.14-WIP as of 2012/09/12
+kernel 3.4.11 2012/09/14 (bz3x4.11)
+kernel 3.0.43 2012/09/14 (bz3x0.43)
+kernel 3.5.4 2012/09/14 (bz3x5.4)
+kernel 3.5.4 now default kernel
+fsarchiver_dialog script added, but not tested completely.
+kernel 3.6-rc6         2012/09/16 (bz3x6.rc6)
+kernel 3.2.30 released 2012/09/19 (bz3x2.30)
+kernel 3.6-rc7         2012/09/24 (bz3x6.rc7)
+kernel 3.6.0           2012/09/30 (bz3x6.0)
+kernel 3.4.12 2012/10/02 (bz3x4.12)
+kernel 3.0.44 2012/10/02 (bz3x0.44)
+kernel 3.5.5  2012/10/02 (bz3x5.5)
+kernel 3.5.5 now default kernel
+kernel 3.0.45 2012/10/07 (bz3x0.45)
+kernel 3.4.13 2012/10/07 (bz3x4.13)
+kernel 3.5.6  2012/10/07 (bz3x5.6)
+kernel 3.6.1  2012/10/07 (bz3x6.1)
+kernel 3.6.1 now default kernel
+kernel 3.2.31 released 2012/10/10 (bz3x2.31)
+kernel 3.0.46 2012/10/12 (bz3x0.46)
+kernel 3.4.14 2012/10/12 (bz3x4.14)
+kernel 3.5.7  2012/10/12 (bz3x5.7)
+kernel 3.6.2  2012/10/12 (bz3x6.2)
+kernel 3.6.2 now default kernel
+kernel 3.7-rc1         2012/10/14 (bz3x7.rc1)
+Kernel 2.6.37.6        Removed to make room
+Update f3read and f3write to 2.1-2
+kernel 3.2.32 released 2012/10/17 (bz3x2.32)
+updated testdisk-6.14-WIP as of 2012/10/20 (Sept Build)
+kernel 3.7-rc2         2012/10/20 (bz3x7.rc2)
+kernel 3.0.47 2012/10/21 (bz3x0.47)
+kernel 3.4.15 2012/10/21 (bz3x4.15)
+kernel 3.6.3  2012/10/21 (bz3x6.3)
+kernel 3.6.3  now default kernel
+kernel 3.0.48 2012/10/22 (bz3x0.48)
+syslinux upgraded to 4.0.6
+kernel 3.7-rc3  2012/10/28 (bz3x7.rc3)
+kernel 3.0.49   2012/10/28 (bz3x0.49)
+kernel 3.4.16   2012/10/28 (bz3x4.16)
+kernel 3.6.4    2012/10/28 (bz3x6.4)
+kernel 3.6.4    now default kernel
+modified g4l script to add file name option
+to the local menu for split files to make 
+selection easier.
+Adds line without .00
+1648,1652d1647
+<  extx=`echo ${i##*.}`
+<  if [ "$extx" = "00" ] ; then
+<     ii=${i%\.*}
+<     filelist="$filelist `echo $ii file off`"
+<  fi
+kernel 3.2.33 released 2012/10/30 (bz3x2.33)
+kernel 3.0.50   2012/10/31 (bz3x0.50)
+kernel 3.4.17   2012/10/31 (bz3x4.17)
+kernel 3.6.5    2012/10/31 (bz3x6.5)
+kernel 3.6.5    now default kernel
+Adding /lib/firmware directory to add support for those
+requiring it.
+Using 
+git clone http://git.kernel.org/pub/scm/linux/kernel/git/dwmw2/linux-firmware.git
+to get the latest files. Earlier test used Fedora17 /lib/firmware directory.
+Probable some files that would not be necessary, but don't know. 
+Do remove the .git directory from the download.
+This required increasing the size of the ramdisk from 64M to 128M, and the number
+of inodes in the makecdrm script.
+kernel 3.7-rc4  2012/11/04 (bz3x7.rc4)
+kernel 3.0.51   2012/11/05 (bz3x0.51)
+kernel 3.4.18   2012/11/05 (bz3x4.18)
+kernel 3.6.6    2012/11/05 (bz3x6.6)
+kernel 3.6.6    now default kernel
+The 2012/11/05 kernels have a firmware option turned off to not include 
+in kernel firmware to hopefully resolve an issue with the new /lib/firmware
+CONFIG_PREVENT_FIRMWARE_BUILD=y
+# CONFIG_FIRMWARE_IN_KERNEL is not set
+CONFIG_EXTRA_FIRMWARE=""
+# CONFIG_HOSTAP_FIRMWARE is not set
+CONFIG_FIRMWARE_MEMMAP=y
+# CONFIG_GOOGLE_FIRMWARE is not set
+kernel 3.7-rc5  2012/11/11 (bz3x7.rc5)
+Remove the /lib/firmware since it didn't work, and could not get any real
+support on how to make it work from kernel list. 
+So, it does the the bnx2x firmware that was the exact issue added manually 
+to the kernel build rather than having all firmware loaded via /lib/firmware.
+It appears this was an ideal, but it seems that it has been Orphaned.
+kernel 3.2.34 released 2012/11/16 (bz3x2.34)
+kernel 3.7-rc6  2012/11/17 (bz3x7.rc6)
+kernel 3.0.52   2012/11/17 (bz3x0.52)
+kernel 3.4.19   2012/11/17 (bz3x4.19)
+kernel 3.6.7    2012/11/17 (bz3x6.7)
+kernel 3.6.7    now default kernel
+Now have to copy previous .config files, and modify firmware/Makefile
+and add additional firmware file to build kernels.
+If anyone has other firmware that needs to be added, please let me know.
+Added a firmware display check to rcS file to display if firmware is found.
+It skips if no firmware lines, but displays if successful or unsuccessful firmware
+is found in dmesg output.
+firmout=`dmesg | grep -i firmware`
+if [ -n "$firmout" ] ; then
+  echo -e "Firmware lines from dmesg\nIf any errors, Please contact mikes@kuentos.guam.net\n\n$firmout" >/tmp/firmout
+  dialog --timeout 30 --textbox /tmp/firmout 0 0 2>/dev/null
+fi
+
+Latest changes with 0.42
+kernel 3.2.17 released 2012/05/11 (bz3x2.17)
+kernel 3.3.6  released 2012/05/12 (bz3x3.6)
+kernel 3.3.6 now default kernel
+kernel 3.4-rc7         2012/05/13 (bz3x4.rc7)
+kernel 3.0.32          2012/05/21 (bz3x0.32)
+kernel 3.2.18 released 2012/05/20 (bz3x2.18)
+kernel 3.3.7  released 2012/05/21 (bz3x3.7)
+kernel 3.3.7 now default kernel
+kernel 3.4.0           2012/05/20 (bz3x4.0)
+Updates to bash, and some library files (Fedora 16 updates)
+Added gz support to tar via busybox
+busybox 1.20.1         2012/05/28
+kernel 3.5-rc1         2012/06/03 (bz3x5.rc1)
+kernel 3.0.33          2012/06/01 (bz3x0.33)
+kernel 3.2.19 released 2012/05/30 (bz3x2.19)
+kernel 3.3.8  released 2012/06/01 (bz3x3.8)
+kernel 3.4.1  now default kernel
+kernel 3.4.1           2012/06/01 (bz3x4.1)
+kernel 3.5-rc2         2012/06/09 (bz3x5.rc2)
+busybox tar patch
+kernel 3.0.34          2012/06/09 (bz3x0.34)
+kernel 3.4.2  now default kernel
+kernel 3.4.2           2012/06/09 (bz3x4.2)
+kernel 3.2.20 released 2012/06/10 (bz3x2.20)
+updated testdisk-6.14-WIP as of 2012/06/16
+kernel 3.5-rc3         2012/06/17 (bz3x5.rc3)
+kernel 3.0.35          2012/06/17 (bz3x0.35)
+kernel 3.4.3  now default kernel
+kernel 3.4.3           2012/06/17 (bz3x4.3)
+kernel 3.2.21 released 2012/06/19 (bz3x2.21)
+kernel 3.0.36          2012/06/22 (bz3x0.36)
+kernel 3.4.4  now default kernel
+kernel 3.4.4           2012/06/22 (bz3x4.4)
+kernel 3.5-rc4         2012/06/24 (bz3x5.rc4)
+added dmidecode to /usr/sbin
+kernel 3.5-rc5         2012/06/30 (bz3x5.rc5)
+memtest program updated on syslinux menu
+busybox 1.20.2         2012/07/02
+updated terminfo files
+kernel 3.2.22 released 2012/07/04 (bz3x2.22)
+modified makecd script to set volid
+kernel 3.5-rc6         2012/07/08 (bz3x5.rc6)
+kernel 3.2.23 released 2012/07/12 (bz3x2.23)
+kernel 3.5-rc7         2012/07/14 (bz3x5.rc7)
+kernel 3.0.37          2012/07/16 (bz3x0.37)
+kernel 3.4.5  now default kernel
+kernel 3.4.5           2012/07/16 (bz3x4.5)
+Download latest source for fsarchiver7 and 
+testdisk-6.14WIP and rebuilt 2012/07/17
+and fsarchver 6.15
+added lspci 2012/07/17
+kernel 3.0.38          2012/07/19 (bz3x0.38)
+kernel 3.4.6  now default kernel
+kernel 3.4.6           2012/07/19 (bz3x4.6)
+kernel 3.5.0           2012/07/21 (bz3x5.0)
+
+Latest changes with 0.41
+updated testdisk-6.14-WIP as of 2012/02/13
+kernel 3.3-rc3 released 2012/02/09 (bz3x3.rc3)
+kernel 3.0.21 released 2012/02/13 (bz3x0.21)
+kernel 3.2.6 released 2012/02/13 (bz3x2.6)
+default kernel 3.2.6
+kernel 3.3-rc4 released 2012/02/18 (bz3x3.rc4)
+add -d numeric option to split command
+kernel 3.0.22 released 2012/02/20 (bz3x0.22)
+kernel 3.2.7 released 2012/02/20 (bz3x2.7)
+kernel 3.2.8 released 2012/02/27 (bz3x2.8)
+Updated build system to Fedora 16, so program and 
+libraries are now based on it.
+kernel 3.0.23 released 2012/03/01 (bz3x0.23)
+kernel 3.2.9  released 2012/03/01 (bz3x2.9)
+default kernel 3.2.6
+updated testdisk-6.14-WIP as of 2012/03/02
+kernel 3.3-rc6 released 2012/03/04 (bz3x3.rc6)
+Added 40_Custom File, which contains lines that can
+add g4l to the grub2 menu system.
+rebuilt fsarchiver 6.13 and fsarchiver 7 beta
+Updated f3write and f3read to version 2.0-5
+kernel 3.3-rc7 released 2012/03/10 (bz3x3.rc7)
+Looking into support for systems were mbr may 
+have code beyond the first 63 sectors?
+kernel 3.0.24 released 2012/03/12 (bz3x0.24)
+kernel 3.2.10 released 2012/03/12 (bz3x2.10)
+kernel 3.2.11 released 2012/03/13 (bz3x2.11)
+Modified mbrback2 function to copy all sectors before
+first partition instead of just first track.
+kernel 3.3.0 released 2012/03/18 (bz3x3.0)
+updated some library files
+kernel 3.0.25 released 2012/03/19 (bz3x0.25)
+kernel 3.2.12 released 2012/03/19 (bz3x2.12)
+rebuilt busybox
+updated bash and some libraries latest fedora 16 upgrade
+new release of old kernels 2.6.35.14 and 2.6.34.11
+kernel 3.0.26 released 2012/03/23 (bz3x0.26)
+kernel 3.2.13 released 2012/03/23 (bz3x2.13)
+kernel 3.4-rc1         2012/03/31 (bz3x4.rc1)
+updated some system files
+Removed kernel 2.6.34.11 to make room (bz34.11)
+kernel 3.2.14 released 2012/04/02 (bz3x2.14)
+kernel 3.3.1  released 2012/04/02 (bz3x3.1)
+kernel 3.3.1 now default kernel
+kernel 3.0.27 released 2012/04/02 (bz3x0.27)
+kernel 3.4-rc2         2012/04/08 (bz3x4.rc2)
+rebuilt testdisk-6.14WIP, fsarchiver7, and ncftp
+kernel 3.2.15 released 2012/04/13 (bz3x2.15)
+kernel 3.3.2  released 2012/04/13 (bz3x3.2)
+kernel 3.3.2 now default kernel
+kernel 3.0.28 released 2012/04/13 (bz3x0.28)
+kernel 3.4-rc3         2012/04/16 (bz3x4.rc3)
+Updated rcS startup script to not run dialog screens
+if a run= command is included as startup.
+Updated utilities and libraries from Fedora 16 updates
+Added gdisk, cgdisk and sgdisk to add GPT support.
+kernel 3.4-rc4         2012/04/21 (bz3x4.rc4)
+busybox 1.20.0 new 2012/04/22
+kernel 3.0.29 released 2012/04/22 (bz3x0.29)
+kernel 3.2.16 released 2012/04/22 (bz3x2.16)
+kernel 3.3.3  released 2012/04/22 (bz3x3.3)
+kernel 3.3.3 now default kernel
+Added EFI support for GPT partitions for 3x? kernels
+busybox changed back to 1.19.4 few minor issues
+udp-sender and udp-reciever updated to 2012/04/24
+kernel 3.0.30 released 2012/04/27 (bz3x0.30)
+kernel 3.3.4  released 2012/04/27 (bz3x3.4)
+kernel 3.3.4 now default kernel
+kernel 3.4-rc5         2012/04/29 (bz3x4.rc5)
+updated testdisk-6.14WIP 2012/05/04
+Some lib and utility updates
+kernel 3.4-rc6         2012/05/06 (bz3x4.rc6)
+kernel 3.0.31 released 2012/05/07 (bz3x0.31)
+kernel 3.3.5  released 2012/05/07 (bz3x3.5)
+kernel 3.3.5 now default kernel
+
+Latest changes with 0.40
+kernel 3.2-rc4      2011/12/01
+updated parted
+Modified f3read and f3write to show processing details.
+Syslinux 4.05
+kernel 3.1.5 released 2011/12/09 (bz3x1.5)
+default kernel 3.1.5
+kernel 3.2-rc5 Added 2011/12/09
+Added cleandrive8.dialog code into g4l30o11 script
+kernel 3.2-rc6 Added 2011/12/17
+vlan support in 3.1.5 and 3.2-rc6 added
+vconfig added
+Bug fix - line 1625 of g4l script had h- instead of -
+caused error in local backup with split on lzop compression
+add syslinux, syslinux.com, and syslinux.exe
+Can now copy files from directory to USB and use these 
+programs to make it bootable. Linux, DOS, WIN32
+Updated f3write and f3read to version 2
+Change g4l to link to newer g4l30o11 script
+kernel 3.1.6 released 2011/12/21 (bz3x1.6)
+default kernel 3.1.6
+kernel 3.2-rc7 Added 2011/12/24
+Updated f3write and f3read to version 2.0.4
+updated testdisk-6.14-WIP as of 2012/01/01
+kernel 3.1.7 released 2012/01/03 (bz3x1.7)
+default kernel 3.1.7
+kernel 3.2 Added 2012/01/04
+kernel 3.1.8 released 2012/01/06 (bz3x1.8)
+default kernel 3.1.8
+kernel 3.0.16 released 2012/01/06 (bz3x0.16)
+removed kernel 3.0.9
+kernel 3.0.17 released 2012/01/12 (bz3x0.17)
+kernel 3.1.9 released 2012/01/12 (bz3x1.9)
+kernel 3.2.1 released 2012/01/12 (bz3x2.1)
+Fix for issue with run= option and grub2
+On my lab that I had just upgraded to Fedora 16
+found that previous option to automatically run 
+no longer worked. Thought it might be the latest 
+kernels, but using them from the g4l cd work fine,
+so assuming it is something to do with the grub2.
+This issue is that the cmdline option has this:
+run="command or commands for the g4l to run"
+but somehow it is getting changed to 
+"run=command or commands for the g4l to run"
+The g4lmenu script would strip the run= from the 
+lines, but that is expecting the " to be after the =
+Have added these lines to the g4lmenu to handle the 
+difference.
+<     grub2fix=`cat /tmp/runcmd | cut -b1-3`
+<     if [ "$grub2fix" = "run" ] ; then 
+<        cat /tmp/runcmd | cut -b 5-256 > /tmp/runcmd2
+<        mv /tmp/runcmd2 /tmp/runcmd
+<     fi
+Will need to do more research to see if this is best fix.
+kernel 3.1.10 released 2012/01/18 (bz3x1.10)
+default kernel 3.1.10
+kernel 3.3-rc1 released 2012/01/19 (bz3x3.rc1)
+default kernel 3.2.1 
+g4l30o12 (added udpoption code for udp-receiver)
+kernel 3.0.18 released 2012/01/26 (bz3x0.18)
+kernel 3.2.2 released 2012/01/26 (bz3x2.2)
+copied g4l30o12 to g4l30o11 script
+default kernel 3.2.2
+updated testdisk-6.14-WIP as of 2012/01/28
+kernel 3.3-rc2 released 2012/01/31 (bz3x3.rc2)
+kernel 3.0.19 released 2012/02/03 (bz3x0.19)
+kernel 3.2.3 released 2012/02/03 (bz3x2.3)
+default kernel 3.2.3
+busybox 1.19.3  updated with patches up to 2012/01/30
+kernel 3.2.4 released 2012/02/03 (bz3x2.4)
+default kernel 3.2.4
+busybox 1.19.4 new 2012/02/04
+kernel 3.0.20 released 2012/02/06 (bz3x0.20)
+kernel 3.2.5 released 2012/02/06 (bz3x2.5)
+default kernel 3.2.5
+
+Latest changes with 0.39
+kernel 2.6.33.19    2011/08/29
+kernel 2.6.32.46    2011/08/29
+kernel 3.0.4 released 2011/08/29 (bz3x0.4)
+default kernel 3.0.4
+Added X: reboot/poweroff option to clicknclone menu
+added function f_partdiskinfo() to display extra disk info
+to hopefully make sure correct disk/partition is selected.
+Currently just used on Clone selection, but could be added
+to other locations where disk/partitions are selected?
+added mkfs.hfsplus and fsck.hfsplus
+updated testdisk-6.13-WIP as of 10/22/2011
+kernel 3.1 released 2011/10/25 (bz3.1)
+Note: Above kernel along with 3.05,3.06,3.07 and 3.08
+were added to the kernel.org ftp directory, but not showing
+on the web page yet. I just added the 3.1 that seems to be
+a full released version, and have compiled the 3.08, but didn't
+add it image or test it yet.
+busybox 1.19.3      2011/10/29
+changed part_info2 code to get 15 characters possible for device.
+added code to not call part_info2 function if /dev/cciss device
+is available since fsarchiver probe has an issue in reporting 
+that needs to be studied further.
+Added -e 's-!-/-g' to change cciss!c0d0p0 to cciss/c0d0p0 and others
+in part_info2. 
+Added fsarchiver probe -v and added the uuid to the listing
+Added code to add disk serial number for disk if reported by hdparm
+FIXED an error in main script. Missing % that caused partonly to fail...
+Removed kernel 2.6.33.19 to make room
+Removed kernel 2.6.32.46 to make room
+kernel 3.0.9 Added 2011/11/11
+kernel 3.1.1 Added 2011/11/11
+Default kernel changed to 3.1.1
+testdisk 6.13 released 2011/11/15
+kernel 3.2-rc2 Added 2011/11/15
+From comment to finnix list, not sure if these will
+be useful, but doing some testing.
+Added f3read and f3write (flash testing program)
+Added ms-sys (program to create ms boot records)
+modified cleandrive8.dialog to match g4l script part_info functions.
+Added M: option to Utility menu to test partitions using f3write and f3read
+kernel 3.1.4 Added 2011/11/28
+Default kernel changed to 3.1.4
+Added testdisk-6.14WIP 11/28/2011
+
+Latest changes with 0.38 
+Working with new group of students on Documentation
+Rhoann Solangon, Justin Conner and Rogelio Sabangan Jr. 
+some cleanup of g4l script text
+updates to ntfs support files, and some locations of files changed
+ntfsprogs and testdisk versions upgraded that use libntfs-3g
+testdisk version 6.12 released (May 11, 2011)
+Changed (Use Space Bar) to color red/reverse/bold to highlight
+ntfs programs updated to 2011-04-12-3
+testdisk version 6.13WIP
+kernel 2.6.38.8     2011/06/03
+busybox 1.18.5      2011/06/12
+Made some wording and minor changes to script g4l30o10
+Change g4lmenu to note blank entry results in bash prompt
+Changed Local Menu to reflect options need to be selected
+starting with A: and B:
+Changed error message for Local Menu to reflect that 
+mount point not setup and to use option A: to do so.
+kernel 2.6.34.10    2011/06/26
+Added fsarchiver probe output to system info
+Looking at changed disk and partition info in selections
+test script testfs2 shows current and fsarchiver data
+working to add option of fsarchiver 0.7 beta
+Updated testdisk-6.13WIP 2011/07/15
+udpcast updated to version 2011/07/10 
+bash version 4.1.7(1)-release 
+kernel 3.0 released 2011/07/22 (bz3x0)
+kernel 2.6.35.14    2011/08/01
+kernel 2.6.39.4     2011/08/03
+busybox 1.19.0      2011/08/13
+kernel 2.6.33.18    2011/08/16
+kernel 2.6.32.45    2011/08/16
+kernel 3.0.3 released 2011/08/17 (bz3x0.3)
+default kernel 3.0.3
+kernel 3.1.rc3 released 2011/08/22 (bz3x1.rc3)
+
+Latest changes with 0.37 Released
+Working with new group of students on Documentation
+Rhoann Solangon, Justin Conner and Rogelio Sabangan Jr. 
+Added a keymap selection process to boot up
+and to Utility Menu
+Default kernel now 2.6.38.4
+syslinux 4.04 Released (2011/04/19)
+busybox 1.18.4 as of 3/13/2011
+added check for lzma in makecd scripts
+change hdt to 0.5.0 Released
+memtest upgraded to 4.20
+kernel 2.6.34.9     2011/04/17
+kernel 2.6.35.12    2011/03/31
+kernel 2.6.38.4     2011/04/21
+kernel 2.6.39-rc4   2011/04/19
+kernel 2.6.36.4     2011/02/17
+kernel 2.6.37.6     2011/03/27
+kernel 2.6.32.39    2011/04/22
+kernel 2.6.33.12    2011/04/22
+updated ntfs-3g and libslang files plus other updates
+upgraded testdisk to 6.12-WIP Mon Jan 31 07:40:40 CET 2011 with strip code
+Added agetty to look at adding ability to work with system 
+with only vt10x terminal
+test g4l30o10 script that moves option A,1,2,3 on Local menu to 
+separate menu to handle the mounting of Local, CIFS, SSHFS or NFS.
+Change g4l script to g4l30o10
+added v directory under terminfo in /usr/share/terminfo and /lib/terminfo 
+for vt100
+Thanks to Thomas E. Dickey of ncurses and dialog for info.
+vt100 problem solved by above. 
+added all subdirectories of the terminfo directories, in case other 
+terminals may need the code. It seems to be rather small in total size.
+Probable the x subdirectory could be removed, since the is no x running
+in the g4l cd.
+Added note of using Space Bar to select on 5 error message lines that 
+didn't have it.
+Added link of ftp to ncftp
+Added speed and duplex info to nic device listing.
+Removed Toggle from compress menu options. 
+updated sshfs to version 2.2
+updated ntpclient to latest version
+Modified Progress screen size and T: output to remove tabs
+Added klogd -c 6 to eliminate some kernel pop up messages
+modified ifcheck2.sh to show Speed and Duplex of connection
+added option to utility menu to use ntpclient to set time
+added option to utility menu to display dmesg information
+added option to utility menu to run startftpd script that
+runs ftpd via tcpsvd as anonymous user
+tcpsvd -vE 0.0.0.0 21 ftpd -w -v / 2>/var/log/tcpsvd.log &
+Note: if g4l script is exited it unloads ftpd.
+added option to utility menu to start telnetd server
+added cleandrive8.dialog to utility menu for zero-out process
+added call to part_info script in A: option on Local menu
+to redetect added or changed usb devices.
+Added part_info to S: option to update partition info
+after adding or deleting an usb device.
+Added some help text to isolinux.cfg and syslinux.cfg
+Change some color setting in the g4l30o10 script
+Modified Utility Menu with Letter options
+Moved US keyboards to front on bkey script.
+Added Menu Letter options to Utilities Menu.
+Added prompting for Disk to use for parted on Util Menu
+Added a failsafe menu with all kernels having failsafe opts
+instead of just listing 1 failsafe kernel.
+Can return to regular menu from failsafe.
+Added 10 second sleep after call to partimage programs.
+
+Latest changes with 0.36
+Removed all kernels before 2.6.32.27 because they 
+come up with error message that kernel to old?
+busybox 1.17.4 2010/11/22
+kernel 2.6.38 rc2   2011/01/22
+kernel 2.6.37       2011/01/05
+kernel 2.6.36.3     2011/01/07
+kernel 2.6.35.10    2010/12/16
+kernel 2.6.34.8     2011/01/06
+kernel 2.6.32.28    2011/01/07
+Added vi and vim links to nano at user request.
+Modified cleandrive7 to check for jetcat location.
+Added Option P: to Local menu to allow for sub-directories
+Changed g4l script to use the new g4l30o9 with P: option
+BIG CHANGE - Upgraded build system to Fedora 14 from 10
+Updated Programs and Libraries to Fedora 14
+upgraded memtest to memtest86+4.10
+Trying to add gpm mouse support with gpm?
+gpm -m /dev/mouse0 -t ps2
+seems to work for a ps2 mouse, don't know it usb mouse would?
+Bug in MBRRestore line 346 missing a space between " and ]
+Fedora Update on Dec 16th of some files and libraries
+added strace
+added scp
+updated pci.ids and modules.pci files for HDT
+added rpcbind and rpcinfo
+update partimage and partimaged to 0.6.9
+added ability to see lvm partitions by running vgchange -a y
+but haven't worked it into the imaging system.
+Added display of hdparm -i output after selecting source and 
+target disk to assist in making sure correct disk is selected.
+Modified cleandisk8 program to work with both dialog and xdialog
+Progress bar was not displaying with dialog usage.
+Have made a test cleandrive8.dialog program that prompts for 
+partition to clear. Will work with non-fat partitions, but need to 
+make the program to use the lblank for fat partitions.
+Added blkid program to image.
+Added blkid info to sysinfo info
+Added blkid info in addition to the hdparm info.
+Added S: Special option with blkid option to Click'n'Clone Menu
+Looking at using LZMA compression for ramdisk reduces size from 12M to 9M
+changed partimage to make install-strip; moved to /usr/local/sbin
+updated aespipe 
+added fsarchiver to local menu
+required full tune2fs instead of busybox tune2fs plus lzo and lzma libs
+Added -f option to ddrescue 
+Added -o to fsarchiver to overwrite older archives by default
+Change script g4l30o9 to add the fsarchiver as default
+ncftp upgraded to 3.2.5
+Changed default kernel to 2.6.37
+
+Latest changes with 0.35 Released
+Added links to applets in busybox that didn't have them.
+Create failsafe option with noapic noacpi pnpbios=off acpi=off pci=noacpi
+applied 5 patches to the busybox 1.17.3 (Nov 6)
+change g4l script to use /bin/bash since with finnix script
+failed when using the dash that is mapped to sh. Used checkbasism
+on the script, so not sure what the issue is. 
+Also, added code to filter out 127.0.0.1. 
+syslinux 4.03 release 2010/10/23 (alpha30)
+Changed default kernel to 2.6.36
+Added code if F: option file list fails, that it
+will default to old prompt for filename manual
+Entry Until I can get info on what MS ftp is doing
+to cause failure.
+Kernel 2.6.36          2010/10/20
+Kernel 2.6.33.7        2010/08/02
+Kernel 2.6.32.25       2010/10/29
+Kernel 2.6.34.7        2010/09/13
+Kernel 2.6.35.8        2010/10/29
+Kernel 2.6.27.55       2010/10/29
+syslinux 4.02          2010/07/22
+busybox 1.17.3         2010/10/10
+note: busybox is source from busybox.net using 
+busybox config files include in isolinux directory.
+Added USB 3 option to 35.2, 34.4 and 32.19 
+Changed $(< filename) back to $(cat filename) "bashism"
+Changed script due to "for" not working on Fedora 12?
+    pad="";
+    a=$xxsize2;
+    while [ $a -le 12 ]
+#   for (a=xxsize2;a<=12;a++) Doesn't work on new bash?
+    do
+      pad=$pad\_;
+      a=$(($a + 1));
+    done
+
+
+
+Latest changes with 0.34
+Kernel 2.6.33.6        2010/07/05
+Kernel 2.6.32.16       2010/07/05
+Kernel 2.6.34.1        2010/07/05
+Kernel 2.6.35-rc4      2010/07/05
+Kernel 2.6.31.14       2010/07/05
+Kernel 2.6.27.48       2010/07/05
+Updated ncftp 3.2.4    2010/04/12
+Added TestDisk to Utility Menu
+Cleaning g4l30n in g4l30o8 script
+Change g4l to use g4l30o8 script
+syslinux 4.01 Released 2010/07/02
+set cpu_freq on 32.x kernel and above
+busybox 1.17.0         2010/07/06 
+
+Latest changes with 0.33
+Four updated Kernels on  2010/04/01
+  Kernel 2.6.27.45       2010/04/01
+  Kernel 2.6.33.2        2010/04/01
+  Kernel 2.6.32.11       2010/04/01
+  Kernel 2.6.31.13       2010/04/01
+Kernel 2.6.34-rc5        2010/04/19
+Added SMP support to 2.6.32.9 and above 
+Added UDF CDROM support to 2.6.32.7 and above
+syslinux 3.86 Released   2010/04/02
+busybox-1.16.1           2010/03/29
+modified testcd to check for sdx CDROMS and srx
+Had NFS FS set, but had not set client options under that.
+Added NFS option to 2.6.32.9 and 2.6.33 kernels
+Added SMP option to 2.6.32.9 and 2.6.33 kernels
+Added NFS option to local menu
+Updated udp-sender / udp-reciever to 2010-01-30
+Changed wording in Local Menu for clarification
+From "A: Pick drive"  "target/source partition for IMAGE file ($localdrive)" \
+To   "A: Pick drive"  "Partition for/with IMAGE file ($localdrive)" \
+In g4l30n script I use tabs set to two space in Editor, replaced tabs with two spaces
+to make it display same without having to set editor. Adds about 20K to script size?
+Added -x and -fx to the sfdisk backup option for MBR to included extended partition info.
+Fixed error in restoring of EBRs, should have been seek instead of skip option.
+Changed g4l script to have ddrescue instead of older dd_rescue
+Changed dd_rescue to newer gnu ddrescue 1.12 
+Modified DDRESCUE menu to display ddrescue help info and allow options to be entered.
+added checks to make sure disk or partition selected correctly
+added ftpd and tcpsvd to busybox build to allow for ftpd
+added startftpd as a sample script to start ftpd via tcpsvd using / directory.
+added Poweroff to the Special options to allow for poweroff in addition to reboot.
+
+Latest changes with 0.32
+Kernel 2.6.30.10         2009/12/04
+Kernel 2.6.31.12         2010/01/18
+Upgrade 2.6.30 and above with ext4 support
+Kernel 2.6.32.6          2010/01/25
+Kernel 2.6.33 rc5        2010/01/21
+busybox-1.15.3           2009/12/12 
+syslinux 3.84 released   2009/12/18
+updated lblank6 to lblank7 to clear free space on partitions.
+hdt (Hardware Test) 0.36 released
+added testdisk 
+udpcast 20091230 
+added reboot.c32 for hdt
+Split Syslinux menu into two part Default and Oldkern
+Added reboot option to Syslinux menu
+modified cleandrive5 to check for dialog and Xdialog
+
+Latest changes with 0.31
+Added FTP check status to F: Option
+Kernel 2.6.29.4 
+Kernel 2.6.30.7          2009/09/15
+Kernel 2.6.31            2009/09/09
+Busybox-1.15.1 plus patches as of 9/23/2009
+lzop support added to busybox
+syslinux 3.83 pre11 with hdt (Hardware Test) 0.34
+Updated Click-n-Clone option to just show disks
+Upgrade ncftp to 3.2.3
+updated some libraries and support programs
+Added some debug support for USB and other changes to kernel
+Updated file list option to show date and size
+Updated udp-sender and udp-receiver to 2009/09/20 version
+
+Latest changes with 0.30
+Converted from Fedora 8 to Fedora 10 libraries and programs
+syslinux 3.80 (Bug Fixes) added syslinux hdt (Hardware Test) 0.33
+Kernels 2.6.29.3
+busybox-1.13.4
+Frank submitted updated g4l script that adds 
+udpcast options and make some menu functions.
+Recompiled kernels bz25 - bz29.3 to include cifs
+Adding CIFS (SAMBA) option to local menu 
+Added basic MBR backup to Network and Local Menu
+Added MBR and EBR backup option.
+Continued:
+Have started working with 3 students on a special project with
+the main ideal of updating documentation to the current level
+and develop a g4l-lite that includes only default kernel and
+ramdisk.gz and tools to add g4l via grub4dos, grub, or syslinux.
+Students.
+Devin Madrangchar * Wenifred Fasong * Julie Fenom
+
+Latest changes with 0.29
+Release syslinux 3.73
+Kernels 2.6.27.10 and above rebuilt
+reduced size by about 1/2MB but usb keyboards stopped working.
+Have started working with 3 students on a special project with
+the main ideal of updating documentation to the current level
+and develop a g4l-lite that includes only default kernel and
+ramdisk.gz and tools to add g4l via grub4dos, grub, or syslinux.
+Students.
+Devin Madrangchar * Wenifred Fasong * Julie Fenom
+
+Latest changes with 0.28
+busybox-1.13.2 - cleaned up applets
+syslinux 3.73 pre 7
+updated updcast
+kernels up to 2.6.27.10
+kernel 2.6.28
+added chkldd to check libraries
+moved programs to match with location on Fedora 8
+changed back to use Fedora dd and gzip because of speed issues
+Using grub4dos to run g4l from NTFS partitions.
+ftp://amd64gcc.dyndns.org/g4llinux.exe
+Above link is a test file that contains the files necessary.
+updated udpcast programs to 12/13/2008
+added option to use run="command" from grub (added to g4lmenu)
+
+
+Latest changes with 0.27
+Updated to latest programs from Fedora 8 for non-busybox program
+and the latest necessary library files placed in exactly same locations
+as they appear on Fedora 8 installation. Few unnecessary libraries found.
+Changed ifcheck.sh script to ifcheck2.sh to use dialog instead of echo 
+for messages and added delay to give process time on slower machines.
+Working on adding aespipe encryption option for encrypting ftp images
+with gpg file and passphrase. (Network Menu)
+Adding option to use sshfs to mount remote directory and save image via
+ssh connection (Local menu).
+busybox-1.11.2
+getkey.sh - script to assist in getting key and passphrase from USB.
+syslinux 3.72pre6
+
+
+Latest changes with 0.26
+added mdev as hotplug program
+updated ntfs-3g
+kernel 25.9
+busybox 1.11.0 with patches to 7/02/2008
+g4l30 script that shows partition size and type
+added sfdisk and fsck programs.
+added ifcheck script by dan.s@hostdime.com to recognize 
+  multiple eth devices and activate the first that gets a 
+  link for systems where eth0 is not the default.
+Updated syslinux from 3.55 to 3.63
+kernel 25.10 (added last minute untested)
+
+Latest changes with 0.25
+Moved development system from Fedora 5 to 8
+Updated busybox to 1.10.1 (with patches to May 2)
+Added telnetd program
+Newer kernels
+fixed missing lib for name resolution
+moved dd, gzip and gunzip to busybox because of problem with
+gunzip restore with the gunzip from Fedora 8 version.
+compiled jetcat-mod with latest new system.
+add bs=1M to dd commands in local menu (fix over 100% problem)
+added autostart telnetd if kernel parameter telnetd=yes
+added timeout 30 option to startup messages 
+added g4lmenu to show options
+cleaned /dev directory to just console and raid subdirectories
+use busybox mdev to dynamically create /dev entries
+Added File list to Option B: on local Copy like F: on Network
+Added ntpclient for time (ntpclient -h ntphost -s )
+
+Latest changes with 0.24.
+Updated busybox
+Newer kernels to support new hardware
+Newer syslinux
+Updated other system programs, and trimed lib directory
+to only include latest libraries needed by programs.
+Minor script modifications.
+
+
+Latest changes with 0.23.
+Added ethtool to be able to set full duplex if auto gives half.
+Updated busybox
+Newer kernels
+Newer syslinux
+Added ntfs-3g with latest kernels that allows for write support 
+to the ntfs partitions for the local backup. Also added ntfsclone
+options to the local backup option.
+
+Latest changes that might change operations.
+Big changes in 0.22 version. Latest 2.6.20 and 2.6.20git4 kernels
+that seem to support the SATA controllers. Updates on support programs
+and fix to bzip problem with splitting. Added resize2fs to cd. Added all
+of the ntfsutil programs. Added new front end scripts to allow for 
+different filenames and using userid and passwords.
+
+All scripts will prompt for ipaddress if left blank, but only the 
+zxg4l and zexg4l will prompt for userid and password. Leaving it 
+blank defaults to anonymous
+
+xg4l and exg4l adds options 
+## ./xg4l ipaddress device filename useridpass
+## ./xg4l 192.168.0.1 eth0 front '-u user -p password'
+## ./xg4l 192.168.0.1 eth0 front user:password
+
+## ./exg4l ipaddress device filename useridpass
+## ./exg4l 192.168.0.1 eth0 front.bic '-u user -p password'
+## ./exg4l 192.168.0.1 eth0 front.bic user:password
+
+zxg4land zexg4l adds options also prompts for userid password
+
+## ./zxg4l ipaddress device filename useridpass
+## ./zxg4l 192.168.0.1 eth0 front.bic '-u user -p password'
+## ./zxg4l 192.168.0.1 eth0 front.bic user:password
+
+## ./zexg4l ipaddress device filename useridpass
+## ./zexg4l 192.168.0.1 eth0 front.bic '-u user -p password'
+## ./zexg4l 192.168.0.1 eth0 front.bic user:password
+
+Redid the jetcat-mod program to just do what is needed for g4l.
+Updated a lot of the support programs.
+
+Added the creation dummy file in image directory, since one user
+reported a failure if the directory is empty.
+==================================================================
+
+Big changes in 0.21 version. Have found that the 2.6.16 kernels are
+not working as well as the previous version. My AMD64 machine with 
+them does not see the SATA drive, but 2.6.15 works fine, so that is 
+the default kernel, but the latest 2.6.16.20 is there for testing.
+Also, added options N and O that use NTFSCLONE to copy NTFS partitions.
+I have only tested it using lzop compression, but it should work with 
+other compression. Make sure you understand what NTFSCLONE does and doesn't
+do. Finally, changed default compression to lzop. 
+
+Newest kernels have a sis ide controller patch for the 5513 chipset.
+Latest version adds necessary /lib files to add name resolution
+New kernels and busybox-1.1.3. Also, user has found the nosmp option 
+makes e1000 card work. bzImage? nosmp
+Thank You. mikes@kuentos.guam.net

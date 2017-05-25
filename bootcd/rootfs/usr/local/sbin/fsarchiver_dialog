@@ -1,0 +1,635 @@
+#! /bin/bash
+
+versione="0.95"
+#fsarchiver_dialog is a frontend for fsarchiver clone partitions program and at moment is for experimental use
+#in addition it can save and restore MBR
+#this script can be freely redristributed, but no guarantee is provided on eventual malfunctions and derivated damages
+#giulianiclaudio@removeteletu.it  (please 'remove" form mail) 
+#
+#CHANGES IN VERSIONS
+#ver 0.90 preliminary
+#0.95 improved verify on path selection for backup/save 
+
+
+
+# variabili generali
+bktitolo_org="Fsarchiver_dialog $versione"   	#titolo in alto
+dir="/mnt/"				#directory di default
+fileimg="/" 			#nome del file immagine
+num_filesystem_img=0		#numero totale partizioni prsenti nel file immagine
+mount_point="/mnt/bck"
+vis=0
+
+uscita()
+{
+	dialog --clear --backtitle "$bktitolo" --msgbox \
+		"exit to menu at your request \n\nbye bye!" 10 50
+	rm probe.txt
+	rm tmpscelta
+	rm archinfo.txt
+	clear
+	exit 
+}
+
+
+
+
+scelta_bck_rest()
+{
+	dialog --clear --backtitle "$bktitolo" --menu \
+	"Please select operation:" 0 0 0 \
+P "set Path for save/restore operations and mounting disk/share" \
+R "Restore partition(s) from image" \
+M "Restore MBR & partition table to disk" \
+B "Backup partitions table & MBR to file" \
+S "Save partition(s) to image" \
+I "retrive Informations from image" \
+D "Information about Disk and partitions" 2>tmpscelta
+	if [ "$?" != "0" ]
+	 then
+		clear
+		uscita
+		exit
+	fi
+}
+
+set_dir() 
+{
+	scelta_monta
+    	dialog --backtitle "$bktitolo" --title "Please select default directory for save/restore operations"  --dselect $dir 10 75 2>tmpscelta
+	if [ "$?" != "0" ]
+		then return
+	fi
+    	tmp=`cat tmpscelta`
+	if [ "${tmp:(-1)}" != "/" ]
+		then 
+		dialog --msgbox "Error on selection!!\nDirectory path must terminate with \"/\" !!\n(you have selected $tmp ) !!!!" 10 70
+		return
+	else
+		dir=$tmp
+	fi
+
+	dialog --msgbox "You have selected $dir for save/restore operations." 12 60
+	if [ "$?" != "0" ]
+		then
+		dir="/mnt/"
+		return
+	fi	
+
+	if [ ! -d "$dir"  ] 
+		then
+		dialog --msgbox "ERROR!!\ndirectoy $dir \nNOT PRESENT or is not a directory... please repeat selection of backup/restore path" 12 60
+		dir="/mnt/"
+		return
+	fi
+	echo $dir
+
+
+}
+
+file_select() 
+{	
+	if [ "$fileimg" == "/" ]   # se non è già stato selezionato, imposto dir di default
+		then fileimg=$dir"image.fsa"
+	fi
+	dialog --backtitle "$bktitolo"\
+           --begin 1 1 --title "Please select image file   "\
+           --fselect $fileimg 10 60 2>tmpscelta
+	if [ "$?" != "0" ]
+		then return
+	fi
+    fileimg=`cat tmpscelta`
+}
+
+selezione_disco()
+{
+	count=${#dischi[*]}
+	#composizione del menu
+	menu=""
+	for (( x=1; x <= $count; x++))
+	do
+		menu="$menu ${dischi[$x]} <== "
+	done
+	dialog --clear --title "Disk selection" --backtitle "$bktitolo" --menu \
+	"Please select disk:" 0 0 0 $menu 2>tmpscelta
+	if [ "$?" != "0" ]
+		then return
+	fi	
+	disco_selezionato=$(cat tmpscelta)
+}
+
+
+monta_samba()
+{
+	dialog --ok-label "Submit" \
+	       --insecure \
+	       --mixedform "Please compile samba (windows share) parameters" \
+	 15 70 0   \
+		"Machine name (server name or IP):" 1 1 "pcname" 1 35 28 0 0 \
+		"Share:" 2 1 "myshare" 2 35 15 0 0 \
+		"Domain:" 3 1 "WORKGROUP" 3 35 12 0 0 \
+		"Username:" 4 1 "" 4 35 12 0 0 \
+		"Password:" 5 1 "" 5 35 20 0 1  2>tmpscelta
+		if [ "$?" != "0" ] ; then
+			return
+		fi	
+	if [ "$?" != "0" ]
+		then 
+		return
+	fi
+	par_temp3=$(cat tmpscelta)
+	count=0
+	for x in $par_temp3   #caricamento nell'array di tutti i dischi presenti 
+		do
+		echo "count=$count, str=$x "
+		((count=count + 1))
+		case "$count" in
+		 	"1")
+			machine=$x
+			;;
+			"2")
+			share=$x
+			;;
+			"3")
+			domain=$x
+			;;
+			"4")
+			username=$x
+			;;
+			"5")
+			password=$x
+		esac 
+	done
+	mkdir $mount_point
+	mount -t cifs -o user=$username,password="$password",domain=$domain //$machine/$share $mount_point
+	if [ "$?" != "0" ]
+		then 
+		dialog --msgbox "WARNING!!!!\nmount of //$machine/$share in $mount_point ERROR !!!" 10 70
+	else
+		dialog --msgbox "//$machine/$share mounted in $mount_point !!!!" 10 70
+		dir="$mount_point/"
+	fi	
+}
+
+
+monta_partizione()
+{
+	
+	umount $mount_point
+	count=${#partizioni[*]}
+	#composizione del menu
+	menu=""
+	for (( x=1; x <= $count; x++))
+	do
+
+		#
+			y=${partizioni[$x]}
+			temp=$(cat probe.txt|grep $y) #ricavo dettagli partizione disco
+			temp=${temp//" "/""}
+			temp=${temp:0:68}
+		#
+		#menu="$menu ${partizioni[$x]} < off"
+		menu="$menu ${partizioni[$x]} \"$temp\" "
+	done
+	
+	dialog --clear --title "Select partition to mount" --backtitle "$bktitolo" --menu \
+	"Please select partition to mount:" 0 60 0 $menu 2>tmpscelta
+
+	if [ "$?" != "0" ]
+		then return
+	fi	
+	mounting=$(cat tmpscelta)
+	echo "partizione da montare:" $mounting
+	# ricavo il tipo di file system
+	temp=$(cat probe.txt|grep $mounting)
+	temp=${temp:20:4}
+	mkdir $mount_point
+	if [ "$temp" == "ntfs" ] 
+		then 
+		echo identificata partizione ntfs
+		ntfs-3g /dev/$mounting $mount_point
+	else
+		mount /dev/$mounting $mount_point
+	fi
+	if [ "$?" != "0" ]
+		then 
+		dialog --msgbox "WARNING!!!!\nmount of $mounting in $mount_point ERROR !!!" 10 70
+	else
+		dialog --msgbox "$mounting mounted in $mount_point !!!!" 10 70
+		dir="$mount_point/"
+	fi	
+
+}
+scelta_monta()
+{
+
+	dialog --clear --menu \
+	"If you want to mount a backup/restore space please select:" 0 70 0 N "Nothing to mount"  P "mount a disk Partition"  S "mount Samba (WINDOWS) share" 2>tmpscelta
+	if [ "$?" != "0" ]
+		then return
+	fi	
+	sceltamount=$(cat tmpscelta)
+	case "$sceltamount" in
+		"P")
+		information_disk
+		monta_partizione
+		;;
+		"S")
+		monta_samba
+		;;		
+		"N")
+		echo "N"
+		;;	
+	esac
+
+
+}
+
+
+
+selezione_partizioni()
+{
+	count=${#partizioni[*]}
+	#composizione del menu
+	menu=""
+	for (( x=1; x <= $count; x++))
+	do
+
+		#
+			y=${partizioni[$x]}
+			temp=$(cat probe.txt|grep $y) #ricavo dettagli partizione disco
+			temp=${temp//" "/""}
+			temp=${temp:0:68}
+		#
+		#menu="$menu ${partizioni[$x]} < off"
+		menu="$menu ${partizioni[$x]} \"$temp\" off"
+	done
+	
+	dialog --clear --title "Partitions selection" --backtitle "$bktitolo" --checklist \
+	"Please check interested partitions whith space bar:" 0 60 0 $menu 2>tmpscelta
+
+	if [ "$?" != "0" ]
+		then return
+	fi	
+	partizioni_selezionate=$(cat tmpscelta)
+}
+
+
+save_mbr()
+{
+	dialog --yesno "Do you want to save MBR?" 5 60
+	if [ "$?" != "0" ]
+		then return
+	fi	
+	selezione_disco
+	dialog --backtitle "$bktitolo" \
+		--inputbox "Filename for save MBR" 0 0 "mbr.bin" 2>tmpscelta
+	if [ "$?" != "0" ]
+		then return
+	fi	
+	scelta=$(cat tmpscelta)
+	echo "filename is $dir$scelta"
+	
+	if [ -e "$dir$scelta" ]
+		then
+		dialog --backtitle "$bktitolo" --yesno "*** FILE ALDREADY PRESENT ***\nDo you want to overwrite?" 7 36
+		if [ "$?" != "0" ]
+			then dialog --msgbox "backup not saved" 5 20
+			return
+		fi	
+		
+	fi	
+	echo $disco_selezionato
+	dd if=/dev/$disco_selezionato of=$dir$scelta bs=512 count=63
+	if [ "$?" != "0" ]
+		then dialog --msgbox "error !!!" 5 20
+		return
+	fi		
+
+}
+
+restore_mbr()
+{
+	dialog --defaultno --yesno "Do you want to restore MBR and partition table ?\n\nWARNING: OLD DATA AND PARTITIONS WILL BE LOST!!!\n\nThis operation is not recommended if destination disk is not equal to original disk\n\
+Otherwise you can first use a partition program such parted, fdisk gparted ec... for create destination partitions" 14 60
+
+	if [ "$?" != "0" ]
+		then return
+	fi
+
+	selezione_disco
+	dialog --backtitle "$bktitolo" \
+		--title "Filename for retrive MBR and partition table (mbr.bin ?)" \
+		--fselect "$dir""mbr.bin" 0 0  2>tmpscelta
+	if [ "$?" != "0" ]
+		then return
+	fi	
+	scelta=$(cat tmpscelta)
+	echo "filename is $scelta"
+	
+	if [ -e "$scelta" ]
+		then
+			echo "Trovato il file $scelta"
+		else
+		dialog --msgbox "*** FILE NOT PRESENT ***\n Operation aborted" 7 36
+		return
+	fi	
+	echo $disco_selezionato
+	dd if=$scelta of=/dev/$disco_selezionato bs=512 count=63
+	if [ "$?" != "0" ]
+		then dialog --msgbox "error !!!" 5 20
+		return
+	fi		
+	sync
+	partprobe
+	dialog --msgbox "Restore MBR and Partition Table succesfull" 7 36
+
+}
+
+conferma_selezione()
+{	
+	oksel="1"
+	while [ "$oksel" = "1" ] ; do
+		dialog --clear --title "Image file" --backtitle "$bktitolo" --yesno \
+		"image file is $fileimg  \nConfirm or modify? (No to modify)
+		"  10 70
+		if [ "$?" = "0" ]
+		 then oksel="0"
+		else
+			file_select
+		fi
+	done
+}
+
+
+information_archive()
+{
+	file_select
+	conferma_selezione
+	fsarchiver archinfo $fileimg 2>archinfo.txt
+	if [ "$?" != "0" ] ; then
+	 	dialog --msgbox "Error reading file $fileimg\nFILE WAS CREATED WITH FSARCHIVER??" 0 0
+		return
+	fi
+	#intercetto numero di filesystems nel file immagine
+	tmp=$(cat archinfo.txt|grep 'Filesystems')
+	num_filesystem_img=${tmp:(-1)}
+	num_filesystem_img=$(($num_filesystem_img - 1))
+	bktitolo="$bktitolo_org  ImgFile:$fileimg" 
+	dialog --clear --title "$inform" --backtitle "$bktitolo" --textbox archinfo.txt 0 0
+	#rm archinfo.txt
+}
+
+
+restore_img()
+{
+	dialog --defaultno --yesno "Do you want to restore partition(S) ?\nWARNING: OLD DATA WILL BE LOST!!!" 9 60
+	if [ "$?" != "0" ]
+		then return
+	fi
+	information_archive
+	if [ "$num_filesystem_img" < "0" ] ; then
+		dialog --infobox "img file don't have filesystem stored!!!\n OPERATION  ABORTED...." 10 70
+		return
+	fi
+	selezione_partizioni
+	#inizio definizione stringa per comando fsarchiver 
+	argomenti="-v restfs $fileimg "
+	echo "num_filesystem_img $num_filesystem_img"	
+
+	for ((k=0; k < num_filesystem_img + 1; k++))  ; do
+		supp_menu="$supp_menu$k \"<=\" "
+		echo $supp_menu
+	done
+	for x in $partizioni_selezionate  
+		do
+			y=${x//\"/}
+			temp=$(cat probe.txt|grep $y) #ricavo dettagli partizione disco
+			echo "aaa=$temp"
+			temp=${temp//" "/""}
+			echo "bbb=$temp"
+			temp=${temp:0:68}
+			echo "ccc=$temp"
+			dialog --menu "Please select filesystem ID to restore on this partition: \n$temp \nNOTE: ID is a number between 0 and $num_filesystem_img" 15 80 15 $supp_menu 2>tmpscelta
+				if [ "$?" != "0" ]
+					then return
+				fi	
+			argomenti="$argomenti id="$(cat tmpscelta)",dest=/dev/"${x//\"/}
+		done
+	echo "$argomenti"
+	
+	dialog --clear --yesno "Based on your indications, the command syntax for restore is \nfsarchiver $argomenti \nPlease confirm to continue, PARTITION DATA WILL BE OVERWRITTEN!!!!" 10 80 
+	if [ "$?" != "0" ]
+		then return
+	fi	
+	fsarchiver $argomenti
+	if [ "$?" != "0" ]
+	then
+		echo "=====ERROR!!!===== ENTER TO CONTINUE"
+		echo "for diagnostic purpose, the command was fsarchiver $argomenti"
+		read
+		dialog --msgbox "restore  error!!!" 10 30
+		return
+	fi
+	clear
+	dialog --clear --msgbox "restore SUCCESFULL!!! " 10 30
+	return
+}
+
+
+information_disk()
+#al termine l'array partizioni contiene il nome delle partizioni rilevate (a partire dall'elemento 1)
+#al termine l'array dischi contiene il nome dei dischi (a partire dall'elemento 1)
+{
+
+	fsarchiver probe 2>probe.txt
+	if [ "$vis" == "1" ] 
+		then
+		dialog --clear --title "Detected partitions and disk(s)" --backtitle "$bktitolo" --textbox probe.txt 0 0
+	fi
+	tmp_1=$(cat probe.txt)
+	tmp_1=${tmp_1//" "/""}
+	# rilevazione dei dischi
+	tmp_2=${tmp_1#*MIN]} 
+	tmp_2=${tmp_2%%[=====DEVICE*}   #a questo punto in tmp_2 ci sono solo le righe che contengono i dischi
+	echo $tmp_2	
+	par_temp2=$(echo $tmp_2)
+	count=1
+	echo "dischi:"
+	for x in $par_temp2   #caricamento nell'array di tutti i dischi presenti 
+	do
+		x=${x#[*}
+		x=${x%%]*}     
+		dischi[$count]=$x
+		echo ${dischi[$count]}
+		((count=$count+1))
+		#echo "count=$count"
+	done
+	echo  "numero dischi rilevati: ${#dischi[*]} "       # Number of items in the array
+	
+	#rilevazione delle partizioni
+	tmp_1=${tmp_1##*MIN]}   # a questo punto in tmp_1 ci sono solo le righe che riguardano le partizioni
+	
+	par_temp=$(echo $tmp_1)
+	echo "partizioni:"
+	count=1
+	for x in $par_temp   #caricamento nell'array di tutte le partizioni presenti sui 
+	do
+		x=${x#[*}
+		x=${x%%]*}     
+		partizioni[$count]=$x
+		echo ${partizioni[$count]}
+		((count=$count+1))
+		#echo "count=$count"
+	done
+	echo  "numero partizioni rilevate: ${#partizioni[*]} "       # Number of items in the array
+	#rm probe.txt
+}
+
+
+display_iniziale ()
+{
+	dialog --clear --title "Informations" --backtitle "$bktitolo" --yesno \
+"fsarchiver_dialog is a frontend of fsarchiver clone partitions program (http://www.fsarchiver.org) 
+and now is for experimental use.\n\
+In addition to fsarchiver native functions it can save and restore MBR.\n\
+This script can be freely redristributed, but no guarantee is provided on\n\
+eventual malfunctions and derivated damages.\n\
+Only  most  common options  are referenced for a simple use. \n\n
+I have do this for a simple free backup system (also for non linux expert)\n
+based on sysrescuecd (http://www.sysresccd.org) and fsarchiver\n
+\nbye\nClaudio Giuliani Bologna (Italy)  
+\n\n\
+            Do you want to continue with this script ?
+	"  21 80
+	if [ "$?" = "0" ]
+	 then return
+	else
+		exit
+	fi
+
+}
+
+
+necessaria_path()
+{
+if [ $dir == "/mnt/" ]  # se non è ancora settata
+	then set_dir
+fi
+}
+
+save_img()
+{
+# chiedo il nome del file per l'immagine
+file_select
+if [ -e "$fileimg" ]
+	then
+	dialog --backtitle "$bktitolo" --defaultno --yesno "*** FILE ALDREADY PRESENT ***\nDo you want to overwrite?" 7 36
+	if [ "$?" != "0" ]
+		then dialog --msgbox "backup not possible...please select another file for image" 5 20
+		return
+	else
+	rm $fileimg
+	fi	
+fi	
+conferma_selezione
+selezione_partizioni 
+#inizio definizione stringa per comando fsarchiver 
+argomenti="-a -j 2 -A -z 4 -v savefs $fileimg "
+for x in $partizioni_selezionate  
+	do
+		argomenti="$argomenti /dev/${x//\"/}"
+	done
+argomenti="$argomenti --exclude=pagefile.* --exclude=hiberfil.sys"
+echo "$argomenti"
+clear
+fsarchiver $argomenti
+	if [ "$?" != "0" ]
+	then
+		echo "=====ERROR!!!===== ENTER TO CONTINUE"
+		echo "for test, the command was fsarchiver $argomenti"
+		read
+		dialog --msgbox "backup error!!!" 10 30
+		return
+	fi
+	dialog --backtitle "$bktitolo" --yesno "                 BACKUP SUCCESFULL!! \n\nDo yo want to save MBR and partitions table (recommended)?" 7 67
+	if [ "$?" = "0" ] ; then
+		save_mbr
+	fi	
+return
+
+}
+
+
+#main del programma
+bktitolo=$bktitolo_org
+display_iniziale
+set_dir
+
+
+#scelta=$(cat tmpscelta)
+scelta=""
+
+while [ "1" != "0" ] ; do
+
+	case "$scelta" in
+		"R")
+		echo "R"
+		scelta=""
+		necessaria_path
+		information_disk
+		restore_img		
+		;;
+		"S")
+		scelta=""
+		echo "P"
+		necessaria_path
+		information_disk
+		save_img
+		;;
+		"M")
+		scelta=""
+		echo "M"
+		necessaria_path
+		information_disk
+		restore_mbr
+		;;
+		"B")
+		scelta=""
+		echo "B"
+		necessaria_path
+		information_disk
+		save_mbr
+		;;
+		"I")
+		scelta=""
+		echo "I"
+		necessaria_path
+		information_archive
+		;;
+		"P")
+		scelta=""
+		echo "P"
+		set_dir
+		;;
+		"D")
+		scelta=""
+		echo "D"
+		vis=1
+		information_disk
+		vis=0
+		;;
+		*)
+		scelta_bck_rest
+		scelta=$(cat tmpscelta)
+
+	esac
+done
+
+
+
+
+
+
+
+

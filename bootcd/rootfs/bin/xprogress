@@ -1,0 +1,68 @@
+#!/bin/bash
+#
+#
+## Michael Setzer II - Program Modifications
+pcnt=0
+
+## Created a function for the Progress Screen instead of multiple
+## copies using multiply files. Just setup 1 function with a msg variable
+## to set the minor differnces between earlier versions.
+
+progress()
+{
+## Added a redirection of stderr from ncftp commands.
+## Would get an error message rarely about a register 82 problem with duplex
+## mismatch. This error would message the contents of the screen, but the updates
+## of the progress would go on. Redirects output to file, and then displays last
+## two lines of the file.
+## This just sets the starting value as being OK
+  
+  echo "OK" >/tmp/ncftpstatus.out
+## Added the Start time of the process to the progress screen
+## Removed - Replaced with modification to jetcat-mod to
+## Display MBs of data transferred of total, and Elapsed time.
+## starttime=`date +%T`
+  (
+  while test "$pcnt" != "100"
+  do
+## changed to a common progress.out file for all progress
+    pcnt=`tail -n1 /tmp/progress.out`
+    echo "XXX"
+## Modified Jetcat-mod to display two decimal positions
+## have to cut off the decimals for the gauge to work.
+    echo $pcnt | cut -d. -f 1
+    echo "\n"
+## msg variable set before calling the progress function to
+## make minor variation between different screens.
+    echo "Progress\n"
+    echo "The progress bar shows the percentage of the amount written\n"
+    echo "to the size of the destination.\n\n"
+    echo "Please stand by, this will take some time!\n\n"
+## Percentage displays with 2 decimal places, plus start time and current time.
+## This lets one check time status of process in addition to percentage
+    echo "Progress"
+    echo "$pcnt\n"
+## Removed Current time and Start time for modified jetcat-mod
+##echo "Current Time:	`date +%T`"
+##echo "Start Time:  	$starttime"
+## add display of last four lines of ncftp stderr if any.
+    echo -n "ncftpstatus: "
+    ncftpstatus=`tail -n4 /tmp/ncftpstatus.out`
+    echo $ncftpstatus
+    echo "XXX"
+    sleep 5
+  done
+  ) |
+  $DIALOG --backtitle "$backtitle" --title "Working..." --clear --gauge "One moment..." 20 70
+## Outputs start time and current time, so it can be checked if one isn't around at end
+## of process. Also, note one can use Ctrl-Alt F2 to switch to another screen to review
+## the file contents or use the special command option.
+## Added a pause to let the user see final results before it returns.
+}
+
+: ${DIALOG=dialog}
+: ${DIALOG_OK=0}
+: ${DIALOG_CANCEL=1}
+: ${DIALOG_ESC=255}
+
+progress

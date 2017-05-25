@@ -1,0 +1,21 @@
+To prepare an disk or partition to be imaged, it is best to clear all 
+unused space on the partitions. G4L uses dd to copy the information 
+from the partitions, and copies all sectors from the drive regardless
+of if it contains current data or old data.
+
+Note - New blank6 uses number for temp files to handle larger drives
+
+To Clear this a number of programs have been included.
+For use on a FAT or NTFS process you can use blank6.
+blank6 creates 2GB Null files on the default drive until the drive is full.
+blank 6 also accepts a drive letter prompt to process.
+blank6 c  or blank6 d
+
+On linux or unix systems the following can be used.
+cleandrive is a very simple script to create a Null file to use all free 
+space, and then delete it.
+cleandrive5, or 6, or 7, or 8 are modified versions that provide a graph 
+display of the process and time information using xdialog and dialog.
+The scripts might need to be modified if the output of df is in a different
+format. Also, lblank7 is linux version of blank program.
+Press Enter to return to menu

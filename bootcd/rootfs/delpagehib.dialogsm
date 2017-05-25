@@ -1,0 +1,46 @@
+hibpage()
+{
+backtitle="Program to Remove Pagefile.sys and Hiberfil.sys"
+f_radiolist "PICK DRIVE" "Pick Partition to erase PAGE/HIBERNATION FILE\n(Use Space Bar)\
+\nSupported FS are:\
+\nfat32 - Windows95/98/NT/2k/XP\
+\nntfs - Windows NT/2k/XP\
+\n\nSelect partition (example: /dev/hda1):" "$partonly"  2> /tmp/filelocaldrive
+retvallocaldrive=$?
+choicelocaldrive=$(cat /tmp/filelocaldrive)
+if [ -n "$choicelocaldrive" ]; then
+  case $retvallocaldrive in
+    $DIALOG_OK)
+    localdrive=$choicelocaldrive
+    umount /mnt/local 2>/dev/null
+    mount /dev/$localdrive /mnt/local >/tmp/mount 2>&1
+    retvalmount=$?
+    if [ $retvalmount != 0 ] ; then
+      f_textbox "ERROR" /tmp/mount
+      localdrive=""
+      umount /mnt/local
+    fi;;
+  esac
+  cd /mnt/local
+  clear
+  resultout=""
+  if [ -e hiberfil.sys ] ; then 
+     result="Found Hiberfil.sys and removed\n"
+     rm hiberfil.sys
+  else
+     result="No Hiberfil.sys found\n"
+  fi
+  if [ -e pagefile.sys ] ; then 
+     result=$result"Found Pagefile.sys and removed"
+     rm pagefile.sys
+  else
+     result=$result"No Pagefile.sys found"
+
+  fi
+  $DIALOG --sleep 10 --infobox "$result" 5 50
+  cd /
+  umount /mnt/local
+fi
+}
+hibpage
+

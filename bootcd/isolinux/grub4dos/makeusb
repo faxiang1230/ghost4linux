@@ -1,0 +1,7 @@
+To make a bootable usb
+Copy all files in this directory to flash
+Then make flash syslinux bootable
+For Linux use syslinux
+For DOS   use syslinux.com
+For WIN32 use syslinux.exe
+

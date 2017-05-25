@@ -1,0 +1,28 @@
+title Windows XP 
+find --set-root /ntldr
+chainloader /ntldr
+
+title Windows VISTA
+find --set-root /bootmgr_vista
+chainloader /bootmgr_vista
+
+title G4L 
+find --set-root /linux/bz4x10.4
+kernel /linux/bz4x10.4 root=/dev/ram0 
+initrd /linux/ramdisk.lzma
+
+title G4L NOSMP
+find --set-root /linux/bz4x10.4
+kernel /linux/bz4x10.4 root=/dev/ram0 nosmp
+initrd /linux/ramdisk.lzma
+
+title G4L FailSafe
+find --set-root /linux/bz4x10.4
+kernel /linux/bz4x10.4 root=/dev/ram0 noapic noacpi pnpbios=off acpi=off pci=noacpi nosmp
+initrd /linux/ramdisk.lzma
+
+title MEMTEST86+ 5.01
+kernel /linux/memtest.bin
+
+title MEMTEST86 v4.3.4
+kernel /linux/memtest2

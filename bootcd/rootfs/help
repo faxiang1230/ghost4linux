@@ -1,0 +1,204 @@
+Below help file is from the 0.14 version that existed back in 2004.
+I would strongly suggest checking out the latest documentation file.
+http://sourceforge.net/projects/g4l/files/g4l%20documentation/
+This currently contains updates to version 0.37.
+
+g4l - Frank Stephen 2004
+Version 0.14
+
+-- 	Some additional modification that I, Michael D. Setzer II, have made to the 
+		Version 0.14 currently availble at the sourceforge site. 
+		Made it possible to use a non-anonymous ftp user
+		Allow for DHCP IP address
+		Set default to eth0
+		Set default to GZip
+		Show current settings of options on screen
+		Added letters to menu options to provide to selecting options by Letter
+		Modified progress bar routine to a single function instead of seperate ones.
+		Modified the progress by routine to show percentages with 2 decimal places
+		and to show the start and current times with the amount sent of destination size
+		Added a special option to allow for other commands to be run during the script.
+
+		I'm making my modifications available at my ftp server at the college
+		ftp://202.128.73.29
+
+		Michael D. Setzer II
+		Computer Science Instructor
+		mikes@kuentos.guam.net
+
+
+- CHANGES SINCE LAST VERSION -
+
+added new menu:
+      - select between RAW mode and file mode !
+
+        RAW Node: common g4l mode, copies every single bit of the
+        drive, including empty sectors, deleted files...everything!
+
+        File Mode: for those people who do not have the time
+        (or space!) to execute RAW mode. This mode accesses the
+        filesystem of the drive and writes only the sectors,
+        which are occupied by files. This is what the commercial
+        products do. As it is senseless to invent the wheel twice,
+        g4l launches the very cool 'partimage' to do this.
+        Be careful: If you need also deleted files and hidden
+        stuff for data recovery or sth like that, use RAW mode !
+
+        Check www.partimage.org for info on how to use partimage
+        in detail or from the command line.
+
+        g4l offers to launch the partimage server through the
+        'Launch server' option from where you can configure your
+        network card, mount the destination drive and launch
+        the partimage server.
+        Then remove the CD and boot your client. Away you go !
+
+added new utilities:
+      - added access to the very good dd_rescue and dd_rhelp tool !
+        If you have a drive with I/O errors (hardware failure,...)
+        this tool gets almost everything of it. Combined with
+        dd_rhelp it surrounds the defective sectors automatically.
+        A MUST have ! Thanks to the developers!
+
+      - added possibility to set I/O controller to 32bit and
+        UDMA66 transfer mode using 'hdparm' utility. Be careful:
+        This might hang your system if it does not support these
+        modes. If so, give it a reboot and do not this option
+        again!
+
+added progress bars:
+      - every backup/restore option plus the zero-tool now features
+        a full progress bar. no more guesses how long backup/restore
+        will take. Be aware, that if restoring small images to large
+        drives, the progress bar will be inaccurate ! It might
+        happen that you restore, progress shows 30% and suddenly
+        you are finished :) This cannot be corrected, since g4l
+        cannot know the uncompressed filesize of the image at the
+        begining of the restore.
+        Progress will also fail for disks over 9.9 TeraByte :)
+
+- INTRODUCTION -
+
+First of all I want to say "Thank you" to 'nme' who allowed me to
+use some lines of his code and supported me in taking control of
+the project.
+
+
+- LICENSE (if any) -
+
+This Script is freeware. Get it, spread it, use it, modify it !
+If you want to modify this script and put it on a website,
+please drop me a mail so I know how to find it.
+Also, only delete this helpfile if you have something better
+on hand :)
+
+As this script is based on the common Linux utils
+
+BusyBox (www.busybox.net)
+GNU coreutils (like 'dd') (www.gnu.org)
+Linux Kernel 2.6.3 (www.kernel.org)
+Dialog, based on Debian cdialog (dickey.his.com/dialog)
+jetcat-mod, based on jetcat by Oskar Schirmer
+  (www.scara.com/~schirmer/o/jetcat/)
+dd_rescue (www.garloff.de/kurt/linux/ddrrescue/)
+dd_rhelp (www.kalysto.org/utilities/dd_rhelp/)
+partimage (www.partimage.org)
+and others
+
+be sure to respect their licenses.
+
+
+- REQUIREMENTS -
+
+If you downloaded the ISO file and just want to use this script,
+you need the following:
+
+For network use:    
+    -ethernet card (common PCI and onboard cards are supported)
+    -FTP server: -in the same subnet
+                 -must support filesize bigger than 2 GB
+                 -must allow anonymous write access
+                 -MUST HAVE DIRECTORY 'img' writeable, or
+                  change variable $ftppath in ./g4l
+		
+                 Take a look at vsFTPd ! A very good one.
+		
+    -a hard drive: IDE, SCSI or SATA types are supported
+
+For local use:
+    -two hard drives of the types above
+
+For Click'n'Clone:
+    -two hard drives of the types above
+    
+    
+If you downloaded the development kit with all the sources and
+want to modify the script and then burn your own ISO, you will
+need the following to successfully compile and burn the CD:
+
+-a running Linux box
+-kernel >=2.6.3 sources (if you want to change kernel)
+-LOOP device support
+-mkisofs tools
+-cdrecord
+
+I hope i did not forget anything :)    
+
+
+- WARNINGS -
+
+You should know what you do if you want to use this script:
+
+First:  THINK.
+Second: THINK again.
+Third:  If you think you have thought enough, THINK again !
+        It is very easy to mess up your hard drive.
+
+As usual, this script comes WITHOUT ANY WARRANTY. Do not blame me
+if you ruined your partitions or data. I have tested this script
+on several computers, including an old AMD K6, INTEL Celeron4,
+AMD Athlon XP with nForce2 Chipset and onboard LAN. It worked fine
+for me. But I cannot test it under every environment. If it causes
+trouble on your box, do NOT blame me. You have been warned :)
+
+Don't forget, you can only:
+
+-clone drives of the same size
+-clone from smaller drive to bigger drive, leaves some space
+ unallocated/unpartitioned
+-restore drives of the same size
+-restore smaller to bigger drives (same as above)
+
+If you are NOT using g4l in local mode, filesystems do NOT matter.
+You can clone whatever you want, XFS, hpfs, you name it!
+If you want to use local mode, the harddrive has of course to
+be mounted to write the images to the root directory. Therefore
+only the most common FS are supported (shown in g4l).
+
+If you modified some drives partition table in any way, be sure
+to reboot if you want to do something with this new partition.
+Kernel has to re-read the partition table, if you do not reboot,
+the kernel will work with the 'old' partition information instead!
+
+- BUGS -
+
+On some very old machines you might encounter an error message
+telling something about "SPURIOUS INTERRUPT detected" or something
+like that. This might be caused by old APIC modes. Try to disable
+this setting in your BIOS.
+I had this error sometimes on my old K6 machine, but everything
+seemed to work anyway.
+
+Report other bugs and/or problems to:
+
+fra_step@yahoo.com
+
+But please keep in mind: This is no commercial project, so if
+I think your question is stupid or has already been answered here,
+do not be angry if I won't answer your mail :)
+
+Be patient.
+
+Thanks and good luck, 
+
+Frank

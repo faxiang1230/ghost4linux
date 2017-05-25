@@ -1,0 +1,3 @@
+dd if=/dev/zero of=/0bits bs=20M
+rm /0bits
+

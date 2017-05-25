@@ -1,0 +1,97 @@
+#!/bin/bash
+#
+#
+## Michael Setzer II - Program Modifications
+## Modified 1/1/2007 to add $3 to use other script names.
+## Modified 2/4/2007 to add $4 to use other userid password
+
+## ./zxg4l ipaddress device filename useridpass
+## ./zxg4l 192.168.0.1 eth0 front.bic '-u user -p password'
+## ./zxg4l 192.168.0.1 eth0 front.bic user:password
+
+: ${DIALOG=dialog}
+: ${DIALOG_OK=0}
+: ${DIALOG_CANCEL=1}
+: ${DIALOG_ESC=255}
+
+ftpipaddress=$1
+filename=$3
+
+useridpass=$4
+if [ -n "$useridpass" ]; then
+  if [ `echo $useridpass | awk '{print $1;}' -` != "-u" ] ; then
+    useridpass=`echo $useridpass | awk -F: '{print "-u " $1 " -p " $2;}' -`
+  fi
+fi
+
+if [ -z $ftpipaddress ]; then
+  $DIALOG --backtitle "Front-End Script to download options from FTP Server" \
+  --title "IP Address" --clear \
+  --inputbox "Provide IP address of FTP server\
+\nwith front script\
+\nExample: 192.168.0.5 \
+\n\nEnter IP Address:" 0 0 2> /tmp/getip
+  
+  retvalip=$?
+  case $retvalip in
+    $DIALOG_OK)
+    ftpipaddress=`cat /tmp/getip`
+  esac
+fi
+#device=eth0
+#Added ifcheck.sh by dan.s@hostdime.com
+#to handle systems with multiple nics and eth0 not default
+device=`cat /tmp/device`
+
+if [ -n "$2" ]; then
+  device=$2
+fi
+
+if [ -z $useridpass ]; then
+  $DIALOG --backtitle "$backtitle" \
+  --title "CONFIG USERIDPASS" --clear \
+  --inputbox "Enter userid and password option. \
+\nExample: -u userx -p password \
+\n      or userx:password\
+\n      or leave blank for anonymous\
+\n\nOptions:" 0 0 2> /tmp/getid
+  
+  retvalnetname=$?
+  case $retvalnetname in
+    $DIALOG_OK)
+    useridpass=`cat /tmp/getid`
+## Added to support user:password format conversion to ncftp format
+    if [ -n "$useridpass" ]; then
+      if [ `echo $useridpass | awk '{print $1;}' -` != "-u" ] ; then
+        useridpass=`echo $useridpass | awk -F: '{print "-u " $1 " -p " $2;}' -`
+      fi
+    fi
+    ;;
+    
+    $DIALOG_CANCEL)
+    ;;
+    
+    $DIALOG_ESC)
+    if test -s /tmp/getid ; then
+      useridpass=`cat /tmp/getid`
+## Added to support user:password format conversion to ncftp format
+      if [ -n "$useridpass" ]; then
+        if [ `echo $useridpass | awk '{print $1;}' -` != "-u" ] ; then
+          useridpass=`echo $useridpass | awk -F: '{print "-u " $1 " -p " $2;}' -`
+        fi
+      fi
+    fi
+    ;;
+  esac
+fi
+
+if [ -z $filename ]; then
+  filename="front"
+fi
+## new busybox changed ip address from field 4 to field 3
+ipaddress=`udhcpc -i $device -s/udhcpc.sh|grep Lease|cut -d\  -f3`
+/sbin/ifconfig $device $ipaddress up
+ncftpget $useridpass $ftpipaddress . $filename
+chmod 755 $filename
+./$filename
+echo $ipaddress

@@ -1,0 +1,110 @@
+.\" Man page for jetcat
+.\"
+.\" Copyright GPL (C) 2004, Oskar Schirmer
+.\"
+.TH jetcat 1 "Jul 2nd, 2004" "1.3" "Pipe Transmission Control"
+.SH NAME
+jetcat \- pipe transmission control
+.SH SYNOPSIS
+jetcat [OPTIONS]
+.SH DESCRIPTION
+Transmit data from stdin to stdout, statistics go to stderr.
+Data throughput may be limited in different ways.
+.SH INSTALLATION
+Change the current path to where You dropped
+the files in this package and
+.P
+.B make
+.P
+to compile the program. This should result in
+an executable file
+.IR jetcat .
+Then
+.P
+.B make install
+.P
+to deposit the program and man page to the \fI/usr/local\fR hierarchy.
+.SH OPTIONS
+.TP
+.B -h, --help
+print usage info and exit
+.TP
+.B -V, --version
+print version and exit
+.TP
+.B -f, --freq \fI<msec>\fR
+set measurement frequency in msec.
+statistics are printed to \fIstderr\fR every \fI<msec>\fR msec.
+set this value to \fB0\fR to suppress measurement and output
+of statistics.
+.TP
+.B -r, --maxread \fI<cnt>\fR \fI<msec>\fR
+read at most \fI<cnt>\fR bytes per \fI<msec>\fR msec from stdin.
+.TP
+.B -w, --maxwrite \fI<cnt>\fR \fI<msec>\fR
+write at most \fI<cnt>\fR bytes per \fI<msec>\fR msec to stdout.
+.TP
+.B -B, --buffer \fI<size>\fR
+use internal ring buffer of \fI<size>\fR bytes.
+.TP
+.B -L, --low \fI<cnt>\fR
+set buffer low water mark.
+data is not written to stdout, unless at least \fI<cnt>\fR bytes
+are available, or stdin was closed yet.
+.TP
+.B -H, --high \fI<cnt>\fR
+set buffer high water mark.
+no attempt to read data from stdin is made,
+unless at least space for \fI<cnt>\fR bytes is in the buffer.
+.TP
+.B -R, --readsize \fI<cnt>\fR
+read at most \fI<cnt>\fR bytes at once in a single device read access.
+.TP
+.B -W, --writesize \fI<cnt>\fR
+write at most \fI<cnt>\fR bytes at once in a single device write access.
+.TP
+.B -c, --count \fI<cnt>\fR
+transmit no more than \fI<cnt>\fR bytes.
+when this number of bytes has been written to stdout, exit.
+when the needed bytes have been read from stdin, close stdin.
+.TP
+.B -s, --skip \fI<cnt>\fR
+skip \fI<cnt>\fR bytes from stdin before starting full transmission.
+.SH FILES
+.TP
+.B makefile
+The makefile used for compilation
+.TP
+.B jetcat.c
+sourcefile
+.TP
+.B jetcat.1
+man page file
+.SH "NOTA BENE"
+The two options \fB--count\fR and \fB--skip\fR where introduced
+to allow precise input file cut out.
+Usually, this is done also by \fBdd\fR(1), with options
+\fBskip=\fR, \fBbs=\fR and \fBcount=\fR, but due to its block oriented
+behaviour, \fBdd\fR(1) may produce less than the desired
+\fIcount * bs\fR bytes.
+This is a result of the aibility of character devices
+to return any \fBread\fR(2) access short, that is, when asked for
+a specific amount of data, return with less than this number
+of bytes, yet not erroneous.
+To observe this behaviour, try:
+.P
+.B jetcat -w 23 42 </dev/zero | dd bs=100 count=10 | wc -c
+.P
+The result should most probably be 230 bytes counted,
+while on a first glance \fBdd\fR(1) was suspected to transmit 1000 bytes.
+\fBdd\fR(1) reports the short \fBread\fR(2) results
+next to the \fB+\fR:
+.P
+.B 0+10 records in
+.SH "SEE ALSO"
+.BR cat (1),
+.BR dd (1),
+.BR read (2),
+.BR wc (1).
+.SH AUTHOR
+Oskar Schirmer (oskar@scara.com).

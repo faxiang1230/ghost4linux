@@ -1,0 +1,74 @@
+#!/bin/sh
+#Script to be executed by busybox at bootup
+#
+#Modify to your needs
+#
+
+echo "Re-mounting / with read-write permissions"
+/bin/mount -n -o remount,rw /
+
+echo "Mounting /proc"
+/bin/mount -t proc proc /proc
+
+/bin/mount -n -o remount,rw /
+## Added 5/2/2008 testing mdev to create devices
+mount -t sysfs sysfs /sys
+mount -t devpts devpts /dev/pts
+mdev -s
+
+
+echo "Not loading any keymap -> US Layout"
+#if NON english, load binary(!!) keymap here
+#shipped keymap is german.
+#/sbin/loadkmap < /var/lib/kbd/keymap.map
+
+echo "Setting Hostname"
+#set hostname to whatever you want, does not
+#matter
+
+/bin/hostname g4l
+# Changed to have it test for file exist
+
+if [ -e /etc/mtab ]; 
+then
+	echo "/etc/mtab exists"
+else
+	/bin/ln -s /proc/mounts /etc/mtab
+fi
+## 5/23/2008 added to recognize devices
+echo /bin/mdev >/proc/sys/kernel/hotplug
+## 3/21/2011 added to elimante pop up messages
+klogd -c 6
+dialog --pause "10 second pause to let everything finish loading\n\
+Would appreciate getting Feedback\n(Good or Bad)\nmikes@kuentos.guam.net" 12 52 10
+
+## 4/29/2008 added timeout so script will continue
+dialog --timeout 30 --textbox /disclaim 24 79  2>/dev/null
+dialog --timeout 30 --textbox /instruct 0 0    2>/dev/null
+dialog --timeout 30 --textbox /latest 0 0      2>/dev/null
+dialog --timeout 30 --textbox /AES-sshfs 0 0   2>/dev/null
+##device=eth0
+## change 6/23/2007 new busybox shifted ip to field 3 instead of 4
+##ipaddress=`udhcpc -n -i $device -s/udhcpc.sh|grep Lease|cut -d\  -f3`
+##if [ -n $ipaddress ]; then
+##	/sbin/ifconfig $device $ipaddress up
+##else
+##  ipaddress=`udhcpc -n -i $device -s/udhcpc.sh|grep Lease|cut -d\  -f3`
+##  sleep 3
+##	/sbin/ifconfig $device $ipaddress up
+##fi
+##echo IP Address is: $ipaddress
+## added 6/17/2008 checks for eth? multi-devices
+## activates first one that gets a link from dhcp
+/ifcheck2.sh
+/testcd
+## 4/29/2008 added to load telnetd if kernel boot parameter
+## telnetd=yes is found
+telnetd=`cat /proc/cmdline | grep telnetd`;
+if [ -n "$telnetd" ] ; then 
+	telnetd
+fi
+mdev -s
+vgchange -a y
+bkey
+##echo "Enter g4lmenu"

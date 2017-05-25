@@ -1,0 +1,17 @@
+# 41 is used to strip path /home/msetzerii/test28/g4l/bootcd/rootfs
+xdir=`pwd | cut -b41-70 `/
+xdir=`echo $xdir | sed -e 's_/_\o134\o134/_g'`
+rm /home/msetzerii/out
+rm /home/msetzerii/out2
+rm /home/msetzerii/out9
+ls -l | grep -v lrw | grep -v drw | grep -v total | awk {'print "diff -q " $9  " qqq" $9 ">>/home/msetzerii/out2 2>>/home/msetzerii/out9"'} >> /home/msetzerii/out
+cat /home/msetzerii/out | sed -e "s/qqq/$xdir/g" >/home/msetzerii/outb
+# gedit /home/msetzerii/outb
+chmod 755 /home/msetzerii/outb
+/home/msetzerii/outb
+if [ -s "/home/msetzerii/out2" ] ; then
+	gedit /home/msetzerii/out2
+fi
+if [ -s "/home/msetzerii/out9" ] ; then
+	gedit /home/msetzerii/out9
+fi

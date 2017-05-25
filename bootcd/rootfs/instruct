@@ -1,0 +1,26 @@
+Basic Instruction for using G4L  
+
+Option 1: Enter g4l, and use menus to fill in options.
+Option 2: Enter g4l with parameter options
+  Available Options that can be used
+    $1 - IP address of FTP Server
+    $2 - IMAGE NAME WITH EXTENSION
+    $3 - USERID and PASSWORD either of two formats
+         USERID:PASSWORD  or '-u USERID -p PASSWORD'
+    $4 - dhcp    (default to get ipaddress from dhcpd) or fixed ipaddress
+    $5 - change default directory from img to this
+    $6 - eth0 (default or other device)
+    $7 - reboot (blank no action, poweroff, reboot)
+                (after network backup or restore)
+
+Examples: g4l 192.168.0.1 image1.lzo user1:password1 dhcp img2
+          g4l 192.168.0.1 image1.lzo '-u user1 -p password1' dhcp img2
+          g4l 192.168.0.1 image1.gz
+parameters must be used in order, but later ones can be left off
+[Front end script options] will prompt for ftpserverip, device default eth0
+Option 3: fg4l  [ftpserverip]  [dev] [filename] (default front)
+Option 4: efg4l [ftpserverip]  [dev] [filename] (default front.bic)
+Option 5: zxg4l  [ftpserverip]  [dev] [filename] userid:password
+Option 6: zexg4l [ftpserverip]  [dev] [filename] userid:password
+
+Option 4 and 6 use bicode.o3 encoded frontend files

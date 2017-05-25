@@ -1,0 +1,38 @@
+### 12/31/20008 added to allow running command from grub
+### add run="command line" to the grub line
+### creates /tmp/runcmd to stop running twice.
+### added sed CR filtering to allow multi-line commands
+### run="command1CRcommand2CRcommand3"
+if [ ! -s "/tmp/runcmd" ] ; then
+  cat /proc/cmdline | grep run | cut -d\"  -f 2 | sed -e 's/CR/\n/g' -e 's/\\x20/ /g' >/tmp/runcmd;
+  if [ -s /tmp/runcmd ] ; then
+    grub2fix=`cat /tmp/runcmd | cut -b1-3`
+    if [ "$grub2fix" = "run" ] ; then 
+       cat /tmp/runcmd | cut -b 5-256 > /tmp/runcmd2
+       mv /tmp/runcmd2 /tmp/runcmd
+    fi
+    sh /tmp/runcmd
+    sleep 10;
+  fi
+fi
+dialog --title "Basic Instruction for using G4L " \
+ --no-cancel --colors --ok-label "Run Option or drop to bash prompt if left blank"\
+ --inputbox "Option 1: Enter \Z1g4l\Zn, and use menus to fill in options.\n\
+Option 2: Enter \Z1g4l\Zn with parameter options\n\
+\Z4    \$1 - IP address of FTP Server\n\
+    \$2 - IMAGE NAME WITH EXTENSION\n\
+    \$3 - USERID and PASSWORD either of two formats\n\
+         USERID:PASSWORD  or '-u USERID -p PASSWORD'\n\
+    \$4 - dhcp    (default to get ipaddress from dhcpd) or fixed ipaddress\n\
+    \$5 - change default directory from img to this\n\
+    \$6 - eth0 (default or other device)\n\
+    \$7 - reboot (blank no action, poweroff, reboot)\Zn\n\
+parameters must be used in order, but later ones can be left off\n\
+Option 3: \Z1fg4l   [ftpserverip]  [dev] [filename] (default front)\Zn\n\
+Option 4: \Z1efg4l  [ftpserverip]  [dev] [filename] (default front.bic)\Zn\n\
+Option 5: \Z1zxg4l  [ftpserverip]  [dev] [filename] userid:password\Zn\n\
+Option 6: \Z1zexg4l [ftpserverip]  [dev] [filename] userid:password\Zn\n\
+Example: \n\Z1g4l 192.168.0.1 test.lzo userx:passwordx dhcp img\Zn\n" 25 80 \
+ "" 2>g4lmenu.opt$$
+chmod 755 g4lmenu.opt$$
+./g4lmenu.opt$$

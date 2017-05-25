@@ -1,0 +1,29 @@
+
+Setting up a flash using grub4dos and grub4dostoolbox
+
+This archive contains the files from
+http://grub4dos.chenall.net
+
+Currently has the 0.45c as of 10/21/2014
+
+
+Options that I've tested.
+Setting up a flash with a 100M partition of Fat32 or NTFS
+I've used the remaining space as an ext2/3/4 partition for
+storing image, but can be NTFS for users, but does require
+extra overhead.
+
+
+With linux the process of setting up the bootsector was easy
+with bootlace, but doesn't work on higher versions of windows.
+Have recently found grub4dostoolbox and it works with Windows 7
+running the program the program as administrator to install
+boot sector onto flash. 
+
+
+http://sourceforge.net/projects/grub4dostoolbox/
+
+
+The other option is to copy the files from the cd image to a flash
+and installing syslinux to boot.
+

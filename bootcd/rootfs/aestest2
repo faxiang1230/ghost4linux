@@ -1,0 +1,14 @@
+#!/bin/sh
+#
+#
+## Michael Setzer II - Program Modifications
+## Set tab = 2 spaces for formatting
+cd /
+dd if=/dev/urandom of=./aes1.test bs=512 count=40
+aespipe -K ./mykey1.gpg -P ./passphrase -G ./ <./aes1.test >./aes2.test
+aespipe -K ./mykey1.gpg -P ./passphrase -G ./ -d <./aes2.test >./aes3.test
+cmp -l ./aes1.test ./aes3.test
+
+echo "cmp should result in no difference"
+rm ./aes?.test -f
+

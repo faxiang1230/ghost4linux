@@ -1,0 +1,86 @@
+#!/bin/sh
+#
+#
+## Michael Setzer II - Program Modifications
+## Set tab = 2 spaces for formatting
+: ${DIALOG=dialog}
+: ${DIALOG_OK=0}
+: ${DIALOG_CANCEL=1}
+: ${DIALOG_ESC=255}
+
+# window title
+backtitle="g4l frontend menu"
+
+# two options for menu format
+# in the first one, the option letter followed by colon and space
+# then serverip image.ext 
+# using the user:password format you can also include it and the dhcp option
+# serverip image.ext user:password dhcp
+
+# in the second option, the only requirement would be the first letters linked 
+# to the options, since all the parameters are set in the case statement
+
+#eject /dev/hda >/dev/null
+eject /dev/hdb >/dev/null   ## Option to eject CD
+eject /dev/hdc >/dev/null
+eject /dev/hdd >/dev/null
+
+dlzo=`date +'%F'`.lzo				## Added to setup to create new images
+dgz=`date +'%F'`.gz					## that use the current date as part of name
+
+$DIALOG --sleep 10 --infobox "Please remove CD\nNo longer needed\n10 second message"  0 0
+
+
+$DIALOG --backtitle "$backtitle" \
+        --title "G4L frontend menu" \
+        --menu "Choose your desired mode:"  0 0 0 \
+          "A: 192.168.0.1 image1.lzo" "The Big Image" \
+          "B: 192.168.0.1 image2.gz " "The Small Image" \
+          "C: 192.168.0.1 image3.gz " "The Medium Image" \
+          "D: 192.168.0.1 image4.lzo" "The Multi Image" \
+					"E: 192.168.0.1 image$dlzo" "New Image image$dlzo" \
+					"F: 192.168.0.1 image$dgz"  "New Image image$dgz" \
+					2> /tmp/frontout
+    retvalmain=$?
+
+# first option command options
+
+#		./g4l `cat /tmp/frontout | cut -b 3-80` '-u user -p password' dhcp    
+#or
+#		./g4l `cat /tmp/frontout | cut -b 3-80` user:password dhcp    
+
+# second option can feed any combination of options
+# serverip
+# serverip image.ext
+# serverip image.ext user:password
+# serverip image.ext user:password dhcp 
+# serverip image.ext user:password dhcp img
+
+option=`cat /tmp/frontout | cut -b 1-1`
+    case $option in 
+      "A")
+           echo "A"
+#          ./g4l 192.168.0.1 image1.lzo user:password dhcp img
+          ;;
+      "B")
+           echo "B"
+#          ./g4l 192.168.0.1 image1.lzo user:password dhcp img
+           ;;
+      "C")
+           echo "C"
+#          ./g4l 192.168.0.1 image1.lzo user:password dhcp img
+           ;;
+      "D")
+           echo "D"
+#          ./g4l 192.168.0.1 image1.lzo user:password dhcp img
+           ;; 
+      "E")
+           echo "E"
+#          ./g4l 192.168.0.1 image1$dlzo user:password dhcp img
+           ;;
+      "F")
+           echo "F"
+#          ./g4l 192.168.0.1 image1$dgz user:password dhcp img
+           ;; 
+     esac
+echo "DONE"

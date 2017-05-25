@@ -1,0 +1,4 @@
+cat /home/msetzerii/out2 | awk {'print "cp -p "  $4 " ." '} >/home/msetzerii/out22.fix
+chmod 755 /home/msetzerii/out22.fix 
+/home/msetzerii/out22.fix
+

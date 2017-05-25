@@ -1,0 +1,52 @@
+Below is the info from RIPLinux instructions for setting up grub4dos
+to be able to boot riplinux. I have just made g4llinux.exe to do the
+same, but it has the bz27.7 kernel file and ramdisk.gz for the file
+system. 
+
+Have made a single menu.lst file that has both XP and Vista options,
+so it should work with either. The other option lines can be deleted.
+
+To setup g4l to boot this way, you would just need to copy the grldr program
+to the root of the windows boot disk along with the menu.lst file. Then create
+a sub directory linux, and place the bz27.7 kernel and ramdisk.gz. Then just
+do the options listed below. If you use another kernel, you will need to 
+modify the menu.lst file. I don't have a VISTA systems, so have not tested 
+that setup directly.
+
+--------------------------------------------------------------------------
+If you want to install and boot RIPLinuX on a Windows Vista/XP system,
+--------------------------------------------------------------------------
+
+Extract linux.exe from the root directory.
+C:\linux.exe  "Self extracting Zip archive!"
+
+You'll then have this.
+C:\grldr
+C:\menu.lst
+C:\linux\kernel
+C:\linux\rootfs.cgz
+
+Rename C:\bootmgr to bootmgr_vista
+Rename C:\grldr to bootmgr
+
+Under Windows you will probably need administrator privilege to see and
+rename bootmgr. 
+C:\> attrib -h -s -r bootmgr
+C:\> ren bootmgr bootmgr_vista
+C:\> attrib +h +s +r bootmgr_vista 
+C:\> ren grldr bootmgr
+C:\> attrib +h +s +r bootmgr 
+
+It's easy to do it in Linux.
+# ntfs-3g /dev/sda1 /mnt/sda1  "Mount Windows partition read-write!"
+# cd /mnt/sda1
+/mnt/sda1# mv bootmgr bootmgr_vista
+/mnt/sda1# mv grldr bootmgr
+
+Under Windows XP, just do this.
+Append the line below to C:\BOOT.INI.
+C:\GRLDR="Start GRUB"
+Rename C:\menuxp.lst to menu.lst
+
+The next time you boot the Windows Vista/XP system, GRUB will
+present you with a menu to boot Windows or Linux.

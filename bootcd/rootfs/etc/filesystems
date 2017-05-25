@@ -1,0 +1,11 @@
+vfat
+minix
+reiserfs
+ext3
+ext4
+ext2
+ntfs-3g
+ntfs
+xfs
+jfs
+*

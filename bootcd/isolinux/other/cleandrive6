@@ -1,0 +1,81 @@
+#!/bin/bash
+#
+#
+## Michael Setzer II - Program Modifications
+pcnt=0
+
+progress()
+{
+(
+while test "$pcnt" != "$value"
+do
+
+echo "XXX" 
+## Modified Jetcat-mod to display two decimal positions
+## have to cut off the decimals for the gauge to work.
+if test "$value" == "100"; then
+	pcnt=`tail -n1 /tmp/progress.out`
+	echo $pcnt | cut -d. -f 1
+fi
+if test "$value" != "100"; then
+	if [ " " = "$testx" ]; then
+	    pcnt=`df . | grep % | grep / | awk '{print $4}'`
+	else
+	    pcnt=`df . | grep % | grep / | awk '{print $5}'`
+	fi
+	echo $pcnt | cut -d% -f 1
+fi
+echo "\\n"
+## msg variable set before calling the progress function to 
+## make minor variation between different screens.
+echo "$msg" ; echo "\\n"
+echo "The progress bar shows the percentage of the amount written"; echo "\\n"
+echo "to the size of the destination."; echo "\\n"; echo "\\n"
+echo "Please stand by, this might take some time!"; echo "\\n"; echo "\\n"
+## Percentage displays with 2 decimal places, plus start time and current time.
+## This lets one check time status of process in addition to percentage
+echo "Progress"; echo "\\n"
+echo "$pcnt"; echo "\\n"
+echo "XXX"; echo "$pcnt"
+sleep 5
+done
+) | 
+$DIALOG --backtitle "$backtitle" --title "Working..." --clear --gauge "One moment..." 20 70
+rm /tmp/progress.out
+touch /tmp/progress.out
+## Added a pause to let the user see final results before it returns.
+}
+
+: ${DIALOG=dialog}
+: ${DIALOG_OK=0}
+: ${DIALOG_CANCEL=1}
+: ${DIALOG_ESC=255}
+
+backtitle="Program to clear free space"
+msg="Clearing Free Space"
+value="100"
+freesize=`df . | grep % | grep / | awk '{print $1 - $2}'`
+original=`df . | grep % | grep / | awk '{print $4}'`
+testx=`df . | grep % | grep / | cut -b1-1`
+if [ " " = "$testx" ]; then
+freesize=`df . | grep % | grep / | awk '{print $1 - $2}'`
+original=`df . | grep % | grep / | awk '{print $4}'`
+else 
+freesize=`df . | grep % | grep / | awk '{print $2 - $3}'`
+original=`df . | grep % | grep / | awk '{print $5}'`
+fi
+echo $freesize $original
+
+
+dd if=/dev/zero bs=20M 2>/dev/null | /jetcat-mod -f 5000 -p $freesize 2>/tmp/progress.out >0bits &
+progress
+value=$original
+msg="Removing 0bits file"
+rm 0bits &
+progress
+if [ "$DIALOG" = "Xdialog" ]; then  
+	$DIALOG --infobox "Drive Should now have all free space cleared" 20 80 10000
+else
+	$DIALOG --sleep 10 --infobox "Drive Should now have all free space cleared" 20 80 
+fi
+

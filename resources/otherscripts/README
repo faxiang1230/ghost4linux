@@ -1,0 +1,30 @@
+These are some special scripts that I use in the building of g4l.
+They are customized to my build structure, so would probable need
+to be modified to work on a directory structor that is different.
+
+chkfiles - run in each of the bin sbin and lib directories to check 
+           if the files in the g4l directories match with the files
+           on the build system, so after doing systems updates the 
+           g4l can be kept in sync.
+
+failsafe - script to create the failsafe.cfg from isolinux.cfg
+
+newg4l   - Used to run the makecdrm script to build updatd g4l iso 
+           and development now with volid
+
+out2.fix - run after chkfiles if files are newer to copy the changed
+           files. Note: if the version of a file as in the library
+           changes the file will be listed as missing, and one manually
+           needs to delete the old versions, and copy the new ones with 
+           linked files. I generally create a gz file of library in the
+           system location, and then just extract them in the matching
+           location.
+
+chkldd   - Is located in the /bin directory, and it checks that all the 
+           files and programs in the bin sbin and lib directores are meet.
+           If it reports any not found, the missing items will need to be 
+           added.
+
+g4lup    - Script to upload files to my alpha server. userid and pasword 
+           replaced in this copy.
+README

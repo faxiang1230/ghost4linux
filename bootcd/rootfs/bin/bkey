@@ -1,0 +1,124 @@
+#!/bin/bash
+: ${DIALOG_OK=0}
+: ${DIALOG_CANCEL=1}
+: ${DIALOG_ESC=255}
+: ${DIALOG_ERROR=255}
+
+dialog --backtitle "G4L keymap selection" --title "Select Keymap" \
+  --timeout 30 --begin 2 10 \
+  --radiolist "Use Space Bar to Select and Enter or \
+    \nwill default to US after 30 seconds" 0 50 14 \
+"us/us-acentos.bmap"  "US" OFF \
+"us/us.bmap"  "US" ON \
+"be/be-latin1.bmap"  "BE" OFF \
+"bg/bg_bds-cp1251.bmap"  "BG" OFF \
+"bg/bg_bds-utf8.bmap"  "BG" OFF \
+"bg/bg-cp1251.bmap"  "BG" OFF \
+"bg/bg-cp855.bmap"  "BG" OFF \
+"bg/bg_pho-cp1251.bmap"  "BG" OFF \
+"bg/bg_pho-utf8.bmap"  "BG" OFF \
+"br/br-abnt2.bmap"  "BR" OFF \
+"br/br-abnt.bmap"  "BR" OFF \
+"br/br-latin1-abnt2.bmap"  "BR" OFF \
+"br/br-latin1-us.bmap"  "BR" OFF \
+"by/by.bmap"  "BY" OFF \
+"cf/cf.bmap"  "CF" OFF \
+"colemak/en-latin9.bmap"  "COLEMAK" OFF \
+"croat/croat.bmap"  "CROAT" OFF \
+"cz/cz.bmap"  "CZ" OFF \
+"cz/cz-cp1250.bmap"  "CZ" OFF \
+"cz/cz-lat2.bmap"  "CZ" OFF \
+"cz/cz-lat2-prog.bmap"  "CZ" OFF \
+"cz/cz-qwertz.bmap"  "CZ" OFF \
+"cz/cz-us-qwertz.bmap"  "CZ" OFF \
+"de/de.bmap"  "DE" OFF \
+"de/de_CH-latin1.bmap"  "DE" OFF \
+"de/de-latin1.bmap"  "DE" OFF \
+"de/de-latin1-nodeadkeys.bmap"  "DE" OFF \
+"dk/dk-latin1.bmap"  "DK" OFF \
+"dvorak/ANSI-dvorak.bmap"  "DVORAK" OFF \
+"dvorak/dvorak.bmap"  "DVORAK" OFF \
+"dvorak/dvorak-l.bmap"  "DVORAK" OFF \
+"dvorak/dvorak-r.bmap"  "DVORAK" OFF \
+"es/es.bmap"  "ES" OFF \
+"es/es-cp850.bmap"  "ES" OFF \
+"et/et.bmap"  "ET" OFF \
+"et/et-nodeadkeys.bmap"  "ET" OFF \
+"fi/fi-latin1.bmap"  "FI" OFF \
+"fr/azerty.bmap"  "FR" OFF \
+"fr/fr.bmap"  "FR" OFF \
+"fr/fr_CH.bmap"  "FR" OFF \
+"fr/fr_CH-latin1.bmap"  "FR" OFF \
+"fr/fr-latin1.bmap"  "FR" OFF \
+"fr/fr-latin9.bmap"  "FR" OFF \
+"fr/fr-pc.bmap"  "FR" OFF \
+"gr/gr.bmap"  "GR" OFF \
+"gr/gr-pc.bmap"  "GR" OFF \
+"hu/hu101.bmap"  "HU" OFF \
+"hu/hu.bmap"  "HU" OFF \
+"il/il.bmap"  "IL" OFF \
+"il/il-heb.bmap"  "IL" OFF \
+"il/il-phonetic.bmap"  "IL" OFF \
+"is/is-latin1.bmap"  "IS" OFF \
+"is/is-latin1-us.bmap"  "IS" OFF \
+"it/it2.bmap"  "IT" OFF \
+"it/it.bmap"  "IT" OFF \
+"it/it-ibm.bmap"  "IT" OFF \
+"jp/jp106.bmap"  "JP" OFF \
+"la/la-latin1.bmap"  "LA" OFF \
+"lt/lt.baltic.bmap"  "LT" OFF \
+"lt/lt.bmap"  "LT" OFF \
+"lt/lt.l4.bmap"  "LT" OFF \
+"mk/mk0.bmap"  "MK" OFF \
+"mk/mk.bmap"  "MK" OFF \
+"mk/mk-cp1251.bmap"  "MK" OFF \
+"mk/mk-utf.bmap"  "MK" OFF \
+"nl/nl2.bmap"  "NL" OFF \
+"nl/nl.bmap"  "NL" OFF \
+"no/no-latin1.bmap"  "NO" OFF \
+"pc/pc110.bmap"  "PC" OFF \
+"pl/pl1.bmap"  "PL" OFF \
+"pl/pl2.bmap"  "PL" OFF \
+"pl/pl3.bmap"  "PL" OFF \
+"pl/pl4.bmap"  "PL" OFF \
+"pl/pl.bmap"  "PL" OFF \
+"pt/pt-latin1.bmap"  "PT" OFF \
+"pt/pt-latin9.bmap"  "PT" OFF \
+"ro/ro_win.bmap"  "RO" OFF \
+"ru/ru_win.bmap"  "RU" OFF \
+"se/se-fi-ir209.bmap"  "SE" OFF \
+"se/se-fi-lat6.bmap"  "SE" OFF \
+"se/se-ir209.bmap"  "SE" OFF \
+"se/se-lat6.bmap"  "SE" OFF \
+"sg/sg.bmap"  "SG" OFF \
+"sg/sg-latin1.bmap"  "SG" OFF \
+"sg/sg-latin1-lk450.bmap"  "SG" OFF \
+"sk/sk-prog-qwerty.bmap"  "SK" OFF \
+"sk/sk-prog-qwertz.bmap"  "SK" OFF \
+"sk/sk-qwerty.bmap"  "SK" OFF \
+"sk/sk-qwertz.bmap"  "SK" OFF \
+"slovene/slovene.bmap"  "SLOVENE" OFF \
+"sr/sr-cy.bmap"  "SR" OFF \
+"sv/sv-latin1.bmap"  "SV" OFF \
+"tr/tralt.bmap"  "TR" OFF \
+"tr/trf.bmap"  "TR" OFF \
+"tr/tr_f-latin5.bmap"  "TR" OFF \
+"tr/trq.bmap"  "TR" OFF \
+"tr/tr_q-latin5.bmap"  "TR" OFF \
+"ua/ua.bmap"  "UA" OFF \
+"ua/ua-utf.bmap"  "UA" OFF \
+"ua/ua-utf-ws.bmap"  "UA" OFF \
+"ua/ua-ws.bmap"  "UA" OFF \
+"uk/uk.bmap"  "UK" OFF \
+"wangbe/wangbe2.bmap"  "WANGBE" OFF \
+"wangbe/wangbe.bmap"  "WANGBE" OFF 2>/tmp/keymap
+retval=$?
+mapfile=`cat /tmp/keymap`
+if [ "$retval" = "$DIALOG_ERROR" ] ; then
+  echo "Using US MAP"
+  loadkmap < /bkeymaps/us/us.bmap
+else
+   echo /bkeymaps/$mapfile
+   loadkmap < /bkeymaps/$mapfile
+fi
+rm /tmp/keymap

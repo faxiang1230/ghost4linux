@@ -1,0 +1,282 @@
+#!/bin/sh
+#
+#
+## Michael Setzer II - Program Modifications
+DIALOG="dialog"
+: ${DIALOG_OK=0}
+: ${DIALOG_CANCEL=1}
+: ${DIALOG_ESC=255}
+
+pcnt=0
+JETCAT=`which jetcat-mod `
+if [ $? = "0" ] ; then echo $JETCAT
+else JETCAT="/jetcat-mod"
+fi
+if [ ! -d /mnt/local ] ; then
+  mkdir /mnt ;
+  mkdir /mnt/local ;
+  dialog --timeout 10 --msgbox "Needs /mnt/local directory\n(10 second timeout)" 0 0
+fi
+f_radiolist()
+{
+  $DIALOG --backtitle "$backtitle" --title "$1" --radiolist "$2" 0 0 0 $3
+}
+f_textbox()
+{
+  $DIALOG --clear --backtitle "$backtitle" --title "$1" --textbox $2 0 0
+}
+#Updated part_info and part_info2 to match with g4l30o10 scripts version 11/25/2011
+part_info()
+{
+# parse info about devices to tempfiles
+## original netdevices=`cat /proc/net/dev |grep eth |sed -e 's/://g' |awk '{print $1}'`
+## Change1  netdevices=`cat /proc/net/dev |grep eth |sed -e 's/:/ /g' |awk '{print $1}'`
+## Changed to terminate at the colon since after some options, a number was getting added
+## to the eth0:
+  netdevices=`grep eth </proc/net/dev |cut -d: -f 1`
+  partitions=`grep .d  </proc/partitions |awk '{print $4}'`
+# write systeminfo file
+  printf "========================================\n" > /tmp/sysinfo
+  printf "Drive/Partition sizes:\n" >> /tmp/sysinfo
+  grep .d </proc/partitions | awk '{print $4,$3}' |sort >>/tmp/sysinfo
+  
+  printf "\nDrive models:\n" >> /tmp/sysinfo
+  for h in $partitions
+  do
+    length=`echo $h |wc -c`
+    if [ $length -lt 5 ]; then
+      echo $h >> /tmp/sysinfo
+      cat /proc/ide/$h/model >> /tmp/sysinfo 2>/dev/null
+    fi
+  done
+### 2008/5/27 New partlist to have size and partitiion type.
+  partlist="";
+  partonly="";
+### 2009/3/15 New disklist to have just disks without partitions
+  disklist="";
+  fdisk -l 2>/dev/null | grep /dev | grep -v Disk | sed s/*/\ / | awk '{print $1,$6$7$8}' | cut -b6-30 >/tmp/partout
+  grep .d </proc/partitions | awk '{print $4,$3}' >/tmp/sysinfo2
+  while read LINE
+  do
+    xxdev=`echo $LINE | cut -f1 -d\  `;
+    xxsize=`echo $LINE | cut -f2 -d\  `;
+    xxsize2=`echo ${#xxsize}`;
+    pad="";
+    a=$xxsize2;
+    while [ $a -le 12 ]
+#   for (a=xxsize2;a<=12;a++) Doesn't work on new bash?
+    do
+      pad=$pad\_;
+      a=$(($a + 1));
+    done
+    xxtype="";
+    xxtype=`grep $xxdev\   </tmp/partout 2>/dev/null |  cut -f2 -d\  `;
+    if [ -z $xxtype ]; then
+      xxtype="DISK";
+### 2009/3/15 New disklist to have just disks without partitions
+      disklist="$disklist `printf "%s %s%s--%s off" $xxdev  $pad $xxsize $xxtype `";
+    fi
+    partlist="$partlist `printf "%s %s%s--%s off" $xxdev  $pad $xxsize $xxtype `";
+    if [ "$xxtype" != "DISK" ] ; then
+      partonly="$partonly `printf "%s %s%s--%s off" $xxdev  $pad $xxsize $xxtype `";
+    fi
+  done </tmp/sysinfo2
+  printf "\nblkid info:\n" >> /tmp/sysinfo
+  blkid >> /tmp/sysinfo
+  printf "\nfsarchiver probe info:\n\n" >> /tmp/sysinfo
+  fsarchiver probe -v 2>> /tmp/sysinfo
+  cat /tmp/sysinfo | sed -e 's/\] \[/\|/g' >/tmp/sysinfo3
+  mv /tmp/sysinfo3 /tmp/sysinfo
+### End of addition
+  FSARCH=`which fsarchiver `
+  if [ $? = "0" ] ; then
+### Added since part_info2 doesn't seem to support /dev/cciss partitions.
+#   testcciss=`echo $disklist | grep "/dev/cciss"`
+#   if [ -z "$testcciss" ] ; then
+    part_info2
+#   fi
+  fi
+}
+part_info2()
+{
+  partonly="";
+  partlist="";
+  disklist="";
+#LC_ALL=C added since regular sort was sorting sda after sda# options.
+#busybox sort works correctly, but if one uses script on anther version
+#it might sort incorrectly. dm stuff added to put lvm partition at end.
+## Added -e 's-!-/-g' to change cciss!c0d0p0 to cciss/c0d0p0 and others.
+  fsarchiver probe -v 2>&1 | grep -v = | grep \\[ | sed 's/dm/zz/g' | LC_ALL=C sort | sed -e 's/ /@/g' -e 's/zz/dm/g' -e 's-!-/-g' >/tmp/sysinfo2
+  while read LINE
+  do
+    xxdev=`echo $LINE | cut -b2-17 | sed 's/@//g' `;
+    xxdev2=`echo $LINE | cut -b2-3`;
+    xxsize=`echo $LINE | cut -b55-66 | sed 's/@//g'`;
+    xxtype=`echo $LINE | cut -b21-31 `;
+    xxtype2=`echo $LINE | cut -b32-32 `;
+    xxuuid=`echo $LINE | cut -b121-158 `;
+    if [ "$xxtype2" != "]" ] ; then
+      xxtype=`echo $LINE | cut -b21-51 `;
+      xxuuid=`hdparm -i /dev/$xxdev 2>/dev/null | grep SerialNo | sed -e 's/.*SerialNo=//' -e 's/ //g' `
+    fi
+    pad="";
+    a=`echo ${#xxsize}`;
+    while [ $a -le 10 ]
+    do
+      pad=$pad\_;
+      a=$(($a + 1));
+    done
+    if [ "$xxdev2" = "dm" ]; then
+      xxtype="LVM2_"$xxtype;
+    fi
+    if [ "$xxtype2" != "]" ]; then
+      disklist="$disklist `printf "%s %s%s--%s-%s off" $xxdev  $pad $xxsize $xxtype $xxuuid`";
+    fi
+    partlist="$partlist `printf "%s %s%s--%s-%s off" $xxdev  $pad $xxsize $xxtype $xxuuid`";
+    if [ "$xxtype2" = "]" ] ; then
+      partonly="$partonly `printf "%s %s%s--%s-%s off" $xxdev  $pad $xxsize $xxtype $xxuuid`";
+    fi
+  done </tmp/sysinfo2
+  partonly=`echo $partonly | sed 's/@//g'`
+  partlist=`echo $partlist | sed 's/@//g'`
+  disklist=`echo $disklist | sed 's/@//g'`
+  if [ -z "$partonly" ] ; then
+    partonly="none no_partitions off";
+  fi
+  if [ -z "$partlist" ] ; then
+    partlist="none no_partitions off";
+  fi
+  if [ -z "$disklist" ] ; then
+    disklist="none no_disks off";
+  fi
+}
+
+progress()
+{
+  (
+  while [ "$pcnt" != "$value" ]
+  do
+    
+    printf "%s\n" "XXX"
+## Modified Jetcat-mod to display two decimal positions
+## have to cut off the decimals for the gauge to work.
+    if [ "$value" = "100" ]; then
+      	pcnt=`tail -n1 /tmp/progress.out`
+      pcnt2=`tail -n1 /tmp/progress.out | cut -d. -f 1 `
+      	printf "%s\n" $pcnt2
+    fi
+    if [ "$value" != "100" ]; then
+      	if [ " " = "$testx" ]; then
+      	    pcnt=`df . | grep % | grep / | awk '{print $4}'`
+      	else
+      	    pcnt=`df . | grep % | grep / | awk '{print $5}'`
+      	fi
+      	echo $pcnt | cut -d% -f 1
+#        printf "%s\n" $pcnt
+    fi
+    printf "%s\n" "\n"
+## msg variable set before calling the progress function to
+## make minor variation between different screens.
+    printf "%s\n" "$msg"; printf "%s\n" "\n"
+    printf "%s\n" "\n"
+    printf "%s\n" "The progress bar shows the percentage of the amount written";
+    printf "%s\n" "to the size of the destination."; printf "%s\n" "\n";
+    printf "%s\n" "Please stand by, this might take some time!"; printf "%s\n" "\n"; printf "%s\n" "\n"
+## Percentage displays with 2 decimal places, plus start time and current time.
+## This lets one check time status of process in addition to percentage
+    printf "%s\n" "Progress"; printf "%s\n" "\n"
+    printf "%s\n" "$pcnt"; printf "%s\n" "\n"
+    printf "%s\n" "XXX";
+    printf "%s\n" "$pcnt"
+    sleep 5
+  done
+  ) |
+  $DIALOG --backtitle "$backtitle" --title "Working..." --clear --gauge "One moment..." 22 75
+  rm /tmp/progress.out
+  touch /tmp/progress.out
+## Added a pause to let the user see final results before it returns.
+}
+
+backtitle="Program to clear free space"
+part_info
+
+f_radiolist "PICK DRIVE" "Choose drive to write to/read from.\n(Use Space Bar)\
+\nThe drive that contains or will contain the image\
+\nSupported FS are:\
+\next2. ext3, ext4, reiserfs - Linux\
+\nfat32 - Windows95/98/NT/2k/XP\
+\nntfs - Windows NT/2k/XP\
+\n\nSelect partition (example: /dev/hda1):" "$partonly"  2> /tmp/filelocaldrive
+retvallocaldrive=$?
+choicelocaldrive=$(cat /tmp/filelocaldrive)
+if [ -n "$choicelocaldrive" ]; then
+  case $retvallocaldrive in
+    $DIALOG_OK)
+    localdrive=$choicelocaldrive
+###
+    umount /mnt/local 2>/dev/null
+    chkswap=`blkid /dev/$localdrive | grep swap`
+    mount /dev/$localdrive /mnt/local >/tmp/mount 2>&1
+    retvalmount=$?
+    if [ $retvalmount != 0 ] ; then
+      if [ -z chkswap ]; then
+        f_textbox "ERROR" /tmp/mount
+      fi
+      umount /mnt/local 2>/dev/null
+      if [ -n chkswap ]; then 
+          echo "Clearing SWAP partition"
+          BLKID2=`blkid /dev/$localdrive | cut -f 2 -d\:`
+          LABEL=""
+          UUID=""
+          for a in $BLKID2
+          do
+            export $a 
+          done
+          LABEL=`echo $LABEL | tr -d \"`
+          UUID=`echo $UUID | tr -d \"`
+          dd if=/dev/zero bs=20M of=/dev/$localdrive
+          mkswap /dev/$localdrive -U $UUID -L "$LABEL"
+          echo "Done"
+          sleep 10
+      fi
+      localdrive=""
+      umount /mnt/local 2>/dev/null
+    else
+      cd /mnt/local
+      chkvfat=`blkid /dev/$localdrive | grep vfat`
+      if [ -z "$chkvfat" ]; then
+      {
+          msg="Clearing Free Space on /dev/$localdrive"
+          value="100"
+          freesize=`df . | grep % | grep / | awk '{print $1 - $2}'`
+          original=`df . | grep % | grep / | awk '{print $4}'`
+          testx=`df . | grep % | grep / | cut -b1-1`
+          if [ " " = "$testx" ]; then
+            freesize=`df . | grep % | grep / | awk '{print $1 - $2}'`
+            original=`df . | grep % | grep / | awk '{print $4}'`
+          else
+            freesize=`df . | grep % | grep / | awk '{print $2 - $3}'`
+            original=`df . | grep % | grep / | awk '{print $5}'`
+          fi
+          printf "%s\n" "$freesize $original"
+      
+          dd if=/dev/zero bs=2M 2>/dev/null | $JETCAT -f 5000 -p $freesize 2>/tmp/progress.out >0bits &
+          progress
+          cat /tmp/progress.out
+#          value=$original
+#          msg="Removing 0bits file"
+#      	    $DIALOG --sleep 10 --infobox "PAUSE FOR 10 SECONDS" 5 25
+         $DIALOG --sleep 10 --infobox "REMOVING 0bits FILE" 5 25           
+          rm 0bits #&
+#          progress
+        }
+      else
+        lblank7
+      fi
+
+    $DIALOG --sleep 10 --infobox "Drive Should now have all free space cleared" 5 50
+    fi;;
+  esac
+  cd /
+  umount /mnt/local 2>/dev/null
+fi

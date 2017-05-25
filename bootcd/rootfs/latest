@@ -1,0 +1,672 @@
+Released 0.53    2017/03/18
+Updated build system to Fedora 24
+kernel 4.4.22    2016/09/24 (bz4x4.22)
+kernel 4.7.5     2016/09/24 (bz4x7.5)
+kernel 4.7.5     now default kernel
+kernel 4.8-rc8   2016/09/26 (bz4x8.rc8)
+kernel 4.4.23    2016/09/30 (bz4x4.23)
+kernel 4.7.6     2016/09/30 (bz4x7.6)
+kernel 4.7.6     now default kernel
+kernel 4.8.0     2016/10/02 (bz4x8.0)
+kernel 4.4.24    2016/10/07 (bz4x4.24)
+kernel 4.7.7     2016/10/07 (bz4x7.7)
+kernel 4.7.7     now default kernel
+kernel 4.8.1     2016/10/07 (bz4x8.1)
+Upgraded busybox to 1.25.1
+(udhcpc changed - default output to stderr?)
+(adds info to output, so IP is -f4 instead of -f3)
+Added VIRTIO to 4x8.1 kernel for testing??
+kernel 3.18.43   2016/10/10 (bz3x18.43)
+kernel 4.1.34    2016/10/10 (bz4x1.34)
+kernel 4.9.rc1   2016/10/15 (bz4x9.rc1)
+kernel 4.4.25    2016/10/16 (bz4x4.25)
+kernel 4.7.8     2016/10/16 (bz4x7.8)
+kernel 4.8.2     2016/10/16 (bz4x8.2)
+kernel 4.8.2     now default kernel
+kernel 4.4.26    2016/10/20 (bz4x4.26)
+kernel 4.7.9     2016/10/20 (bz4x7.9)
+kernel 4.8.3     2016/10/20 (bz4x8.3)
+kernel 4.8.3     now default kernel
+kernel 4.4.27    2016/10/22 (bz4x4.27)
+kernel 4.7.10    2016/10/22 (bz4x7.10)
+kernel 4.8.4     2016/10/22 (bz4x8.4)
+kernel 4.8.4     now default kernel
+kernel 3.18.44   2016/10/22 (bz3x18.44)
+kernel 4.1.35    2016/10/23 (bz4x1.35)
+kernel 4.9.rc2   2016/10/24 (bz4x9.rc2)
+kernel 4.4.28    2016/10/28 (bz4x4.28)
+kernel 4.8.5     2016/10/28 (bz4x8.5)
+kernel 4.8.5     now default kernel
+kernel 4.9.rc3   2016/10/29 (bz4x9.rc3)
+kernel 4.4.29    2016/10/31 (bz4x4.29)
+kernel 4.8.6     2016/10/31 (bz4x8.6)
+kernel 4.8.6     now default kernel
+kernel 4.4.30    2016/11/01 (bz4x4.30)
+kernel 4.9.rc4   2016/11/05 (bz4x9.rc4)
+kernel 4.8.7     2016/11/10 (bz4x8.7)
+kernel 4.8.7     now default kernel
+kernel 4.4.31    2016/11/10 (bz4x4.31)
+kernel 4.9.rc5   2016/11/13 (bz4x9.rc5)
+kernel 4.4.32    2016/11/15 (bz4x4.32)
+kernel 4.8.8     2016/11/15 (bz4x8.8)
+kernel 4.8.8     now default kernel
+kernel 4.4.33    2016/11/18 (bz4x4.33)
+kernel 4.8.9     2016/11/18 (bz4x8.9)
+kernel 4.8.9     now default kernel
+kernel 4.9.rc6   2016/11/20 (bz4x9.rc6)
+kernel 4.4.34    2016/11/21 (bz4x4.34)
+kernel 4.8.10    2016/11/21 (bz4x8.10)
+kernel 4.8.10    now default kernel
+kernel 4.4.35    2016/11/26 (bz4x4.35)
+kernel 4.8.11    2016/11/26 (bz4x8.11)
+kernel 4.8.11    now default kernel
+kernel 4.9.rc7   2016/11/27 (bz4x9.rc7)
+kernel 4.1.36    2016/11/29 (bz4x1.36)
+kernel 3.18.45   2016/11/30 (bz3x18.45)
+kernel 4.4.36    2016/12/02 (bz4x4.36)
+kernel 4.8.12    2016/12/02 (bz4x8.12)
+kernel 4.8.12    now default kernel
+kernel 4.9.rc7   2016/12/04 (bz4x9.rc8)
+kernel 4.4.38    2016/12/10 (bz4x4.38)
+kernel 4.8.14    2016/12/10 (bz4x8.14)
+kernel 4.8.14    now default kernel
+kernel 4.9.0     2016/12/11 (bz4x9.0)
+kernel 4.4.39    2016/12/15 (bz4x4.39)
+kernel 4.8.15    2016/12/15 (bz4x8.15)
+kernel 4.8.15    now default kernel
+NcFTP 3.2.6 (Dec 04, 2016) by Mike Gleason (http://www.NcFTP.com/contact/)
+kernel 4.1.37    2016/12/24 (bz4x1.37)
+kernel 3.18.46   2016/12/24 (bz3x18.46)
+kernel 4.10.rc1  2016/12/26 (bz4x10.rc1)
+kernel 4.10.rc2  2017/01/01 (bz4x10.rc2)
+kernel 4.4.40    2017/01/06 (bz4x4.40)
+kernel 4.8.16    2017/01/06 (bz4x8.16)
+kernel 4.9.1     2017/01/06 (bz4x9.1)
+kernel 4.9.1     now default kernel
+kernel 4.10.rc3  2017/01/08 (bz4x10.rc3)
+kernel 4.4.41    2017/01/09 (bz4x4.41)
+kernel 4.8.17    2017/01/09 (bz4x8.17)
+kernel 4.9.2     2017/01/09 (bz4x9.2)
+kernel 4.9.2     now default kernel
+busybox 1.26.2
+kernel 4.4.42    2017/01/12 (bz4x4.42)
+kernel 4.9.3     2017/01/12 (bz4x9.3)
+kernel 4.9.3     now default kernel
+kernel 4.4.43    2017/01/15 (bz4x4.43)
+kernel 4.9.4     2017/01/15 (bz4x9.4)
+kernel 4.9.4     now default kernel
+kernel 4.10.rc4  2017/01/16 (bz4x10.rc4)
+kernel 3.18.47   2017/01/18 (bz3x18.47)
+kernel 4.1.38    2017/01/18 (bz4x1.38)
+kernel 4.4.44    2017/01/20 (bz4x4.44)
+kernel 4.9.5     2017/01/20 (bz4x9.5)
+kernel 4.9.5     now default kernel
+kernel 4.10.rc5  2017/01/22 (bz4x10.rc5)
+Added iperf program to test network speed
+kernel 4.4.45    2017/01/26 (bz4x4.45)
+kernel 4.9.6     2017/01/26 (bz4x9.6)
+kernel 4.9.6     now default kernel
+kernel 4.10.rc6  2017/01/29 (bz4x10.rc6)
+kernel 4.4.46    2017/02/01 (bz4x4.46)
+kernel 4.9.7     2017/02/01 (bz4x9.7)
+kernel 4.9.7     now default kernel
+kernel 4.4.47    2017/02/04 (bz4x4.47)
+kernel 4.9.8     2017/02/04 (bz4x9.8)
+kernel 4.9.8     now default kernel
+kernel 4.10.rc7  2017/02/05 (bz4x10.rc7)
+kernel 3.18.48   2017/02/08 (bz3x18.48)
+kernel 4.4.48    2017/02/09 (bz4x4.48)
+kernel 4.9.9     2017/02/09 (bz4x9.9)
+kernel 4.9.9     now default kernel
+kernel 4.10.rc8  2017/02/12 (bz4x10.rc8)
+kernel 4.4.49    2017/02/14 (bz4x4.49)
+kernel 4.9.10    2017/02/14 (bz4x9.10)
+kernel 4.9.10    now default kernel
+kernel 4.4.50    2017/02/18 (bz4x4.50)
+kernel 4.9.11    2017/02/18 (bz4x9.11)
+kernel 4.9.11    now default kernel
+kernel 4.10.0    2017/02/19 (bz4x10.0)
+kernel 4.4.51    2017/02/23 (bz4x4.51)
+kernel 4.9.12    2017/02/23 (bz4x9.12)
+kernel 4.9.12    now default kernel
+kernel 4.4.52    2017/02/26 (bz4x4.52)
+kernel 4.9.13    2017/02/26 (bz4x9.13)
+kernel 4.9.13    now default kernel
+kernel 4.10.1    2017/02/26 (bz4x10.1)
+removed kernel 3.18.47
+kernel 4.10.1    now default kernel
+kernel 4.11-rc1  2017/03/05 (bz4x11.rc1)
+kernel 4.4.53    2017/03/12 (bz4x4.53)
+kernel 4.9.14    2017/03/12 (bz4x9.14)
+kernel 4.10.2    2017/03/12 (bz4x10.2)
+kernel 4.10.2    now default kernel
+kernel 4.11-rc2  2017/03/12 (bz4x11.rc2)
+kernel 4.4.54    2017/03/15 (bz4x4.54)
+kernel 4.9.15    2017/03/15 (bz4x9.15)
+kernel 4.10.3    2017/03/15 (bz4x10.3)
+kernel 4.10.3    now default kernel
+kernel 4.4.55    2017/03/18 (bz4x4.55)
+kernel 4.9.16    2017/03/18 (bz4x9.16)
+kernel 4.10.4    2017/03/18 (bz4x10.4)
+kernel 4.10.4    now default kernel
+
+Released 0.52    2016/09/19
+kernel 4.6-rc7   2016/05/08 (bz4x6.rc7)
+kernel 3.14.69   2016/05/11 (bz3x14.69)
+kernel 3.18.33   2016/05/11 (bz3x18.33)
+kernel 4.1.24    2016/05/11 (bz4x1.24)
+kernel 4.4.10    2016/05/11 (bz4x4.10)
+kernel 4.5.4     2016/05/11 (bz4x5.4)
+kernel 4.5.4     now default kernel
+kernel 4.6.0     2016/05/15 (bz4x6.0)
+kernel 3.14.70   2016/05/19 (bz3x14.70)
+kernel 4.4.11    2016/05/19 (bz4x4.11)
+kernel 4.5.5     2016/05/19 (bz4x5.5)
+kernel 4.5.5     now default kernel
+kernel 3.18.34   2016/05/21 (bz3x18.34)
+kernel 4.1.25    2016/05/21 (bz4x1.25)
+kernel 3.12.60   2016/05/23 (bz3x12.60)
+kernel 4.7-rc1   2016/05/29 (bz4x7.rc1)
+kernel 3.14.71   2016/06/01 (bz3x14.71)
+kernel 4.4.12    2016/06/01 (bz4x4.12)
+kernel 4.5.6     2016/06/01 (bz4x5.6)
+kernel 4.6.1     2016/06/01 (bz4x6.1)
+kernel 4.6.1     now default kernel
+kernel 4.7-rc2   2016/06/05 (bz4x7.rc2)
+kernel 3.18.35   2016/06/06 (bz3x18.35)
+kernel 4.1.26    2016/06/06 (bz4x1.26)
+kernel 3.14.72   2016/06/08 (bz3x14.72)
+kernel 4.4.13    2016/06/08 (bz4x4.13)
+kernel 4.5.7     2016/06/08 (bz4x5.7)
+kernel 4.6.2     2016/06/08 (bz4x6.2)
+kernel 4.6.2     now default kernel
+kernel 4.7-rc3   2016/06/12 (bz4x7.rc3)
+kernel 4.7-rc4   2016/06/20 (bz4x7.rc4)
+update linux firmware files
+kernel 3.18.36   2016/06/23 (bz3x18.36)
+kernel 4.1.27    2016/06/23 (bz4x1.27)
+busybox 1.25.0
+kernel 3.14.73   2016/06/24 (bz3x14.73)
+kernel 4.4.14    2016/06/24 (bz4x4.14)
+kernel 4.6.3     2016/06/24 (bz4x6.3)
+kernel 4.6.3     now default kernel
+busybox 1.24.2   downgraded. New version sends messages to stderr
+instead of stdout for somethings. Also, messages changed to all
+lower case, whereas past has had first letter cap? Not sure why 
+the changes were made, but this breaks current script processes.
+Have sent message to busybox list, but no response yet.
+kernel 4.7-rc5   2016/06/27 (bz4x7.rc5)
+kernel 4.7-rc6   2016/07/04 (bz4x7.rc6)
+kernel 4.7-rc7   2016/07/11 (bz4x7.rc7)
+kernel 4.4.15    2016/07/11 (bz4x4.15)
+kernel 4.6.4     2016/07/11 (bz4x6.4)
+kernel 4.6.4     now default kernel
+kernel 3.18.37   2016/07/14 (bz3x18.37)
+kernel 4.1.28    2016/07/14 (bz4x1.28)
+kernel 4.7.0     2016/07/24 (bz4x7.0)
+kernel 3.14.74   2016/07/27 (bz3x14.74)
+kernel 4.4.16    2016/07/27 (bz4x4.16)
+kernel 4.6.5     2016/07/27 (bz4x6.5)
+kernel 4.6.5     now default kernel
+kernel 3.18.38   2016/07/30 (bz3x18.38)
+kernel 4.1.29    2016/07/30 (bz4x1.29)
+kernel 4.8-rc1   2016/08/08 (bz4x8.rc1)
+kernel 3.14.75   2016/08/10 (bz3x14.75)
+kernel 3.18.39   2016/08/09 (bz3x18.39)
+kernel 4.4.17    2016/08/10 (bz4x4.17)
+kernel 4.6.6     2016/08/10 (bz4x6.6)
+kernel 4.6.6     now default kernel
+rebuilt 4.6.6 4.7.0 4.8-rc1 kernels with NVM
+kernel 4.8-rc2   2016/08/15 (bz4x8.rc2)
+kernel 3.14.76   2016/08/16 (bz3x14.76)
+kernel 4.4.18    2016/08/16 (bz4x4.18)
+kernel 4.6.7     2016/08/16 (bz4x6.7)
+kernel 4.7.1     2016/07/16 (bz4x7.1)
+kernel 4.7.1     now default kernel
+kernel 3.14.77   2016/08/20 (bz3x14.77)
+kernel 4.4.19    2016/08/20 (bz4x4.19)
+kernel 4.7.2     2016/08/20 (bz4x7.2)
+kernel 4.7.2     now default kernel
+kernel 4.8-rc3   2016/08/21 (bz4x8.rc3)
+kernel 3.18.40   2016/08/22 (bz3x18.40)
+kernel 4.1.31    2016/08/22 (bz4x1.31)
+kernel 4.8-rc4   2016/08/28 (bz4x8.rc4)
+Virtual Box support NVME disk, so tested the
+NVME and it seems to be recognized with no issues
+with the latest kernels 4.6.x and above.
+kernel 3.18.41   2016/09/04 (bz3x18.41)
+kernel 4.1.32    2016/09/04 (bz4x1.32)
+kernel 4.8-rc5   2016/09/04 (bz4x8.rc5)
+kernel 3.14.78   2016/09/07 (bz3x14.78)
+kernel 4.4.20    2016/09/07 (bz4x4.20)
+kernel 4.7.3     2016/09/07 (bz4x7.3)
+kernel 4.7.3     now default kernel
+kernel 4.8-rc6   2016/09/12 (bz4x8.rc6)
+kernel 4.4.21    2016/09/15 (bz4x4.21)
+kernel 4.7.4     2016/09/15 (bz4x7.4)
+kernel 4.7.4     now default kernel
+kernel 3.18.42   2016/09/17 (bz3x18.42)
+kernel 4.1.33    2016/09/17 (bz4x1.33)
+kernel 4.8-rc7   2016/09/19 (bz4x8.rc7)
+
+Released 0.51    2016/05/05
+library update
+kernel 4.4.rc7   2015/12/28 (bz4x4.rc7)
+Updated Grub4dos 0.4.5c files to 12/31/2015 
+kernel 4.4.rc8   2016/01/03 (bz4x4.rc8)
+kernel 3.12.52   2016/01/09 (bz3x12.52)
+kernel 4.4.0     2016/01/10 (bz4x4.0)
+Updated Grub4dos 0.4.5c files to 01/18/2016 
+kernel 3.14.58   2016/01/23 (bz3x14.59)
+kernel 4.1.16    2016/01/23 (bz4x1.16)
+kernel 4.3.4     2016/01/23 (bz4x3.4)
+kernel 4.3.4     now default kernel
+kernel 4.5.rc1   2016/01/24 (bz4x5.rc1)
+kernel 4.2.8     removed
+kernel 3.18.26   2016/01/25 (bz3x18.26)
+kernel 3.12.53   2016/01/27 (bz3x12.53)
+kernel 3.14.60   2016/01/29 (bz3x14.60)
+Updated Linux Firmware 2016/01/19
+kernel 4.1.17    2016/01/31 (bz4x1.17)
+kernel 4.3.5     2016/01/31 (bz4x3.5)
+kernel 4.4.1     2016/01/31 (bz4x4.1)
+kernel 4.4.1     now default kernel
+kernel 4.5.rc2   2016/02/01 (bz4x5.rc2)
+kernel 4.5.rc3   2016/02/07 (bz4x5.rc3)
+kernel 4.5.rc4   2016/02/14 (bz4x5.rc4)
+kernel 3.12.54   2016/02/15 (bz3x12.54)
+kernel 3.18.27   2016/02/15 (bz3x18.27)
+kernel 4.1.18    2016/02/15 (bz4x1.18)
+kernel 3.14.61   2016/02/17 (bz3x14.61)
+kernel 4.4.2     2016/02/17 (bz4x4.2)
+kernel 4.4.2     now default kernel
+kernel 4.3.6     2016/02/19 (bz4x3.6)
+kernel 4.5.rc5   2016/02/20 (bz4x5.rc5)
+kernel 3.14.62   2016/02/25 (bz3x14.62)
+kernel 4.4.3     2016/02/25 (bz4x4.3)
+kernel 4.4.3     now default kernel
+kernel 3.12.55   2016/02/26 (bz3x12.55)
+kernel 4.5.rc6   2016/02/28 (bz4x5.rc6)
+kernel 3.14.63   2016/03/03 (bz3x14.63)
+kernel 4.4.4     2016/03/03 (bz4x4.4)
+kernel 4.4.4     now default kernel
+kernel 3.18.28   2016/03/04 (bz3x18.28)
+kernel 4.1.19    2016/03/04 (bz4x1.19)
+kernel 4.5.rc7   2016/03/06 (bz4x5.rc7)
+kernel 3.12.56   2016/03/08 (bz3x12.56)
+kernel 3.14.64   2016/03/09 (bz3x14.64)
+kernel 4.4.5     2016/03/09 (bz4x4.5)
+kernel 4.4.5     now default kernel
+kernel 4.5.0     2016/03/14 (bz4x5.0)
+kernel 3.14.65   2016/03/16 (bz3x14.65)
+kernel 4.4.6     2016/03/16 (bz4x4.6)
+kernel 4.4.6     now default kernel
+kernel 3.18.29   2016/03/17 (bz3x18.29)
+kernel 4.1.20    2016/03/17 (bz4x1.20)
+Updated Linux Firmware 2016/03/18
+kernel 3.12.57   2016/03/08 (bz3x12.57)
+busybox 1.24.2   2016/03/25
+kernel 4.6-rc1   2016/03/26 (bz4x6.rc1)
+Working on getting EFI support??
+Moved some files in CD root to subdirectories
+kernel 4.6-rc2   2016/04/03 (bz4x6.rc2)
+kernel 3.18.30   2016/04/03 (bz3x18.30)
+kernel 4.1.21    2016/04/03 (bz4x1.21)
+changed to genisoimage from mkisofs in makecd and makecdrm
+Seems Fedora links mkisofs to genisoimage, so in trying to
+add EFI support better to use the matching build options
+from Syslinux web site for genisoimage. Still no luck with EFI?
+kernel 4.6-rc3   2016/04/11 (bz4x6.rc3)
+kernel 3.14.66   2016/04/12 (bz3x14.66)
+kernel 4.4.7     2016/04/12 (bz4x4.7)
+kernel 4.5.1     2016/04/12 (bz4x5.1)
+kernel 4.5.1     now default kernel
+kernel 3.12.58   2016/04/13 (bz3x12.58)
+kernel 4.6-rc4   2016/04/18 (bz4x6.rc4)
+kernel 3.18.31   2016/04/19 (bz3x18.31)
+kernel 4.1.22    2016/04/19 (bz4x1.22)
+kernel 3.14.67   2016/04/20 (bz3x14.67)
+kernel 4.4.8     2016/04/20 (bz4x4.8)
+kernel 4.5.2     2016/04/20 (bz4x5.2)
+kernel 4.5.2     now default kernel
+kernel 3.18.32   2016/04/23 (bz3x18.32)
+kernel 4.6-rc5   2016/04/24 (bz4x6.rc5)
+kernel 4.1.23    2016/04/25 (bz4x1.23)
+kernel 3.12.59   2016/04/27 (bz3x12.59)
+kernel 4.6-rc6   2016/05/01 (bz4x6.rc6)
+kernel 3.14.68   2016/05/04 (bz3x14.68)
+kernel 4.4.9     2016/05/04 (bz4x4.9)
+kernel 4.5.3     2016/05/04 (bz4x5.3)
+kernel 4.5.3     now default kernel
+
+Released 0.50    2015/12/24
+Upgraded to Fedora 22 base system
+kernel 4.3.rc3   2015/09/27 (bz4x3.rc3)
+kernel 4.1.9     2015/09/29 (bz4x1.9)
+kernel 4.2.2     2015/09/29 (bz4x2.2)
+kernel 4.2.2     now default kernel
+kernel 3.10.90   2015/10/01 (bz3x10.90)
+kernel 3.14.54   2015/10/01 (bz3x14.54)
+kernel 3.18.22   2015/10/01 (bz3x18.22)
+kernel 4.1.10    2015/10/03 (bz4x1.10)
+kernel 4.2.3     2015/10/03 (bz4x2.3)
+kernel 4.2.3     now default kernel
+kernel 4.3.rc4   2015/10/04 (bz4x3.rc4)
+kernel 3.12.49   2015/10/07 (bz3x12.49)
+kernel 4.3.rc5   2015/10/11 (bz4x3.rc5)
+busybox 1.24.0   2015/10/12
+Remove kernel 3.10.90
+Added NOSMP menu to syslinux.cfg since 
+some cpus get kernel panics with 4.1.x kernels
+and above without the nosmp option
+kernel 4.3.rc6   2015/10/18 (bz4x3.rc6)
+kernel 3.14.55   2015/10/22 (bz3x14.55)
+kernel 4.1.11    2015/10/22 (bz4x1.11)
+kernel 4.2.4     2015/10/22 (bz4x2.4)
+kernel 4.2.4     now default kernel
+busybox 1.24.1   2015/10/24
+kernel 4.3.rc7   2015/10/25 (bz4x3.rc7)
+kernel 3.14.56   2015/10/27 (bz3x14.56)
+kernel 4.1.12    2015/10/27 (bz4x1.12)
+kernel 4.2.5     2015/10/27 (bz4x2.5)
+kernel 4.2.5     now default kernel
+kernel 3.18.23   2015/10/29 (bz3x18.23)
+kernel 4.3.0     2015/11/02 (bz4x3.0)
+kernel 3.18.24   2015/10/31 (bz3x18.24)
+kernel 3.12.50   2015/11/02 (bz3x12.50)
+kernel 3.14.57   2015/11/09 (bz3x14.57)
+kernel 4.1.13    2015/11/09 (bz4x1.13)
+kernel 4.2.6     2015/11/09 (bz4x2.6)
+kernel 4.2.6     now default kernel
+Update on NOSMP option, seems kernel issue
+was resolved with kernel 4.2.4 and above.
+kernel 3.12.51   2015/11/25 (bz3x12.51)
+Updated firmware files
+Done testing with bz4x4.rc kernels, but have
+issues with seeing nic in virtualbox testing.
+Nic only shows up with failsafe boot?? 
+Two patches added to busybox
+bz4x4.rc4 seems to have fixed kernel issue.
+kernel 4.4.rc4   2015/12/06 (bz4x4.rc4)
+kernel 3.14.58   2015/12/09 (bz3x14.58)
+kernel 4.1.14    2015/12/09 (bz4x1.14)
+kernel 4.2.7     2015/12/09 (bz4x2.7)
+kernel 4.2.7     now default kernel
+kernel 4.3.1     2015/12/09 (bz4x3.1)
+Remove nosmp option, since kernel problem fixed.
+kernel 4.3.2     2015/12/10 (bz4x3.2)
+kernel 4.3.2     now default kernel
+kernel 4.4.rc5   2015/12/14 (bz4x4.rc5)
+kernel 4.1.15    2015/12/15 (bz4x1.15)
+kernel 4.2.8     2015/12/15 (bz4x2.8)
+kernel 4.3.3     2015/12/15 (bz4x3.3)
+kernel 4.3.3     now default kernel
+Added udhcpd to busybox to add dhcpd option
+kernel 3.18.25   2015/12/15 (bz3x18.25)
+Updated Grub4dos 0.4.5c files to 12/16/2015 
+kernel 4.4.rc6   2015/12/21 (bz4x4.rc6)
+Now have udhcpd setup figured out. 
+Boot system, and it fails to get IP if no dhcpd server.
+ifconfig eth0 up 192.168.0.1
+udhcpd
+Then other systems should get IPs starting with 192.168.0.20
+/etc/udhcpd.conf has the defaults from busybox example.
+added setdhcpd script to activate eth0 and start udhcpd
+Updated Grub4dos 0.4.5c files to 12/24/2015 
+
+Released 0.49    2015/09/21
+Upgraded to Fedora 21 base system
+kernel 4.0-rc4   2015/03/16 (bz4x0.rc4)
+kernel 3.10.72   2015/03/18 (bz3x10.72)
+kernel 3.14.36   2015/03/18 (bz3x14.36)
+kernel 3.19.2    2015/03/18 (bz3x19.2)
+kernel 3.19.2    now default kernel
+kernel 3.12.39   2015/03/19 (bz3x12.39)
+Updated busybox 1.23.2 2015/03/22
+kernel 4.0-rc5   2015/03/22 (bz4x0.rc5)
+kernel 3.18.10   2015/03/24 (bz3x18.10)
+Updated Linux Firmware 2015/03/26
+kernel 3.10.73   2015/03/26 (bz3x10.73)
+kernel 3.14.37   2015/03/26 (bz3x14.37)
+kernel 3.19.3    2015/03/26 (bz3x19.3)
+kernel 3.19.3    now default kernel
+kernel 4.0-rc6   2015/03/29 (bz4x0.rc6)
+kernel 3.18.11   2015/04/04 (bz3x18.11)
+kernel 4.0-rc7   2015/04/06 (bz4x0.rc7)
+Updated ntfsprogs 2015/03/14
+kernel 3.12.40   2015/04/09 (bz3x12.40)
+Update Grub4dos files
+kernel 4.0.0     2015/04/12 (bz4x0.0)
+kernel 3.10.74   2015/04/13 (bz3x10.74)
+kernel 3.14.38   2015/04/13 (bz3x14.38)
+kernel 3.19.4    2015/04/13 (bz3x19.4)
+kernel 3.19.4    now default kernel
+Updated g4l30o11 script with clearing swap partition
+Updated cleandrive8.dialog script with clearing swap partition
+TestDisk 7.0 Released 04/18/2015
+kernel 3.10.75   2015/04/19 (bz3x10.75)
+kernel 3.14.39   2015/04/19 (bz3x14.39)
+kernel 3.19.5    2015/04/19 (bz3x19.5)
+kernel 3.19.5    now default kernel
+kernel 3.18.12   2015/04/20 (bz3x18.12)
+kernel 4.1.rc1   2015/04/27 (bz4x1.rc1)
+kernel 3.10.76   2015/04/29 (bz3x10.76)
+kernel 3.14.40   2015/04/29 (bz3x14.40)
+kernel 3.19.6    2015/04/29 (bz3x19.6)
+kernel 4.0.1     2015/04/29 (bz4x0.1)
+kernel 4.0.1     now default kernel
+Correction to cleandialog8.dialog script
+kernel 3.12.41   2015/04/30 (bz3x12.41)
+kernel 4.1.rc2   2015/05/04 (bz4x1.rc2)
+kernel 3.12.42   2015/05/04 (bz3x12.42)
+kernel 3.10.77   2015/05/06 (bz3x10.77)
+kernel 3.14.41   2015/05/06 (bz3x14.41)
+kernel 3.18.13   2015/05/05 (bz3x18.13)
+kernel 3.19.7    2015/05/06 (bz3x19.7)
+kernel 4.0.2     2015/05/06 (bz4x0.2)
+kernel 4.0.2     now default kernel
+kernel 4.1.rc3   2015/05/10 (bz4x1.rc3)
+kernel 3.19.8    2015/05/11 (bz3x19.8)
+kernel 3.10.78   2015/05/13 (bz3x10.78)
+kernel 3.14.42   2015/05/13 (bz3x14.42)
+kernel 4.0.3     2015/05/13 (bz4x0.3)
+kernel 4.0.3     now default kernel
+Updated some support programs and libraries
+Updated /lib/firmware files
+kernel 3.10.79   2015/05/17 (bz3x10.79)
+kernel 3.14.43   2015/05/17 (bz3x14.43)
+kernel 4.0.4     2015/05/17 (bz4x0.4)
+kernel 4.0.4     now default kernel
+kernel 4.1.rc4   2015/05/18 (bz4x1.rc4)
+Updated grub4dos files to 5/18 0.4.5c 
+kernel 3.12.43   2015/05/20 (bz3x12.43)
+kernel 3.18.14   2015/05/20 (bz3x18.14)
+kernel 4.1.rc5   2015/05/25 (bz4x1.rc5)
+Updated support files and libraries
+Set 4.1.rcx kernel to nosmp option panics without??
+kernel 4.1.rc6   2015/06/01 (bz4x1.rc6)
+Modified primary script to filter /dev/ram0 from 
+partition lists. 4.x kernels now are showing ram0
+in /proc/partitions.
+kernel 3.10.80   2015/06/06 (bz3x10.80)
+kernel 3.14.44   2015/06/06 (bz3x14.44)
+kernel 4.0.5     2015/06/06 (bz4x0.5)
+kernel 4.0.5     now default kernel
+Update to ntfs programs and libraries (yum update)
+kernel 4.1.rc7   2015/06/08 (bz4x1.rc7)
+Update lib/firmare 2015/06/11
+Updated libfuse
+kernel 3.18.15   2015/06/13 (bz3x18.15)
+kernel 3.18.16   2015/06/14 (bz3x18.16)
+kernel 4.1.rc8   2015/06/15 (bz4x1.rc8)
+kernel 3.12.44   2015/06/15 (bz3x12.44)
+remove /lib/firmware/brcm and ti-connectivity
+since they seem to be wireless only. 
+Only actually had request for bnx2 and bnx2x firmware
+from users, but added the complete firmware, but it has
+been growing in size. 
+kernel 4.1.0     2015/06/22 (bz4x1.0)
+kernel 3.10.81   2015/06/22 (bz3x10.81)
+kernel 3.14.45   2015/06/23 (bz3x14.45)
+kernel 4.0.6     2015/06/23 (bz4x0.6)
+kernel 4.0.6     now default kernel
+kernel 3.19.8    Dropped old
+kernel 3.10.82   2015/06/29 (bz3x10.82)
+kernel 3.14.46   2015/06/29 (bz3x14.46)
+kernel 3.18.17   2015/06/28 (bz3x18.17)
+kernel 4.0.7     2015/06/29 (bz4x0.7)
+kernel 4.0.7     now default kernel
+kernel 4.1.1     2015/06/29 (bz4x1.1)
+kernel 3.10.83   2015/07/04 (bz3x10.83)
+kernel 3.14.47   2015/07/04 (bz3x14.47)
+kernel 4.2.rc1   2015/07/06 (bz4x2.rc1)
+kernel 3.10.84   2015/07/10 (bz3x10.84)
+kernel 3.14.48   2015/07/10 (bz3x14.48)
+kernel 3.18.18   2015/07/10 (bz3x18.18)
+kernel 4.0.8     2015/07/10 (bz4x0.8)
+kernel 4.0.8     now default kernel
+kernel 4.1.2     2015/07/10 (bz4x1.2)
+Modified rcS to ignore standard firmware message
+kernel 4.2.rc2   2015/07/12 (bz4x2.rc2)
+kernel 4.2.rc3   2015/07/19 (bz4x2.rc3)
+kernel 3.18.19   2015/07/21 (bz3x18.19)
+kernel 4.0.9     2015/07/21 (bz4x0.9)
+kernel 4.0.9     now default kernel
+kernel 4.1.3     2015/07/21 (bz4x1.3)
+kernel 4.2.rc4   2015/07/26 (bz4x2.rc4)
+kernel 3.12.45   2015/07/30 (bz3x12.45)
+kernel 4.2.rc5   2015/08/03 (bz4x2.rc5)
+kernel 3.10.85   2015/08/03 (bz3x10.85)
+kernel 3.14.49   2015/08/03 (bz3x14.49)
+kernel 4.1.4     2015/08/03 (bz4x1.4)
+kernel 4.1.4     now default kernel
+kernel 3.12.46   2015/08/07 (bz3x12.46)
+kernel 3.18.20   2015/08/08 (bz3x18.20)
+kernel 4.2.rc6   2015/08/09 (bz4x2.rc6)
+kernel 3.10.86   2015/08/10 (bz3x10.86)
+kernel 3.14.50   2015/08/10 (bz3x14.50)
+kernel 4.1.5     2015/08/10 (bz4x1.5)
+kernel 4.1.5     now default kernel
+kernel 4.2.rc7   2015/08/16 (bz4x2.rc7)
+kernel 3.10.87   2015/08/17 (bz3x10.87)
+kernel 3.14.51   2015/08/17 (bz3x14.51)
+kernel 4.1.6     2015/08/17 (bz4x1.6)
+kernel 4.1.6     now default kernel
+kernel 4.2.rc8   2015/08/24 (bz4x2.rc8)
+kernel 3.12.47   2015/08/27 (bz3x12.47)
+kernel 4.2.0     2015/08/30 (bz4x2.0)
+kernel 4.2.0     now default kernel
+kernel 3.18.21   2015/08/31 (bz3x18.21)
+kernel 4.0.9     2015/07/21 (bz4x0.9)Deleted
+kernel 4.3.rc1   2015/09/13 (bz4x3.rc1)
+kernel 3.10.88   2015/09/13 (bz3x10.88)
+kernel 3.14.52   2015/09/13 (bz3x14.52)
+kernel 4.1.7     2015/09/13 (bz4x1.7)
+kernel 3.12.48   2015/09/18 (bz3x12.48)
+kernel 4.3.rc2   2015/09/20 (bz4x3.rc2)
+kernel 3.10.89   2015/09/21 (bz3x10.89)
+kernel 3.14.53   2015/09/21 (bz3x14.53)
+kernel 4.1.8     2015/09/21 (bz4x1.8)
+kernel 4.2.1     2015/09/21 (bz4x2.1)
+kernel 4.2.1     now default kernel
+
+Released 0.48    2015/03/15
+kernel 3.12.32   2014/11/05 (bz3x12.32)
+Added check for no selection on Clone menu
+kernel 3.18-rc4  2014/11/09 (bz3x18.rc4)
+kernel 3.10.60   2014/11/14 (bz3x10.60)
+kernel 3.14.24   2014/11/14 (bz3x14.24)
+Updated firmware files
+kernel 3.17.3    2014/11/14 (bz3x17.3)
+kernel 3.17.3    now default kernel
+Update Grub4dos files
+kernel 3.18-rc5  2014/11/17 (bz3x18.rc5)
+updated f3read and f3write programs
+kernel 3.12.33   2014/11/20 (bz3x12.33)
+kernel 3.10.61   2014/11/21 (bz3x10.61)
+kernel 3.14.25   2014/11/21 (bz3x14.25)
+kernel 3.17.4    2014/11/21 (bz3x17.4)
+kernel 3.17.4    now default kernel
+kernel 3.18-rc6  2014/11/23 (bz3x18.rc6)
+kernel 3.18-rc7  2014/12/01 (bz3x18.rc7)
+kernel 3.12.34   2014/12/05 (bz3x12.34)
+kernel 3.10.62   2014/12/06 (bz3x10.62)
+kernel 3.14.26   2014/12/06 (bz3x14.26)
+kernel 3.17.5    2014/12/06 (bz3x17.5)
+kernel 3.17.5    now default kernel
+kernel 3.17.6    2014/12/07 (bz3x17.6)
+kernel 3.17.6    now default kernel
+kernel 3.18.0    2014/12/07 (bz3x18.0)
+Updated grub4dos 0.4.5c 11/27/2014
+kernel 3.12.35   2014/12/10 (bz3x12.35)
+Updated firmware files
+kernel 3.10.63   2014/12/16 (bz3x10.63)
+kernel 3.14.27   2014/12/16 (bz3x14.27)
+kernel 3.17.7    2014/12/16 (bz3x17.7)
+kernel 3.17.7    now default kernel
+kernel 3.18.1    2014/12/16 (bz3x18.1)
+Upgraded f3read and f3write to version 5
+Updated grub4dos files to 0.45c 2014/12/17
+kernel 3.15 removed since no longer updated
+kernel 3.19.rc1  2014/12/21 (bz3x19.rc1)
+kernel 3.18.1    now default kernel
+kernel 3.16 removed since no longer updated
+updated cleandrive8 and cleandrive8.dialog issue 
+with use with dash as shell on ubuntu 14.4
+Updated busybox from 1.22.1 to 1.23.0
+kernel 3.19.rc2  2014/12/29 (bz3x19.rc2)
+kernel 3.19.rc3  2015/01/06 (bz3x19.rc3)
+kernel 3.10.64   2015/01/08 (bz3x10.64)
+kernel 3.14.28   2015/01/08 (bz3x14.28)
+kernel 3.17.8    2015/01/08 (bz3x17.8)
+kernel 3.18.2    2015/01/08 (bz3x18.2)
+kernel 3.18.2    now default kernel
+kernel 3.19.rc4  2015/01/11 (bz3x19.rc4)
+kernel 3.12.36   2015/01/14 (bz3x12.36)
+kernel 3.10.65   2015/01/16 (bz3x10.65)
+kernel 3.14.29   2015/01/16 (bz3x14.29)
+kernel 3.18.3    2015/01/16 (bz3x18.3)
+kernel 3.18.3    now default kernel
+kernel 3.19.rc5  2015/01/18 (bz3x19.rc5)
+Fedora updates of support programs (bash and others)
+kernel 3.19.rc6  2015/01/26 (bz3x19.rc6)
+Updated grub4dos files to 0.45c 2015/01/20
+Updated busybox from 1.23.0 to 1.23.1
+kernel 3.10.66   2015/01/27 (bz3x10.66)
+kernel 3.14.30   2015/01/27 (bz3x14.30)
+kernel 3.18.4    2015/01/27 (bz3x18.4)
+kernel 3.18.4    now default kernel
+kernel 3.10.67   2015/01/30 (bz3x10.67)
+kernel 3.14.31   2015/01/30 (bz3x14.31)
+kernel 3.18.5    2015/01/30 (bz3x18.5)
+kernel 3.18.5    now default kernel
+kernel 3.12.37   2015/01/30 (bz3x12.37)
+kernel 3.19.rc7  2015/02/02 (bz3x19.rc7)
+kernel 3.10.68   2015/02/06 (bz3x10.68)
+kernel 3.14.32   2015/02/06 (bz3x14.32)
+kernel 3.18.6    2015/02/06 (bz3x18.6)
+kernel 3.18.6    now default kernel
+kernel 3.19.0    2015/02/09 (bz3x19.0)
+kernel 3.10.69   2015/02/11 (bz3x10.69)
+kernel 3.14.33   2015/02/11 (bz3x14.33)
+kernel 3.18.7    2015/02/11 (bz3x18.7)
+kernel 3.18.7    now default kernel
+Updated grub4dos 2015/02/09
+Applied patch to busybox
+kernel 3.12.38   2015/02/19 (bz3x12.38)
+kernel 3.19.0    now default kernel
+kernel 4.0-rc1   2015/02/23 (bz4x0.rc1)
+Number of support and library updates
+kernel 3.10.70   2015/02/27 (bz3x10.70)
+kernel 3.14.34   2015/02/27 (bz3x14.34)
+kernel 3.18.8    2015/02/27 (bz3x18.8)
+kernel 4.0-rc2   2015/03/03 (bz4x0.rc2)
+Updated grub4dos 2015/03/04
+kernel 3.10.71   2015/03/06 (bz3x10.71)
+kernel 3.14.35   2015/03/06 (bz3x14.35)
+kernel 3.18.9    2015/03/06 (bz3x18.9)
+kernel 3.19.1    2015/03/06 (bz3x19.1)
+kernel 3.19.1    now default kernel
+kernel 4.0-rc3   2015/03/08 (bz4x0.rc3)
+Some support file updates
+

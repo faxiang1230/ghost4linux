@@ -1,0 +1,2 @@
+cat syslinux.cfg | sed -e 's/ram0/ram0 noapic noacpi pnpbios=off acpi=off pci=noacpi/g' -e 's/G4L boot/G4L FAILSAFE boot/g' -e 's/Failsafe Menu/Return to Regular Kernel Menu/g' -e 's/failsafe.cfg/syslinux.cfg/g' >failsafe.cfg
+

@@ -1,0 +1,19 @@
+Disclaimer concerning Copyright: Prior version(s) of g4l appear to have
+been based on G4U a NetBSD-based bootfloppy/CD-ROM by
+Hubert Feyrer <hubert@feyrer.de> Copyright(c) 1999,2000,2001,2002,2003,2004
+G4U: http://www.feyrer.de/g4u/   http://www.feyrer.de/g4u/g4l.html
+The G4L project had an earlier author (nme), who original started
+the project. Then it moved to fra_step, who wrote the current
+version. 0.14beta, which is vastly different than 0.10
+In addition to information at the G4U site above
+G4L: https://sourceforge.net/projects/g4l  
+     http://freshmeat.net/projects/g4l/
+I've made modification to the g4l 0.14beta script to make
+it better for my needs, and to provide this to others to use or not
+I can not speak for the previous authors of G4U or G4L
+I have currently load my modifications at a Fedora Server at my office
+ftp://fedoragcc.dyndns.org
+
+Hope this version is useful to you
+Michael D. Setzer II, mikes@kuentos.guam.net
+Computer Science Instructor, Guam Community College

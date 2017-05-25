@@ -1,0 +1,14 @@
+ver=$1
+if [ "$ver" = "" ]; then
+    alphaver=""
+    alphadev=""
+else
+    alphaver=alpha$ver
+    alphadev=a$ver
+fi
+ncftpput -u USERID -p PASSWORD amd64gcc.dyndns.org . latest42.$1
+#ncftpput -u USERID -p PASSWORD amd64gcc.dyndns.org . ramdisk.gz 
+ncftpput -u USERID -p PASSWORD amd64gcc.dyndns.org . ramdisk.lzma
+ncftpput -u USERID -p PASSWORD amd64gcc.dyndns.org . g4l-v0.42$alphaver.iso 
+ncftpput -u USERID -p PASSWORD amd64gcc.dyndns.org . g4l-v0.42$alphadev.devel.tar.gz 
+

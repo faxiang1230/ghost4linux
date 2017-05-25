@@ -1,0 +1,175 @@
+#!/bin/sh
+#
+#
+## Michael Setzer II - Program Modifications
+DIALOG="dialog"
+: ${DIALOG_OK=0}
+: ${DIALOG_CANCEL=1}
+: ${DIALOG_ESC=255}
+
+if [ ! -d /mnt/local ] ; then
+  mkdir /mnt ;
+  mkdir /mnt/local ;
+  dialog --timeout 10 --msgbox "Needs /mnt/local directory\n(10 second timeout)" 0 0
+fi
+f_radiolist()
+{
+  $DIALOG --backtitle "$backtitle" --title "$1" --radiolist "$2" 0 0 0 $3
+}
+part_info2()
+{
+  partonly="";
+  partlist="";
+  disklist="";
+#LC_ALL=C added since regular sort was sorting sda after sda# options.
+#busybox sort works correctly, but if one uses script on anther version
+#it might sort incorrectly. dm stuff added to put lvm partition at end.
+  fsarchiver probe 2>&1 | grep -v = | grep \\[ | sed 's/dm/zz/g' | LC_ALL=C sort | sed -e 's/ /@/g' -e 's/zz/dm/g' >/tmp/sysinfo2
+  while read LINE
+  do
+    xxdev=`echo $LINE | cut -b2-5`;
+    xxdev2=`echo $LINE | cut -b2-3`;
+    xxsize=`echo $LINE | cut -b55-66 | sed 's/@//g'`;
+    xxtype=`echo $LINE | cut -b21-31 `;
+    xxtype2=`echo $LINE | cut -b32-32 `;
+    if [ "$xxtype2" != "]" ] ; then
+      xxtype=`echo $LINE | cut -b21-51 `;
+    fi
+    pad="";
+    a=`echo ${#xxsize}`;
+    while [ $a -le 10 ]
+    do
+      pad=$pad\_;
+      a=$(($a + 1));
+    done
+    if [ "$xxdev2" == "dm" ]; then
+      xxtype="LVM2_"$xxtype;
+    fi
+    if [ "$xxtype2" != "]" ]; then
+      disklist="$disklist `printf "%s %s%s--%s off" $xxdev  $pad $xxsize $xxtype `";
+    fi
+    partlist="$partlist `printf "%s %s%s--%s off" $xxdev  $pad $xxsize $xxtype `";
+    if [ "$xxtype2" == "]" ] ; then
+      partonly="$partonly `printf "%s %s%s--%s off" $xxdev  $pad $xxsize $xxtype `";
+    fi
+  done </tmp/sysinfo2
+  partonly=`echo $partonly | sed 's/@//g'`
+  partlist=`echo $partlist | sed 's/@//g'`
+  disklist=`echo $disklist | sed 's/@//g'`
+  if [ -z "$partonly" ] ; then
+    partonly="none no_partitions off";
+  fi
+  if [ -z "$partlist" ] ; then
+    partlist="none no_partitions off";
+  fi
+  if [ -z "$disklist" ] ; then
+    disklist="none no_disks off";
+  fi
+}
+
+part_info()
+{
+  partitions=`grep .d  </proc/partitions |awk '{print $4}'`
+# write systeminfo file
+  printf "========================================\n" > /tmp/sysinfo
+  printf "Drive/Partition sizes:\n" >> /tmp/sysinfo
+  grep .d </proc/partitions | awk '{print $4,$3}' |sort >>/tmp/sysinfo
+  
+  printf "\nDrive models:\n" >> /tmp/sysinfo
+  for h in $partitions
+  do
+    length=`echo $h |wc -c`
+    if [ $length -lt 5 ]; then
+      echo $h >> /tmp/sysinfo
+      cat /proc/ide/$h/model >> /tmp/sysinfo 2>/dev/null
+    fi
+  done
+### 2008/5/27 New partlist to have size and partitiion type.
+  partlist="";
+  partonly="";
+### 2009/3/15 New disklist to have just disks without partitions
+  disklist="";
+  fdisk -l 2>/dev/null | grep /dev | grep -v Disk | sed s/*/\ / | awk '{print $1,$6$7$8}' | cut -b6-30 >/tmp/partout
+  grep .d </proc/partitions | awk '{print $4,$3}' >/tmp/sysinfo2
+  while read LINE
+  do
+    xxdev=`echo $LINE | cut -f1 -d\  `;
+    xxsize=`echo $LINE | cut -f2 -d\  `;
+    xxsize2=`echo ${#xxsize}`;
+    pad="";
+    a=$xxsize2;
+    while [ $a -le 12 ]
+    do
+      pad=$pad\_;
+      a=$(($a + 1));
+    done
+    xxtype="";
+    xxtype=`grep $xxdev\   </tmp/partout 2>/dev/null |  cut -f2 -d\  `;
+    if [ -z $xxtype ]; then
+      xxtype="DISK";
+### 2009/3/15 New disklist to have just disks without partitions
+      disklist="$disklist `printf "%s %s%s--%s off" $xxdev  $pad $xxsize $xxtype `";
+    fi
+    partlist="$partlist `printf "%s %s%s--%s off" $xxdev  $pad $xxsize $xxtype `";
+    if [ "$xxtype" != "DISK" ] ; then
+      partonly="$partonly `printf "%s %s%s--%s off" $xxdev  $pad $xxsize $xxtype `";
+    fi
+  done </tmp/sysinfo2
+### End of addition
+}
+
+
+backtitle="Program to Remove Pagefile.sys and Hiberfil.sys"
+FSARCH=`which fsarchiver `
+if [ $? = "0" ] ; then
+  part_info2
+else
+  part_info
+fi
+
+hibpage()
+{
+f_radiolist "PICK DRIVE" "Pick Partition to erase PAGE/HIBERNATION FILE\n(Use Space Bar)\
+\nSupported FS are:\
+\nfat32 - Windows95/98/NT/2k/XP\
+\nntfs - Windows NT/2k/XP\
+\n\nSelect partition (example: /dev/hda1):" "$partonly"  2> /tmp/filelocaldrive
+retvallocaldrive=$?
+choicelocaldrive=$(cat /tmp/filelocaldrive)
+if [ -n "$choicelocaldrive" ]; then
+  case $retvallocaldrive in
+    $DIALOG_OK)
+    localdrive=$choicelocaldrive
+###
+    umount /mnt/local 2>/dev/null
+    mount /dev/$localdrive /mnt/local >/tmp/mount 2>&1
+    retvalmount=$?
+    if [ $retvalmount != 0 ] ; then
+      f_textbox "ERROR" /tmp/mount
+      localdrive=""
+      umount /mnt/local
+    fi;;
+  esac
+  cd /mnt/local
+  clear
+  resultout=""
+  if [ -e hiberfil.sys ] ; then 
+     result="Found Hiberfil.sys and removed\n"
+     rm hiberfil.sys
+  else
+     result="No Hiberfil.sys found\n"
+  fi
+  if [ -e pagefile.sys ] ; then 
+     result=$result"Found Pagefile.sys and removed"
+     rm pagefile.sys
+  else
+     result=$result"No Pagefile.sys found"
+
+  fi
+  $DIALOG --sleep 10 --infobox "$result" 5 50
+  cd /
+  umount /mnt/local
+fi
+}
+hibpage
+

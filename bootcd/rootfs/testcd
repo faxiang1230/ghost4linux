@@ -1,0 +1,25 @@
+#!/bin/bash
+cd /dev
+rm /dev/cdrom 2>/dev/null
+devices=`ls [hs]d?`;
+for h in $devices
+  do
+## kernel 3.2-rc1 list cdrom device in /proc/partitions
+## so the filtering failed.
+#   drive=`cat /proc/partitions | grep $h`;
+#   if [ -z "$drive" ]; then
+      media=`cat /sys/block/$h/device/media 2>/dev/null`;
+      if [ "$media" = "cdrom" ]; then
+        ln -s /dev/$h /dev/cdrom ;
+      fi
+#   fi
+  done
+devices=`ls sr? 2>/dev/null `;
+for h in $devices
+  do
+    media=`cat /sys/block/$h/device/model | cut -b 1-3`;
+    media2=`cat /sys/block/$h/device/model | cut -b 1-2`;
+    if [ "$media" = "DVD" -o "$media2" = "CD" ]; then
+      ln -s /dev/$h /dev/cdrom ;
+    fi
+  done

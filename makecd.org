@@ -1,0 +1,90 @@
+#!/bin/sh
+#
+#
+# USAGE:   ./makecd DEVICE [blank]
+# example: ./makecd ATAPI:1,0,0 blank
+#	   first BLANKS a CD-RW and burns to ATAPI Writer on
+#          Secondary master.
+#
+#
+#
+#
+#
+echo "g4l, Frank Stephen 2004"
+echo "g4l comes with ABSOLUTELY NO WARRANTY."
+echo "This is free software, and you are welcome"
+echo "to redistribute it freely."
+echo
+echo
+sleep 3
+
+#16384
+ramdisk_size=32768
+
+device=$1
+option=$2
+
+if [ "$device" = "" ]; then
+
+    echo "USAGE: $0 DEVICE OPTION"
+    echo  "example: $0 ATAPI:1,0,0 blank"
+    echo  "first BLANKS a CD-RW and burns to ATAPI Writer on"
+    echo  "Secondary master."
+    echo
+    echo  "example: $0 create"
+    echo  "create ISO image only"
+    exit 1
+fi
+
+echo "Creating ramdisk"
+dd if=/dev/zero of=bootcd/isolinux/ramdisk bs=1k count=$ramdisk_size
+
+echo "Creating loop device"
+losetup /dev/loop0 bootcd/isolinux/ramdisk
+
+echo "Creating ext2 filesystem"
+mke2fs -m 0 -N 4000 /dev/loop0
+
+echo "Mounting loop device in /mnt"
+mount /dev/loop0 /mnt
+
+echo "Deletinmg lost+found"
+rm -R /mnt/lost+found
+
+echo "Copy rootfs files to ramdisk in /mnt"
+cp -R bootcd/rootfs/* /mnt
+
+echo "Umounting /mnt"
+umount /mnt
+
+echo "Delete loop device"
+losetup -d /dev/loop0
+
+echo "Compressing ramdisk"
+gzip bootcd/isolinux/ramdisk
+ 
+echo "Creating ISO9660/Joliet/RopckRidge filesystem"
+mkisofs -l -L -J -R -o boot.iso -b isolinux.bin -c boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table bootcd/isolinux/.
+
+if [ "$device" != "create" ]; then
+
+    echo "Burning to devie $device"
+
+    if [ "$option" = "" ]; then
+    
+    	    cdrecord -v dev=$device boot.iso    
+    fi
+
+    if [ "$option" = "blank" ]; then
+
+	    cdrecord -v blank=fast dev=$device boot.iso 
+    fi
+
+    echo "Deleting ISO image"
+    rm boot.iso
+    
+fi
+echo "Deleting ramdisk"
+rm bootcd/isolinux/ramdisk.gz
+
+echo "DONE..."

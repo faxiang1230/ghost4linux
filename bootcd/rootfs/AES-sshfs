@@ -1,0 +1,129 @@
+Currently working on adding two more options to g4l.
+Was hoping to get some help testing these options and comments on adding
+support. Got no response from messages on either site. Did create basic
+./getkey.sh script to copy files from an usb drive. 
+
+1. Adding option to local image copy to mount a remote directory via sshfs
+/mnt/local, and then do backups via the ssh connection instead of using ftp.
+I have tested the process on one systems, and got a speed of about 20MB/sec
+overall. A full disk image via ftp usually averages to 30MB/sec, but that
+includes the linux partition that is about 80% free space. So, there might
+be even less of a performance hit, but this adds an encrypted connection
+option, and also provides a method for those that can not use ftp. It uses
+the sshfs, which may or may not work with all servers. I've used it on
+Fedora 6 and Fedora 8 machines.
+
+2. Adding an option on the Network menu to created encrypted image files
+using aespipe. This process is described below. It requires creation of
+a mykey1.gpg file and a passphrase file. Currently, the cd has a set of
+these files for testing. The ideal would be to create a script that would
+allow for getting these files onto the the ramdisk. This could be download
+from an ftp server or from flash device or perhaps a ssh connection. At
+the moment, this is just on the network option, and is a toggle.
+
+I've currently made 14 versions of 0.27 so far.
+
+At the moment, I've modified a copy of the regular g4l script g4l30b to
+include these options.
+
+If others are interested in testing, and making comments on what is the
+best way to further implement the aespipe option.
+
+Added option to use aespipe to created encrypted image files.
+Currently only available on network option.
+
+Encryption via aespipe.
+AESPIPE by Jari Ruusu <jariruusu@users.sourceforge.net>
+http://sourceforge.net/projects/loop-aes/
+
+This was recommended by a user, and seems to work fine.
+Have had some communication with the author.
+
+
+The CD image has a test set of key and passphrase file created as a demo, 
+but should not be used for real encryption, since they are publicly available.
+
+/mykey1.gpg  and /passphrase
+
+The method used to create these came from the aespipe README file.
+
+== section of README
+Create 65 random encryption keys and encrypt those keys using gpg. Reading
+from /dev/random may take indefinitely long if kernel's random entropy pool
+is empty. If that happens, do some other work on some other console (use
+keyboard, mouse and disks). Use of gpg-encrypted key file depends on
+encrypted swap.
+
+    head -c 2925 /dev/random | uuencode -m - | head -n 66 | tail -n 65 \
+        | gpg --symmetric -a >mykey1.gpg
+
+=== emd
+
+The program using the aespipe to encrypt and decrypt using the following
+additional code.
+
+AESPIPE=" aespipe -K /mykey1.gpg -P /passphrase -G / | "
+AESPIPEd="| aespipe -K /mykey1.gpg -P /passphrase -G / -d "
+
+These variables are set if encryption is toggled on, and inserted into
+the process. Otherwise the values are blank and have no effect on the 
+process.Currently the names of these files are hard coded, so one would 
+need to create you own key file and passphrase, and replace these. 
+
+You files could be downloaded from a secure location after booting from
+the cd by various options and others.
+
+ncftp -u user -p password ipaddress
+get mykey1.gpg
+get passphrase
+quit
+
+That puts the files on an ftp site, which you may or may not want to do.
+
+Insert an USB device
+
+mount /dev/sdx /mnt/local
+cp /mnt/local/mykey1.gpg
+cp /mnt/local/passphrase
+umount /mnt/local
+
+At this point, I will assume that users wanting to use encryption will
+be more than capable of creating these files, and setting them up. 
+Later this could be further expanded and automated more.
+
+Recommend testing you mykey1.gpg and passphrase files before making an
+image file, since if it doesn't work the image will not.
+
+Following script is a quick test. It just creates a file with random 
+data, encrypts it, and then decrypts it. If the original file and decrypted
+file produce the same results, it worked.
+
+#!/bin/sh
+#
+#
+## Michael Setzer II - Program Modifications
+## Set tab = 2 spaces for formatting
+
+dd if=/dev/urandom of=./aes1.test bs=512 count=40
+aespipe -K ./mykey1.gpg -P ./passphrase -G ./ <./aes1.test >./aes2.test
+aespipe -K ./mykey1.gpg -P ./passphrase -G ./ -d <./aes2.test >./aes3.test
+cmp -l ./aes1.test ./aes3.test
+
+
+Very limited testing has been done so far. 
+With a 20GB NTFS partition.
+None Encrypted image took 15m 55s
+Encrypted image took 16m 35s
+
+That works to be just about a 4% increase, but would depend on hardware,
+so your results may be higher or lower. Test done with P4 2.8 machine.
+
+This is only added to my working 0.27 alphas, and I'm currently a level 19
+Have not yet released any of these publicly.
+
+Added basic script getkey.sh to allow for copying gpg and passphrase file
+via a usb device.
+
+
+
+
