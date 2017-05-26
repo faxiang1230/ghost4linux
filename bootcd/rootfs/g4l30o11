@@ -1483,7 +1483,8 @@ case $? in
                         fi
                         sh -c "$xcmd"
                         progress
-						uefivarfile=$netimagename"-efirecord.tar.gz";tar czf - /sys/firmware/efi/vars/Boot00*| ncftpput $ncftpopt -m $useridpass -c -d /tmp/out.efi $server "$ftppath/$uefivarfile"
+						mount -t efivarfs none /sys/firmware/efi/efivars
+						uefivarfile=$netimagename"-efirecord.tar.gz";tar czf - /sys/firmware/efi/efivars/Boot*| ncftpput $ncftpopt -m $useridpass -c -d /tmp/out.efi $server "$ftppath/$uefivarfile"
                         restartcheck;;
                       esac;;
                     esac;;
@@ -1744,7 +1745,11 @@ case $? in
                         progress
                         rm /tmp/out
                         touch /tmp/out
+						mount -t efivarfs none /sys/firmware/efi/efivars
+						mkdir efi-directory
 						uefivarfile=$netimagename"-efirecord.tar.gz";xcmd="(ncftpget $ncftpopt $useridpass -c -V -d /tmp/out $server "$ftppath/$uefivarfile" 2>>$ncftpstat $AESPIPEd|tar xzf -)"
+						sh -c "$xcmd"
+						uefivarfile=$netimagename"-efirecord.tar.gz";xcmd="(ncftpget $ncftpopt $useridpass -c -V -d /tmp/out $server "$ftppath/$uefivarfile" 2>>$ncftpstat $AESPIPEd|tar xzf - -C efi-directory;cp efi-directory/sys/firmware/efi/efivars/BootOrder* /sys/firmware/efi/efivars/)"
 						sh -c "$xcmd"
 						#efibootmgr -c -p 1 -d $rest -L "OPENTHOS" -l /efi/boto/bootx64.efi
                         restartcheck;;
