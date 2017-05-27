@@ -106,3 +106,4 @@ echo "Deleting ramdisk"
 #rm bootcd/isolinux/ramdisk.gz
 #rm bootcd/isolinux/ramdisk.lzma
 echo "DONE..."
+isohybrid boot.iso||echo -e "isohybrid not found.\nInstall syslinux 4.0 or higher if you want to build a usb bootable iso."
